@@ -1,48 +1,46 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar">
 <head>
-    <meta charset="UTF-8">
+    <link rel="stylesheet" href="main.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>sign in</title>
+    <meta charset="UTF-8">
+    <title>Support Station</title>
 </head>
 <body>
 
-    <!-- الهيدر مع وسم الصورة -->
+    <!-- الهيدر -->
     <header>
-        <div class="logo-container">
-            <!-- استبدل الرابط أدناه برابط شعار جامعتك الفعلي -->
-            <img src="https://pbs.twimg.com/ext_tw_video_thumb/1765627227515863040/pu/img/WbUFK3aOsGtCZD2l.jpg" alt="شعار الجامعة">
-        </div>
-        <h1>بوابة البلاغات الإلكترونية</h1>
+         <img src="https://pbs.twimg.com/ext_tw_video_thumb/1765627227515863040/pu/img/WbUFK3aOsGtCZD2l.jpg" alt="شعار الجامعة">
+        <h1>Support Station</h1>
+        <p>منصة البلاغات والدعم الفني للجامعة</p>
     </header>
 
-    <div class="container">
-        <div class="report-card">
-            <h2>sign in</h2>
-            
-            <form action="/submit-report" method="POST">
-                <label> الرقم الجامعي </label>
-                <input type="text" name="student_id" placeholder="44******">
-
-
-                    <label> الرقم السري </label>
-                <input type="text" name="student_password" placeholder="*********">
-
-                <button type="submit">sign in</button>
-            </form>
-        </div>
+    <!-- المحتوى -->
+    <div>
+        <h2>مرحبًا بك في منصة Support Station</h2>
+        <p>
+            هذه المنصة مخصصة لتقديم البلاغات من المتدربات والمدربات حول الأعطال التقنية 
+            ومشاكل الأجهزة والنقل داخل الكلية، ليتم التعامل معها بسرعة بدل الانتظار أو التواصل المباشر.
+        </p>
     </div>
 
-    <!-- الفوتر -->
-    <footer>
+    <!-- أزرار تسجيل الدخول -->
+    <div>
+        <a>
+           تسجيل دخول الطالبات
+        </a>
+
+        <a>
+           تسجيل دخول الدكتورات
+        </a>
+    </div>
+<footer>
         <p>© 2026 جميع الحقوق محفوظة </p>
         <div>
-            <a href="#">سياسة الخصوصية</a> | 
-            <a href="#">اتصل بنا</a> | 
-            <a href="#">الأسئلة الشائعة</a>
+            <a>سياسة الخصوصية</a> | 
+            <a>اتصل بنا</a> | 
+            <a>الأسئلة الشائعة</a>
         </div>
     </footer>
-
 </body>
 </html>
-
