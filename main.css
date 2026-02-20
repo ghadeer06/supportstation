@@ -1,0 +1,71 @@
+/* تنسيق عام */
+body {
+    font-family: Tahoma, sans-serif;
+    direction: rtl;
+    text-align: center;
+    background-color: #f4f6f9;
+    margin: 0;
+    padding: 0;
+}
+
+/* الهيدر */
+header {
+    background-color: #1e73be; /* أزرق */
+    color: white;
+   
+padding: 1rem; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .logo-container img { max-width: 120px; height: auto; margin-bottom: 10px; border-radius: 8px; }
+}
+
+header h1 {
+    margin: 0;
+    font-size: 32px;
+}
+
+header p {
+    margin: 5px 0 0;
+    font-size: 16px;
+}
+
+/* المحتوى */
+h2 {
+    color: #1e73be;
+    margin-top: 40px;
+}
+
+p {
+    width: 70%;
+    margin: auto;
+    line-height: 1.8;
+    color: #333;
+}
+
+/* أزرار تسجيل الدخول */
+a {
+    display: inline-block;
+    padding: 15px 25px;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    margin: 15px;
+    font-size: 18px;
+    transition: 0.3s;
+}
+
+/* زر الطالبات */
+a:nth-child(1) {
+    background-color: #1e73be; /* أزرق */
+}
+
+a:nth-child(1):hover {
+    background-color: #155a94;
+}
+
+/* زر الدكتورات */
+a:nth-child(2) {
+    background-color: #2ecc71; /* أخضر */
+}
+
+a:nth-child(2):hover {
+    background-color: #27ae60;
+}
