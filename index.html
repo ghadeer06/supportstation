@@ -1,28 +1,85 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign In</title>
+    <title>نظام بلاغات الكلية</title>
     <style>
-        body { font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #f0f2f5; }
-        .login-container { background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); width: 300px; }
-        input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
-        button { width: 100%; padding: 10px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
-        button:hover { background-color: #0056b3; }
-        h2 { text-align: center; color: #333; }
+        /* تنسيقات عامة */
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f9; margin: 0; display: flex; flex-direction: column; min-height: 100vh; }
+        
+        /* الهيدر والشعار */
+        header { background: #003366; color: white; padding: 1rem; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .logo-container img { max-width: 120px; height: auto; margin-bottom: 10px; border-radius: 8px; }
+
+        /* حاوية النموذج */
+        .container { flex: 1; display: flex; justify-content: center; align-items: center; padding: 20px; }
+        .report-card { background: white; padding: 2.5rem; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.1); width: 100%; max-width: 450px; }
+        
+        h2 { color: #003366; text-align: center; margin-top: 0; }
+        p.subtitle { text-align: center; color: #666; font-size: 0.9rem; margin-bottom: 20px; }
+
+        /* العناصر المدخلة */
+        label { display: block; margin-bottom: 5px; font-weight: bold; color: #333; }
+        input, select, textarea { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 1rem; }
+        textarea { resize: vertical; min-height: 100px; }
+
+        /* الأزرار */
+        button { width: 100%; padding: 12px; background-color: #e63946; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 1.1rem; font-weight: bold; transition: 0.3s; }
+        button:hover { background-color: #c1121f; }
+
+        /* الفوتر (Footer) */
+        footer { background: #222; color: #bbb; text-align: center; padding: 1.5rem; font-size: 0.85rem; margin-top: auto; }
+        footer a { color: #fff; text-decoration: none; margin: 0 10px; }
     </style>
 </head>
 <body>
 
-<div class="login-container">
-    <h2>Sign In</h2>
-    <form action="/submit-your-login-api" method="POST">
-        <input type="email" name="email" placeholder="Email" required>
-        <input type="password" name="password" placeholder="Password" required>
-        <button type="submit">Login</button>
-    </form>
-</div>
+    <!-- الهيدر مع وسم الصورة -->
+    <header>
+        <div class="logo-container">
+            <!-- استبدل الرابط أدناه برابط شعار جامعتك الفعلي -->
+            <img src="https://pbs.twimg.com/ext_tw_video_thumb/1765627227515863040/pu/img/WbUFK3aOsGtCZD2l.jpg" alt="شعار الجامعة">
+        </div>
+        <h1>بوابة البلاغات الإلكترونية</h1>
+    </header>
+
+    <div class="container">
+        <div class="report-card">
+            <h2>تقديم بلاغ جديد</h2>
+            <p class="subtitle">يرجى ملء البيانات أدناه لضمان سرعة المعالجة</p>
+            
+            <form action="/submit-report" method="POST">
+                <label>الاسم الكامل (اختياري):</label>
+                <input type="text" name="student_name" placeholder="أدخل اسمك">
+
+                <label>نوع البلاغ:</label>
+                <select name="report_type" required>
+                    <option value="">-- اختر النوع --</option>
+                    <option value="maintenance">أعطال فنية/صيانة</option>
+                    <option value="academic">شكوى أكاديمية</option>
+                    <option value="security">أمن وسلامة</option>
+                    <option value="other">أخرى</option>
+                </select>
+
+                <label>وصف البلاغ:</label>
+                <textarea name="description" placeholder="اشرح تفاصيل البلاغ هنا..." required></textarea>
+
+                <button type="submit">إرسال البلاغ</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- الفوتر -->
+    <footer>
+        <p>© 2024 جميع الحقوق محفوظة - عمادة تقنية المعلومات</p>
+        <div>
+            <a href="#">سياسة الخصوصية</a> | 
+            <a href="#">اتصل بنا</a> | 
+            <a href="#">الأسئلة الشائعة</a>
+        </div>
+    </footer>
 
 </body>
 </html>
+
