@@ -1,1 +1,149 @@
+/* تنسيق عام */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f7f9;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
 
+/* الهيدر */
+header {
+    background: #003366;
+    color: white;
+    padding: 3rem;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    justify-content:center ;
+    flex-wrap: wrap;
+}
+
+/* الشعار يمين */
+header img {
+    max-width: 230px;
+    height: auto;
+    border-radius: 20px;
+    margin-left: -3px;
+}
+
+/* نصوص الهيدر */
+.header-text {
+    text-align: center;
+	 margin: -10;
+    flex: 1;
+}
+
+.header-text h1 {
+	text-align: center;
+    margin: 0;
+    font-size: 2rem;
+}
+
+.header-text p {
+	text-align: center;
+    margin: 5px;
+    font-size: 1rem;
+}
+
+/* مربع التعريف */
+.info-box {
+    background: white;
+    width: 100%;
+	height: 100%;
+    max-width: 1000px;
+    margin: 170px auto;
+    padding: 130px;
+    border-radius: 50px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+.info-box h2 {
+    color: #003366;
+    margin-top: 0;
+}
+
+.info-box p {
+    color: #444;
+    line-height: 1.8;
+	font-size:1.3rem;
+}
+
+/* أزرار تسجيل الدخول */
+.login-buttons {
+    text-align: center;
+    margin-bottom: 100px;
+}
+
+.login-buttons a {
+    display: inline-block;
+    padding: 70px 50px;
+    color: white;
+    text-decoration: none;
+    border-radius: 20px;
+    margin: 10px;
+    font-size: 1.1rem;
+    transition: 0.3s;
+}
+
+/* زر الطالبات */
+.login-buttons .student {
+    background-color: #1e73be;
+}
+
+.login-buttons .student:hover {
+    background-color: #155a94;
+}
+
+/* زر الدكتورات */
+.login-buttons .teacher {
+    background-color: #2ecc71;
+}
+
+.login-buttons .teacher:hover {
+    background-color: #27ae60;
+}
+
+/* زر الدكتورات */
+.login-buttons .admin {
+    background-color: #282828;
+}
+
+.login-buttons .admin:hover {
+    background-color: #000000;
+}
+
+/* الفوتر */
+footer {
+    background: #222;
+    color: #bbb;
+    text-align: center;
+    padding: 1.5rem;
+    font-size: 0.85rem;
+    margin-top: auto;
+}
+
+/* متجاوب للجوال */
+@media (max-width: 600px) {
+    header {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    header img {
+        margin: 0 0 10px 0;
+        max-width: 130px;
+    }
+
+    .info-box {
+        width: 90%;
+        padding: 20px;
+    }
+
+    .login-buttons a {
+        width: 80%;
+        font-size: 1rem;
+    }
+}
