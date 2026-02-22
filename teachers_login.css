@@ -1,0 +1,154 @@
+/* تنسيق عام */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f7f9;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* الهيدر */
+header {
+    background: #003366;
+    color: white;
+    padding: 3rem;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    justify-content:center ;
+    flex-wrap: wrap;
+}
+
+/* الشعار يمين */
+header img {
+    max-width: 230px;
+    height: auto;
+    border-radius: 20px;
+    margin-left: -3px;
+}
+
+/* نصوص الهيدر */
+.header-text {
+    text-align: center;
+	 margin: -10;
+    flex: 1;
+}
+
+.header-text h1 {
+	text-align: center;
+    margin: 0;
+    font-size: 2rem;
+}
+
+.header-text p {
+	text-align: center;
+    margin: 5px;
+    font-size: 1rem;
+}
+
+/* مربع التعريف */
+.info-box {
+    background: white;
+    width: 100%;
+	height: 100%;
+    max-width: 1000px;
+    margin: 170px auto;
+    padding: 130px;
+    border-radius: 50px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+.info-box h2 {
+    color: #003366;
+    margin-top: 0;
+}
+
+.info-box p {
+    color: #444;
+    line-height: 1.8;
+	font-size:1.3rem;
+}
+
+
+
+
+
+
+
+/* الفوتر */
+footer {
+    background: #222;
+    color: #bbb;
+    text-align: center;
+    padding: 1.5rem;
+    font-size: 0.85rem;
+    margin-top: auto;
+}
+
+/* متجاوب للجوال */
+@media (max-width: 600px) {
+    header {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    header img {
+        margin: 0 0 10px 0;
+        max-width: 130px;
+    }
+
+    .info-box {
+        width: 90%;
+        padding: 20px;
+    }
+
+    .login-buttons a {
+        width: 80%;
+        font-size: 1rem;
+    }
+}
+
+
+
+        .login-box h2 {
+            margin-bottom: 20px;
+            font-size: 50px;
+        }
+
+        .login-box .input-group {
+            text-align: center;
+            margin-bottom: 50px;
+			  
+        }
+
+        .login-box label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 50px bold;
+        }
+
+       .login-box input {
+            width: 100%;
+            padding: 8px 10px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+        }
+
+        .login-box button {
+            width: 20%;
+            padding: 10px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 6px;
+            background-color: #1fa15a;
+            color: #ffffff;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .login-box button:hover {
+            background-color: #178347;
+        }
