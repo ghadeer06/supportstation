@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>لوحة البلاغات</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="header">لوحة البلاغات</div>
+
+<div class="container">
+  <div class="card">
+    <h3>بلاغات الطالبات (نظافة / صيانة)</h3>
+
+    <table>
+      <thead>
+        <tr>
+          <th>رقم</th>
+          <th>النوع</th>
+          <th>الموقع</th>
+          <th>الحالة</th>
+          <th>تفاصيل</th>
+        </tr>
+      </thead>
+      <tbody id="rows"></tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+  const reports = [
+    {id:101,type:"صيانة",location:"مبنى A - قاعة 3",status:"قيد المراجعة",desc:"المكيف لا يعمل"},
+    {id:102,type:"نظافة",location:"مبنى B - ممر",status:"تحت التنفيذ",desc:"اتساخ بالممر"},
+    {id:103,type:"صيانة",location:"مبنى C - معمل 2",status:"تم الحل",desc:"إضاءة لا تعمل"},
+    {id:104,type:"نظافة",location:"مبنى A - دورات مياه",status:"قيد المراجعة",desc:"يحتاج تنظيف وتعقيم"},
+    {id:105,type:"صيانة",location:"مبنى B - قاعة 1",status:"تحت التنفيذ",desc:"البروجكتر لا يعمل"}
+  ];
+
+  const tbody = document.getElementById("rows");
+
+  reports.forEach(r=>{
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>#${r.id}</td>
+      <td>${r.type}</td>
+      <td>${r.location}</td>
+      <td>${r.status}</td>
+      <td><button class="light" onclick="openReport(${r.id})">عرض</button></td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  function openReport(id){
+    const selected = reports.find(x => x.id === id);
+    localStorage.setItem("selectedReport", JSON.stringify(selected));
+    window.location.href = "report.html";
+  }
+</script>
+
+</body>
+</html>
