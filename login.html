@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>تسجيل الدخول | محطة الدعم</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body class="auth-body">
+
+  <header class="hero hero--auth">
+    <div class="overlay"></div>
+
+    <div class="wrap">
+
+      <!-- رأس الصفحة (الشعار + اسم الجهة) -->
+      <div class="top top--auth">
+        <img class="logo" src="img/logo.png" alt="الشعار">
+        <div class="org">
+          
+        </div>
+      </div>
+
+      <!-- بطاقة تسجيل الدخول -->
+      <main class="auth-card" aria-label="نموذج تسجيل الدخول">
+        <h1 class="auth-title">تسجيل الدخول</h1>
+        <p class="auth-sub">
+          الرجاء اختيار نوع الحساب ثم إدخال بيانات الدخول.
+        </p>
+
+        <!-- نوع المستخدم -->
+        <div class="role-group" role="radiogroup" aria-label="نوع الحساب">
+          <label class="role">
+            <input type="radio" name="role" value="trainee" checked>
+            <span>متدرب</span>
+          </label>
+
+          <label class="role">
+            <input type="radio" name="role" value="trainer">
+            <span>مدرب</span>
+          </label>
+
+          <label class="role">
+            <input type="radio" name="role" value="admin">
+            <span>مسؤول</span>
+          </label>
+        </div>
+
+        <!-- بيانات الدخول -->
+        <form id="loginForm" class="auth-form" autocomplete="on">
+          <label class="field">
+            <span>اسم المستخدم</span>
+            <input type="text" id="username" placeholder="أدخل اسم المستخدم" required />
+          </label>
+
+          <label class="field">
+            <span>كلمة المرور</span>
+            <input type="password" id="password" placeholder="أدخل كلمة المرور" required />
+          </label>
+
+          <button class="btn btn--solid" type="submit">تسجيل الدخول</button>
+
+          <div id="msg" class="msg" aria-live="polite"></div>
+        </form>
+
+        <a class="back-link" href="index.html">العودة للصفحة الرئيسية</a>
+      </main>
+
+    </div>
+  </header>
+
+  <script>
+    // يغيّر وجهة الدخول حسب الدور المختار
+    const form = document.getElementById('loginForm');
+    const msg  = document.getElementById('msg');
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const role = document.querySelector('input[name="role"]:checked').value;
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value.trim();
+
+      if (!username || !password) {
+        msg.textContent = "يرجى إدخال اسم المستخدم وكلمة المرور.";
+        return;
+      }
+
+      // روابط افتراضية — عدّليها حسب صفحاتك
+      const routes = {
+        trainee: "trainee.html",
+        trainer: "trainer.html",
+        admin:   "admin.html"
+      };
+
+      msg.textContent = "جارٍ التحقق من البيانات...";
+      setTimeout(() => {
+        window.location.href = routes[role];
+      }, 400);
+    });
+  </script>
+
+</body>
+</html>
