@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>تفاصيل البلاغ</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="header">تفاصيل البلاغ</div>
+
+<div class="container">
+  <div class="card">
+    <div id="details"></div>
+
+    <label>تحديث الحالة</label>
+    <select id="status">
+      <option>قيد المراجعة</option>
+      <option>تحت التنفيذ</option>
+      <option>تم الحل</option>
+    </select>
+
+    <button class="primary" onclick="save()">حفظ</button>
+    <button class="light" onclick="window.location.href='dashboard.html'">رجوع</button>
+  </div>
+</div>
+
+<script>
+  let data = JSON.parse(localStorage.getItem("selectedReport"));
+
+  const details = document.getElementById("details");
+  const statusSelect = document.getElementById("status");
+
+  if(!data){
+    details.innerHTML = "<p>❌ ما تم اختيار بلاغ. ارجعي للوحة البلاغات واضغطي (عرض).</p>";
+    statusSelect.disabled = true;
+  } else {
+    details.innerHTML = `
+      <p><b>رقم البلاغ:</b> #${data.id}</p>
+      <p><b>النوع:</b> ${data.type}</p>
+      <p><b>الموقع:</b> ${data.location}</p>
+      <p><b>الوصف:</b> ${data.desc}</p>
+      <p><b>الحالة الحالية:</b> <span id="current">${data.status}</span></p>
+    `;
+    statusSelect.value = data.status;
+  }
+
+  function save(){
+    data.status = statusSelect.value;
+    document.getElementById("current").innerText = data.status;
+    localStorage.setItem("selectedReport", JSON.stringify(data));
+    alert("✅ تم حفظ التحديث");
+  }
+</script>
+
+</body>
+</html>
