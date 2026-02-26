@@ -28,15 +28,13 @@ body{
 }
 .hero{
   position:relative;
-  height:72vh;
-  min-height:520px;
-
+  min-height:100vh;   /* يغطي الشاشة كاملة */
+  height:auto;        /* يسمح بالتمدد */
   background:
     linear-gradient(rgba(18,44,74,0.65), rgba(18,44,74,0.65)),
     url("img/h1.png");
-
   background-size:cover;
-  background-position:top center;
+  background-position:center;
   background-repeat:no-repeat;
 }
 
@@ -680,4 +678,5 @@ body.login-page, body {
         gap: 8px;
     }
 }
+
 
