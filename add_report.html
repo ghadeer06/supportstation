@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>إنشاء بلاغ جديد</title>
+  <link rel="stylesheet" href="style_report.css">
+</head>
+<body>
+
+<div class="header">إنشاء بلاغ جديد</div>
+
+<div class="container">
+  <div class="card">
+
+    <label>نوع البلاغ</label>
+    
+	
+<div class="custom-select" onclick="toggleDropdown()">
+  <div id="selectedOption">صيانة</div>
+  <ul id="optionsList" class="options">
+    <li onclick="selectOption('صيانة',event)">صيانة</li>
+    <li onclick="selectOption('نظافة',event)">نظافة</li>
+    <li onclick="selectOption('نقل',event)">نقل</li>
+  </ul>
+</div>
+
+
+
+<input type="hidden" id="type" value="صيانة">
+    <!-- شدة البلاغ (يظهر دائمًا) -->
+    <label style="margin-top:20px;">شدة البلاغ: <span id="rateValue">1</span> / 10</label>
+    <input type="range" id="rate" min="1" max="10" value="1" oninput="updateRate()">
+
+    <!-- حقول النقل (من - إلى) -->
+    <div id="transferFields" style="display:none; margin-top:10px;">
+      <label>من</label>
+      <input type="text" id="from" placeholder="مثال: مبنى A - قاعة 1">
+
+      <label>إلى</label>
+      <input type="text" id="to" placeholder="مثال: مبنى B - قاعة 4">
+    </div>
+
+    <!-- الموقع (يختفي عند اختيار نقل) -->
+    <div id="locationField">
+      <label>الموقع</label>
+      <input type="text" id="location" placeholder="مثال: مبنى A - قاعة 3">
+    </div>
+
+    <label>الوصف</label>
+    <textarea id="desc" placeholder="اكتبي تفاصيل البلاغ"></textarea>
+
+    <button class="primary" onclick="saveReport()">إرسال البلاغ</button>
+    <button class="light" onclick="window.location.href='teachers_main_page.html'">رجوع</button>
+
+
+  </div>
+</div>
+<script>
+
+function toggleDropdown() {
+  const list = document.getElementById("optionsList");
+  list.style.display = list.style.display === "block" ? "none" : "block";
+}
+
+function selectOption(value, event) {
+  event.stopPropagation(); // يمنع تشغيل toggleDropdown من الأب
+  document.getElementById("selectedOption").innerText = value;
+  document.getElementById("type").value = value;
+
+  // إغلاق القائمة
+  document.getElementById("optionsList").style.display = "none";
+
+  // تحديث الحقول حسب النوع
+  toggleFields();
+}
+
+function toggleFields(){
+  const type = document.getElementById("type").value;
+  const transferDiv = document.getElementById("transferFields");
+  const locationDiv = document.getElementById("locationField");
+
+  if(type === "نقل"){
+    transferDiv.style.display = "block";
+    locationDiv.style.display = "none";
+  } else {
+    transferDiv.style.display = "none";
+    locationDiv.style.display = "block";
+  }
+}
+
+function updateRate(){
+  document.getElementById("rateValue").innerText = document.getElementById("rate").value;
+}
+
+</script>
+<script>
+function saveReport(){
+  const type = document.getElementById("type").value;
+  const location = document.getElementById("location").value.trim();
+  const desc = document.getElementById("desc").value.trim();
+  const rate = document.getElementById("rate").value;
+
+  let from = "";
+  let to = "";
+
+  // إذا كان البلاغ نقل
+  if(type === "نقل"){
+    from = document.getElementById("from").value.trim();
+    to = document.getElementById("to").value.trim();
+
+    if(from === "" || to === ""){
+      alert("⚠️ الرجاء تعبئة حقول (من - إلى)");
+      return;
+    }
+  } else {
+    if(location === ""){
+      alert("⚠️ الرجاء تعبئة الموقع");
+      return;
+    }
+  }
+
+  if(desc === ""){
+    alert("⚠️ الرجاء كتابة وصف البلاغ");
+    return;
+  }
+
+  let reports = JSON.parse(localStorage.getItem("reports")) || [];
+
+  const newReport = {
+    id: Date.now(),
+    type: type,
+    location: type === "نقل" ? "" : location,
+    desc: desc,
+    from: from,
+    to: to,
+    rate: rate,
+    status: "قيد المراجعة"
+  };
+
+  reports.push(newReport);
+  localStorage.setItem("reports", JSON.stringify(reports));
+
+  alert("✅ تم إرسال البلاغ بنجاح");
+  window.location.href = "teachers_main_page.html";
+}
+
+</script>
+
+</body>
+<footer class="main-footer">
+    <div class="footer-content">
+        <p>&copy; 2026 حقوق محفوظة | محطة الدعم </p>
+        <ul class="footer-links">
+            <li><a href="index.html">الرئيسية</a></li>
+            <li><a href="#">عن الموقع</a></li>
+            <li>@example اتصل بنا</a></li>
+        </ul>
+    </div>
+</footer>
+</html>

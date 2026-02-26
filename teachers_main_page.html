@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>بلاغات سابقة</title>
+  <link rel="stylesheet" href="style_report.css">
+</head>
+<body>
+
+<div class="header">بلاغات سابقة</div>
+
+<div class="container">
+
+  <button class="add-btn" onclick="window.location.href='add_report.html'">➕ إضافة بلاغ جديد</button>
+
+  <div class="card">
+    <h3>البلاغات التي قمت بإرسالها مسبقًا</h3>
+
+    <table>
+      <thead>
+        <tr>
+          <th>رقم</th>
+          <th>النوع</th>
+          <th>الموقع</th>
+          <th>الحالة</th>
+          <th>تفاصيل</th>
+        </tr>
+      </thead>
+      <tbody id="rows"></tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+
+  const tbody = document.getElementById("rows");
+
+  // قراءة البلاغات من localStorage
+  let reports = JSON.parse(localStorage.getItem("reports")) || [];
+
+  // لو ما فيه بلاغات
+  if(reports.length === 0){
+    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">لا توجد بلاغات حتى الآن</td></tr>`;
+  }
+
+  // عرض البلاغات
+  reports.forEach(r=>{
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>#${r.id}</td>
+      <td>${r.type}</td>
+      <td>${r.type === "نقل" ? "-" : r.location}</td>
+      <td>${r.status}</td>
+      <td><button class="light" onclick="openReport(${r.id})">عرض</button></td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  function openReport(id){
+    const selected = reports.find(x => x.id === id);
+    localStorage.setItem("selectedReport", JSON.stringify(selected));
+    window.location.href = "teach_report.html"; 
+  }
+
+</script>
+
+</body>
+<footer class="main-footer">
+    <div class="footer-content">
+        <p>&copy; 2026 حقوق محفوظة | محطة الدعم </p>
+        <ul class="footer-links">
+            <li><a href="index.html">الرئيسية</a></li>
+            <li><a href="#">عن الموقع</a></li>
+            <li>@example اتصل بنا</a></li>
+        </ul>
+    </div>
+</footer>
+</html>

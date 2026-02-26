@@ -1,0 +1,213 @@
+:root{
+  --dark:#0F2F4A;
+  --mid:#5E7B93;
+  --bg:#F3F1EC;
+}
+
+*{box-sizing:border-box}
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.container {
+  flex: 1;
+}
+body{
+  margin:0;
+  font-family: Arial, sans-serif;
+  direction: rtl;
+  background: var(--bg);
+}
+
+.header{
+  background: linear-gradient(135deg, var(--dark), var(--mid));
+  color:#fff;
+  padding:18px;
+  text-align:center;
+  font-size:20px;
+  font-weight:bold;
+}
+
+.container{
+  width:90%;
+  max-width:900px;
+  margin:25px auto;
+}
+
+.card{
+  background:#fff;
+  padding:20px;
+  border-radius:15px;
+  box-shadow:0 8px 20px rgba(0,0,0,.08);
+}
+
+input, select{
+  width:100%;
+  padding:12px;
+  margin-top:8px;
+  margin-bottom:14px;
+  border-radius:10px;
+  border:1px solid #ccc;
+}
+
+button{
+  padding:12px;
+  border:none;
+  border-radius:10px;
+  cursor:pointer;
+  font-size:14px;
+}
+
+.primary{
+  width:100%;
+  background: linear-gradient(135deg, var(--dark), var(--mid));
+  color:#fff;
+}
+
+.light{
+  background:#eee;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  margin-top:10px;
+}
+
+th, td{
+  padding:10px;
+  border-bottom:1px solid #ddd;
+  text-align:right;
+}
+
+textarea {
+  width: 100%;
+  min-height: 120px;
+  padding: 12px 14px;
+  border: 2px solid #ddd;
+  border-radius: 10px;
+  font-size: 15px;
+  font-family: "Tajawal", sans-serif;
+  resize: vertical;
+  background: #fafafa;
+  transition: 0.25s ease;
+  outline: none;
+}
+
+/* تأثير عند التركيز */
+textarea:focus {
+  border-color: #4a90e2;
+  background: #fff;
+  box-shadow: 0 0 8px rgba(74, 144, 226, 0.3);
+}
+
+.custom-select {
+  width: 100%;
+  background: #fafafa;
+  border: 2px solid #ddd;
+  border-radius: 10px;
+  padding: 12px;
+  font-size: 15px;
+  font-family: "Tajawal", sans-serif;
+  cursor: pointer;
+  position: relative;
+  transition: 0.25s ease;
+}
+
+.custom-select:hover {
+  border-color: var(--mid);
+}
+
+.custom-select::after {
+  content: "▼";
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--mid);
+  font-size: 14px;
+}
+
+.options {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  background: white;
+  border: 2px solid #ddd;
+  border-radius: 10px;
+  position: absolute;
+  width: 100%;
+  top: 55px;
+  left: 0;
+  display: none;
+  box-shadow: 0 8px 20px rgba(0,0,0,.08);
+  z-index: 10;
+}
+
+.options li {
+  padding: 12px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.options li:hover {
+  background: var(--mid);
+  color: white;
+}
+
+.danger {
+  background: #ffdddd;
+  color: #b30000;
+  border: 1px solid #b30000;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.main-footer {
+    background-color: #2c3e50; /* لون خلفية غامق وأنيق */
+    color: #ffffff;
+    padding: 20px 0;
+    text-align: center;
+    font-family: Arial, sans-serif;
+}
+
+.footer-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.footer-links {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    gap: 15px;
+}
+
+.footer-links a {
+    color: #ecf0f1;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.footer-links a:hover {
+    color: #3498db; /* لون عند تمرير الماوس */
+}
+
+/* لجعل الفوتر متجاوباً مع الشاشات الصغيرة */
+@media (max-width: 600px) {
+    .footer-links {
+        flex-direction: column;
+        gap: 8px;
+    }
+}
