@@ -30,13 +30,30 @@
 </div>
 
 <script>
-  const reports = [
-    {id:101,type:"صيانة",location:"مبنى A - قاعة 3",status:"قيد المراجعة",desc:"المكيف لا يعمل"},
-    {id:102,type:"نظافة",location:"مبنى B - ممر",status:"تحت التنفيذ",desc:"اتساخ بالممر"},
-    {id:103,type:"صيانة",location:"مبنى C - معمل 2",status:"تم الحل",desc:"إضاءة لا تعمل"},
-    {id:104,type:"نظافة",location:"مبنى A - دورات مياه",status:"قيد المراجعة",desc:"يحتاج تنظيف وتعقيم"},
-    {id:105,type:"صيانة",location:"مبنى B - قاعة 1",status:"تحت التنفيذ",desc:"البروجكتر لا يعمل"}
-  ];
+
+  const tbody = document.getElementById("rows");
+
+  // قراءة البلاغات من localStorage
+  let reports = JSON.parse(localStorage.getItem("reports")) || [];
+
+  reports.forEach(r=>{
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>#${r.id}</td>
+      <td>${r.type}</td>
+      <td>${r.type === "نقل" ? "-" : r.location}</td>
+      <td>${r.status}</td>
+      <td><button class="light" onclick="openReport(${r.id})">عرض</button></td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  function openReport(id){
+    const selected = reports.find(x => x.id === id);
+    localStorage.setItem("selectedReport", JSON.stringify(selected));
+    window.location.href = "report.html";
+  }
+
 
   const tbody = document.getElementById("rows");
 
@@ -58,6 +75,45 @@
     window.location.href = "report.html";
   }
 </script>
+<script>
+  const tbody = document.getElementById("rows");
 
+  // قراءة البلاغات من localStorage
+  let reports = JSON.parse(localStorage.getItem("reports")) || [];
+
+  // لو ما فيه بلاغات
+  if(reports.length === 0){
+    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">لا توجد بلاغات حتى الآن⏳</td></tr>`;
+  }
+
+  // عرض البلاغات
+  reports.forEach(r=>{
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>#${r.id}</td>
+      <td>${r.type}</td>
+      <td>${r.type === "نقل" ? "-" : r.location}</td>
+      <td>${r.status}</td>
+      <td><button class="light" onclick="openReport(${r.id})">عرض</button></td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  function openReport(id){
+    const selected = reports.find(x => x.id === id);
+    localStorage.setItem("selectedReport", JSON.stringify(selected));
+    window.location.href = "report.html";
+  }
+</script>
 </body>
+<footer class="main-footer">
+    <div class="footer-content">
+        <p>&copy; 2026 حقوق محفوظة | محطة الدعم </p>
+        <ul class="footer-links">
+            <li><a href="index.html">الرئيسية</a></li>
+            <li><a href="#">عن الموقع</a></li>
+            <li>@example اتصل بنا</a></li>
+        </ul>
+    </div>
+</footer>
 </html>
