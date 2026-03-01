@@ -1,0 +1,282 @@
+
+
+*{margin:0;padding:0;box-sizing:border-box}
+
+body.admin-body{
+  font-family: Arial, sans-serif;
+  direction: rtl;
+  background:#F3F1EC;
+  margin:0;
+}
+
+/* ===== Header ===== */
+.admin-header{
+  background:linear-gradient(to left, #0F2F4A, #5E7B93);
+  color:#fff;
+  padding:18px 40px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.admin-left{
+  display:flex;
+  align-items:center;
+  gap:15px;
+}
+
+.admin-logo{
+  width:120px;
+  height:auto;
+  display:block;
+}
+
+.admin-title h1{
+  font-size:20px;
+  font-weight:900;
+  margin:0;
+}
+
+.admin-title span{
+  font-size:12px;
+  opacity:.9;
+}
+
+.logout{
+  background:#fff;
+  color:#0F2F4A;
+  padding:8px 16px;
+  text-decoration:none;
+  border-radius:8px;
+  font-weight:900;
+  transition:.2s;
+}
+.logout:hover{background:#e0e0e0}
+
+/* ===== Main ===== */
+.admin-main{
+  padding:30px 40px;
+}
+
+/* ===== Stats Cards ===== */
+.admin-cards{
+  display:flex;
+  gap:12px;              /* لاصقه أكثر */
+  margin-bottom:18px;
+  flex-wrap:wrap;
+}
+
+.stat-card{
+  flex:1;
+  min-width:220px;
+  background:#fff;
+  padding:20px 18px;
+  border-radius:12px;
+  box-shadow:0 6px 20px rgba(0,0,0,0.05);
+  border-top:4px solid #0F2F4A;
+  text-align:center;
+  cursor:pointer;
+  border-left:0;
+  border-right:0;
+}
+
+.stat-card h3{
+  font-size:13px;
+  color:#5E7B93;
+  margin-bottom:10px;
+  font-weight:900;
+}
+
+.stat-card p{
+  font-size:30px;
+  font-weight:900;
+  color:#0F2F4A;
+  margin:0;
+}
+
+/* إزالة خط underline لو صار زر */
+.stat-card, .stat-card *{
+  text-decoration:none !important;
+}
+
+.stat-click.active{
+  outline:3px solid rgba(94,123,147,0.35);
+}
+
+/* ===== Section Title ===== */
+.reports-section{
+  margin-top:16px;
+}
+
+.section-title{
+  margin: 6px 0 12px;
+  color:#0F2F4A;
+  font-weight:900;
+}
+
+/* ===== Box + Inner Scroll (عشان ما تنزل الصفحة كلها) ===== */
+.reports-box{
+  background:#fff;
+  border-radius:14px;
+  padding:12px;
+  box-shadow:0 6px 20px rgba(0,0,0,0.05);
+  border-right:6px solid #5E7B93;
+}
+
+.reports-scroll{
+  max-height:320px;     
+  overflow:auto;
+  padding-left:6px;     /* مساحة بسيطة للسكرول */
+}
+
+/* ===== Report Card ===== */
+.report-card{
+  display:flex;
+  gap:12px;
+  background:#fff;
+  border:1px solid #e7eef7;
+  border-radius:14px;
+  padding:12px;
+  margin-bottom:12px;
+}
+
+.report-card:last-child{margin-bottom:0}
+
+/* Right tags (يمين) */
+.right-tags{
+  min-width:90px;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  align-items:flex-start;
+}
+
+.tag{
+  display:inline-block;
+  padding:6px 10px;
+  border-radius:999px;
+  font-weight:900;
+  font-size:12px;
+  border:1px solid transparent;
+}
+
+.tag.id{
+  background:#eef6ff;
+  color:#0b5cab;
+  border-color:#cfe6ff;
+}
+
+.tag.type{
+  background:#f1f1f1;
+  color:#334;
+  border-color:#e2e2e2;
+}
+
+/* Body */
+.report-body{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+
+.report-meta{
+  color:#546373;
+  font-size:13px;
+  line-height:1.9;
+}
+
+.dot{
+  margin: 0 6px;
+  opacity:.7;
+}
+
+.badges{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+
+.badge{
+  padding:6px 12px;
+  border-radius:999px;
+  font-weight:900;
+  font-size:12px;
+  border:1px solid transparent;
+}
+
+.badge.priority{
+  background:#ffe8cc;
+  color:#a85b00;
+  border-color:#ffd3a1;
+}
+
+.badge.sev{
+  background:#f6f3ea;
+  border:1px solid #eadfcd;
+  color:#7a5b22;
+}
+
+.report-text{
+  color:#1c2a38;
+  line-height:1.9;
+}
+
+/* Actions */
+.actions{
+  display:flex;
+  gap:8px;
+  justify-content:flex-end;
+  flex-wrap:wrap;
+  margin-top:6px;
+}
+
+.btn-process,
+.btn-done{
+  border:none;
+  padding:8px 12px;
+  border-radius:10px;
+  cursor:pointer;
+  font-weight:900;
+  font-size:12px;
+  transition:.2s;
+}
+
+/* بدء المعالجة (قبل الضغط) */
+.btn-process{
+  background:#5E7B93;
+  color:#fff;
+}
+.btn-process:hover{background:#0F2F4A}
+
+/* قيد المعالجة (بعد الضغط فقط) */
+.btn-process[disabled]{
+  background:#5E7B93;
+  color:#fff;
+  opacity:1;          /* مهم: ما يصير خفيف */
+  cursor:default;
+}
+
+/* تم التنفيذ */
+.btn-done{
+  background:#0F2F4A;
+  color:#fff;
+}
+.btn-done:hover{background:#5E7B93}
+
+.btn-done.solid{
+  background:#0F2F4A;
+  opacity:1;
+  cursor:default;
+}
+
+/* ===== Mobile ===== */
+@media (max-width:768px){
+  .admin-header{padding:14px 16px}
+  .admin-main{padding:18px 16px}
+  .admin-title h1{font-size:18px}
+  .reports-scroll{max-height:360px}
+  .report-card{flex-direction:column}
+  .right-tags{flex-direction:row;min-width:auto}
+  .actions{justify-content:flex-start}
+}
