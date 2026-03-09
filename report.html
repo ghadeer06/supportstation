@@ -30,6 +30,7 @@
 </div>
 
 <script>
+
   // قراءة البلاغ المختار
   let report = JSON.parse(localStorage.getItem("selectedReport"));
 
@@ -43,6 +44,7 @@
     <p><strong>إلى:</strong> ${report.to || "-"}</p>
     <p><strong>الوصف:</strong> ${report.desc}</p>
     <p><strong>الشدة:</strong> ${report.rate} / 10</p>
+    <p><strong>المرسل:</strong> ${report.sender || "غير محدد"}</p>
   `;
 
   // ضبط القائمة على الحالة الحالية
@@ -55,6 +57,15 @@
     const index = reports.findIndex(r => r.id === report.id);
     reports[index].status = document.getElementById("status").value;
 
+    // 🔥 ترتيب البلاغات:
+    // 1) المدرب فوق المتدرب
+    // 2) ثم حسب الشدة من الأعلى للأقل
+    reports.sort((a, b) => {
+      if (a.sender === "مدرب" && b.sender !== "مدرب") return -1;
+      if (a.sender !== "مدرب" && b.sender === "مدرب") return 1;
+      return b.rate - a.rate;
+    });
+
     localStorage.setItem("reports", JSON.stringify(reports));
 
     alert("تم تحديث الحالة بنجاح ✔");
@@ -63,22 +74,30 @@
 
   // حذف البلاغ
   function deleteReport(){
-    if(!confirm("هل أنتِ متأكدة من حذف البلاغ؟")) return;
+    if(!confirm("هل أنت متأكد من حذف البلاغ؟")) return;
 
     let reports = JSON.parse(localStorage.getItem("reports")) || [];
 
     // حذف البلاغ من القائمة
     reports = reports.filter(r => r.id !== report.id);
 
-    // حفظ القائمة الجديدة
+    // 🔥 إعادة ترتيب القائمة بعد الحذف
+    reports.sort((a, b) => {
+      if (a.sender === "مدرب" && b.sender !== "مدرب") return -1;
+      if (a.sender !== "مدرب" && b.sender === "مدرب") return 1;
+      return b.rate - a.rate;
+    });
+
     localStorage.setItem("reports", JSON.stringify(reports));
 
     alert("تم حذف البلاغ بنجاح ❌");
     window.location.href = "dashboard.html";
   }
+
 </script>
 
 </body>
+
 <footer class="main-footer">
     <div class="footer-content">
         <p>&copy; 2026 حقوق محفوظة | محطة الدعم </p>
@@ -89,5 +108,5 @@
         </ul>
     </div>
 </footer>
-</html>
 
+</html>
