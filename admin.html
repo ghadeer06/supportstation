@@ -115,7 +115,7 @@ function updateCounts(){
 
 function loadReports() {
   let trainerReports = JSON.parse(localStorage.getItem("teacherReport")) || [];
-  let traineeReports = JSON.parse(localStorage.getItem("studentreports")) || [];
+  let traineeReports = JSON.parse(localStorage.getItem("traineeReports")) || [];
 
   const trainerBox = document.getElementById("trainerList");
   const traineeBox = document.getElementById("traineeList");
@@ -208,3 +208,4 @@ loadReports();
 
 </body>
 </html>
+
