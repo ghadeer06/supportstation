@@ -6,7 +6,7 @@
   <link rel="stylesheet" href="adminStyles.css" />
 </head>
 
-<body class="admin-body">
+<body class="admin-body" style="display:flex; flex-direction:column; min-height:100vh;">
 
   <!-- ===== Header ===== -->
   <header class="admin-header">
@@ -22,22 +22,27 @@
   </header>
 
   <!-- ===== Main ===== -->
-  <main class="admin-main">
+  <main class="admin-main" style="flex:1;">
 
     <!-- ===== Stats ===== -->
     <div class="admin-cards">
-      <button class="stat-card stat-click" type="button" data-filter="all" onclick="setFilter('all')">
+      <button class="stat-card stat-click active" type="button" data-filter="all" onclick="setFilter('all')">
         <h3>إجمالي البلاغات</h3>
         <p id="countAll">0</p>
       </button>
 
       <button class="stat-card stat-click" type="button" data-filter="processing" onclick="setFilter('processing')">
-        <h3>قيد المعالجة</h3>
+        <h3>قيد المراجعة</h3>
         <p id="countProcessing">0</p>
       </button>
 
+      <button class="stat-card stat-click" type="button" data-filter="running" onclick="setFilter('running')">
+        <h3>تحت التنفيذ</h3>
+        <p id="countRunning">0</p>
+      </button>
+
       <button class="stat-card stat-click" type="button" data-filter="done" onclick="setFilter('done')">
-        <h3>منتهية</h3>
+        <h3>تم الحل</h3>
         <p id="countDone">0</p>
       </button>
     </div>
@@ -46,173 +51,8 @@
     <section class="reports-section">
       <h2 class="section-title">بلاغات المدربين</h2>
 
-      <!-- بوكس ثابت + سكرول داخلي -->
       <div class="reports-box">
-        <div class="reports-scroll" id="trainerList">
-
-          <!-- 5 بلاغات (مدربين) -->
-          <article class="report-card" data-status="new">
-            <div class="right-tags">
-              <span class="tag id">#2001</span>
-              <span class="tag type">صيانة</span>
-            </div>
-
-            <div class="report-body">
-              <div class="report-meta">
-                <span>من: سارة أحمد</span>
-                <span class="dot">•</span>
-                <span>الموقع: قاعة 3</span>
-                <span class="dot">•</span>
-                <span>تاريخ التقديم: 2026-02-20</span>
-                <span class="dot">•</span>
-                <span>المدة: 4 أيام</span>
-              </div>
-
-              <div class="badges">
-                <span class="badge priority">أولوية</span>
-                <span class="badge sev">أهمية الحالة 10/10</span>
-              </div>
-
-              <div class="report-text">
-                يوجد عطل في أجهزة التكييف داخل القاعة ويؤثر على سير المحاضرة.
-              </div>
-
-              <div class="actions">
-                <button class="btn-process" type="button" onclick="markProcessing(this)">بدء المعالجة</button>
-                <button class="btn-done" type="button" onclick="markDone(this)">تم التنفيذ</button>
-              </div>
-            </div>
-          </article>
-
-          <article class="report-card" data-status="new">
-            <div class="right-tags">
-              <span class="tag id">#2002</span>
-              <span class="tag type">نظافة</span>
-            </div>
-
-            <div class="report-body">
-              <div class="report-meta">
-                <span>من: محمد علي</span>
-                <span class="dot">•</span>
-                <span>الموقع: الممر الرئيسي</span>
-                <span class="dot">•</span>
-                <span>تاريخ التقديم: 2026-02-22</span>
-                <span class="dot">•</span>
-                <span>المدة: يومين</span>
-              </div>
-
-              <div class="badges">
-                <span class="badge priority">أولوية</span>
-                <span class="badge sev">أهمية الحالة 9/10</span>
-              </div>
-
-              <div class="report-text">
-                تراكم نفايات في الممر الرئيسي ويحتاج معالجة عاجلة قبل بداية اليوم الدراسي.
-              </div>
-
-              <div class="actions">
-                <button class="btn-process" type="button" onclick="markProcessing(this)">بدء المعالجة</button>
-                <button class="btn-done" type="button" onclick="markDone(this)">تم التنفيذ</button>
-              </div>
-            </div>
-          </article>
-
-          <article class="report-card" data-status="processing">
-            <div class="right-tags">
-              <span class="tag id">#2003</span>
-              <span class="tag type">نقل</span>
-            </div>
-
-            <div class="report-body">
-              <div class="report-meta">
-                <span>من: نوف العتيبي</span>
-                <span class="dot">•</span>
-                <span>الموقع: بوابة 1</span>
-                <span class="dot">•</span>
-                <span>تاريخ التقديم: 2026-02-23</span>
-                <span class="dot">•</span>
-                <span>المدة: يوم</span>
-              </div>
-
-              <div class="badges">
-                <span class="badge sev">أهمية الحالة 7/10</span>
-              </div>
-
-              <div class="report-text">
-                تأخر مسار النقل الصباحي مما سبب ازدحام عند البوابة.
-              </div>
-
-              <div class="actions">
-                <button class="btn-process" type="button" disabled>قيد المعالجة</button>
-                <button class="btn-done" type="button" onclick="markDone(this)">تم التنفيذ</button>
-              </div>
-            </div>
-          </article>
-
-          <article class="report-card" data-status="done">
-            <div class="right-tags">
-              <span class="tag id">#2004</span>
-              <span class="tag type">أخرى</span>
-            </div>
-
-            <div class="report-body">
-              <div class="report-meta">
-                <span>من: عبدالله السبيعي</span>
-                <span class="dot">•</span>
-                <span>الموقع: مكتب 12</span>
-                <span class="dot">•</span>
-                <span>تاريخ التقديم: 2026-02-21</span>
-                <span class="dot">•</span>
-                <span>المدة: 3 أيام</span>
-              </div>
-
-              <div class="badges">
-                <span class="badge sev">أهمية الحالة 6/10</span>
-              </div>
-
-              <div class="report-text">
-                ملاحظة عامة حول ترتيب المخزن واحتياج تنظيم الأدوات.
-              </div>
-
-              <div class="actions">
-                <button class="btn-done solid" type="button" disabled>تم التنفيذ</button>
-              </div>
-            </div>
-          </article>
-
-          <article class="report-card" data-status="new">
-            <div class="right-tags">
-              <span class="tag id">#2005</span>
-              <span class="tag type">صيانة</span>
-            </div>
-
-            <div class="report-body">
-              <div class="report-meta">
-                <span>من: بدر الدوسري</span>
-                <span class="dot">•</span>
-                <span>الموقع: قاعة 5</span>
-                <span class="dot">•</span>
-                <span>تاريخ التقديم: 2026-02-24</span>
-                <span class="dot">•</span>
-                <span>المدة: يومين</span>
-              </div>
-
-              <div class="badges">
-                <span class="badge sev">أهمية الحالة 8/10</span>
-              </div>
-
-              <div class="report-text">
-                يوجد عطل بسيط في الإضاءة داخل القاعة.
-              </div>
-
-              <div class="actions">
-                <button class="btn-process" type="button" onclick="markProcessing(this)">بدء المعالجة</button>
-                <button class="btn-done" type="button" onclick="markDone(this)">تم التنفيذ</button>
-              </div>
-            </div>
-          </article>
-
-        </div>
+        <div class="reports-scroll" id="trainerList"></div>
       </div>
     </section>
 
@@ -221,246 +61,150 @@
       <h2 class="section-title">بلاغات المتدربين</h2>
 
       <div class="reports-box">
-        <div class="reports-scroll" id="traineeList">
-
-          <!-- 5 بلاغات (متدربين) -->
-          <article class="report-card" data-status="new">
-            <div class="right-tags">
-              <span class="tag id">#1021</span>
-              <span class="tag type">نظافة</span>
-            </div>
-
-            <div class="report-body">
-              <div class="report-meta">
-                <span>من: ريم أحمد</span>
-                <span class="dot">•</span>
-                <span>الموقع: ممر الدور الأول</span>
-                <span class="dot">•</span>
-                <span>تاريخ التقديم: 2026-02-24</span>
-                <span class="dot">•</span>
-                <span>المدة: يوم</span>
-              </div>
-
-              <div class="badges">
-                <span class="badge sev">أهمية الحالة 6/10</span>
-              </div>
-
-              <div class="report-text">
-                يوجد اتساخ في الممر ويحتاج تنظيف.
-              </div>
-
-              <div class="actions">
-                <button class="btn-process" type="button" onclick="markProcessing(this)">بدء المعالجة</button>
-                <button class="btn-done" type="button" onclick="markDone(this)">تم التنفيذ</button>
-              </div>
-            </div>
-          </article>
-
-          <article class="report-card" data-status="processing">
-            <div class="right-tags">
-              <span class="tag id">#1022</span>
-              <span class="tag type">صيانة</span>
-            </div>
-
-            <div class="report-body">
-              <div class="report-meta">
-                <span>من: هيا صالح</span>
-                <span class="dot">•</span>
-                <span>الموقع: معمل 2</span>
-                <span class="dot">•</span>
-                <span>تاريخ التقديم: 2026-02-23</span>
-                <span class="dot">•</span>
-                <span>المدة: يومين</span>
-              </div>
-
-              <div class="badges">
-                <span class="badge sev">أهمية الحالة 7/10</span>
-              </div>
-
-              <div class="report-text">
-                مشكلة في أحد أجهزة المعمل وتحتاج متابعة.
-              </div>
-
-              <div class="actions">
-                <button class="btn-process" type="button" disabled>قيد المعالجة</button>
-                <button class="btn-done" type="button" onclick="markDone(this)">تم التنفيذ</button>
-              </div>
-            </div>
-          </article>
-
-          <article class="report-card" data-status="done">
-            <div class="right-tags">
-              <span class="tag id">#1023</span>
-              <span class="tag type">نقل</span>
-            </div>
-
-            <div class="report-body">
-              <div class="report-meta">
-                <span>من: سارة فهد</span>
-                <span class="dot">•</span>
-                <span>الموقع: ساحة الكلية</span>
-                <span class="dot">•</span>
-                <span>تاريخ التقديم: 2026-02-21</span>
-                <span class="dot">•</span>
-                <span>المدة: 3 أيام</span>
-              </div>
-
-              <div class="badges">
-                <span class="badge sev">أهمية الحالة 5/10</span>
-              </div>
-
-              <div class="report-text">
-                تم حل مشكلة ازدحام النقل.
-              </div>
-
-              <div class="actions">
-                <button class="btn-done solid" type="button" disabled>تم التنفيذ</button>
-              </div>
-            </div>
-          </article>
-
-          <article class="report-card" data-status="new">
-            <div class="right-tags">
-              <span class="tag id">#1024</span>
-              <span class="tag type">أخرى</span>
-            </div>
-
-            <div class="report-body">
-              <div class="report-meta">
-                <span>من: منى خالد</span>
-                <span class="dot">•</span>
-                <span>الموقع: قرب المكتبة</span>
-                <span class="dot">•</span>
-                <span>تاريخ التقديم: 2026-02-24</span>
-                <span class="dot">•</span>
-                <span>المدة: يوم</span>
-              </div>
-
-              <div class="badges">
-                <span class="badge sev">أهمية الحالة 4/10</span>
-              </div>
-
-              <div class="report-text">
-                اقتراح لتحسين ترتيب طاولة الانتظار.
-              </div>
-
-              <div class="actions">
-                <button class="btn-process" type="button" onclick="markProcessing(this)">بدء المعالجة</button>
-                <button class="btn-done" type="button" onclick="markDone(this)">تم التنفيذ</button>
-              </div>
-            </div>
-          </article>
-
-          <article class="report-card" data-status="new">
-            <div class="right-tags">
-              <span class="tag id">#1025</span>
-              <span class="tag type">صيانة</span>
-            </div>
-
-            <div class="report-body">
-              <div class="report-meta">
-                <span>من: دانة عبدالله</span>
-                <span class="dot">•</span>
-                <span>الموقع: قاعة 1</span>
-                <span class="dot">•</span>
-                <span>تاريخ التقديم: 2026-02-22</span>
-                <span class="dot">•</span>
-                <span>المدة: يومين</span>
-              </div>
-
-              <div class="badges">
-                <span class="badge sev">أهمية الحالة 7/10</span>
-              </div>
-
-              <div class="report-text">
-                خلل في  البروجكتر داخل القاعة.
-              </div>
-
-              <div class="actions">
-                <button class="btn-process" type="button" onclick="markProcessing(this)">بدء المعالجة</button>
-                <button class="btn-done" type="button" onclick="markDone(this)">تم التنفيذ</button>
-              </div>
-            </div>
-          </article>
-
-        </div>
+        <div class="reports-scroll" id="traineeList"></div>
       </div>
     </section>
 
   </main>
 
-  <script>
-    let currentFilter = "all";
+<script>
+let currentFilter = "all";
 
-    function setFilter(filter){
-      currentFilter = filter;
+function setFilter(filter){
+  currentFilter = filter;
 
-      document.querySelectorAll(".stat-click").forEach(b=>{
-        b.classList.toggle("active", b.dataset.filter === filter);
-      });
+  document.querySelectorAll(".stat-click").forEach(b=>{
+    b.classList.toggle("active", b.dataset.filter === filter);
+  });
 
-      applyFilter();
+  applyFilter();
+}
+
+function applyFilter(){
+  const cards = document.querySelectorAll(".report-card");
+
+  cards.forEach(card=>{
+    const s = card.dataset.status;
+
+    if(currentFilter === "all"){
+      card.style.display = "";
+    } else {
+      card.style.display = (s === currentFilter) ? "" : "none";
     }
+  });
 
-    function applyFilter(){
-      const cards = document.querySelectorAll(".report-card");
+  updateCounts();
+}
 
-      cards.forEach(card=>{
-        const s = card.dataset.status;
-        if(currentFilter === "all") {
-          card.style.display = "";
-        } else {
-          card.style.display = (s === currentFilter) ? "" : "none";
-        }
-      });
+function updateCounts(){
+  const cards = document.querySelectorAll(".report-card");
+  let total=0, processing=0, running=0, done=0;
 
-      updateCounts();
-    }
+  cards.forEach(card=>{
+    total++;
+    if(card.dataset.status === "processing") processing++;
+    if(card.dataset.status === "running") running++;
+    if(card.dataset.status === "done") done++;
+  });
 
-    function updateCounts(){
-      const cards = document.querySelectorAll(".report-card");
-      let total=0, processing=0, done=0;
+  document.getElementById("countAll").textContent = total;
+  document.getElementById("countProcessing").textContent = processing;
+  document.getElementById("countRunning").textContent = running;
+  document.getElementById("countDone").textContent = done;
+}
 
-      cards.forEach(card=>{
-        total++;
-        if(card.dataset.status === "processing") processing++;
-        if(card.dataset.status === "done") done++;
-      });
+function loadReports() {
+  let trainerReports = JSON.parse(localStorage.getItem("teacherReport")) || [];
+  let traineeReports = JSON.parse(localStorage.getItem("studentreports")) || [];
 
-      document.getElementById("countAll").textContent = total;
-      document.getElementById("countProcessing").textContent = processing;
-      document.getElementById("countDone").textContent = done;
-    }
+  const trainerBox = document.getElementById("trainerList");
+  const traineeBox = document.getElementById("traineeList");
 
-    //  بدء المعالجة: ما يصير "قيد المعالجة" إلا بعد الضغط
-    function markProcessing(btn){
-      const card = btn.closest(".report-card");
-      card.dataset.status = "processing";
+  trainerBox.innerHTML = "";
+  traineeBox.innerHTML = "";
 
-      card.querySelector(".actions").innerHTML = `
-        <button class="btn-process" type="button" disabled>قيد المعالجة</button>
-        <button class="btn-done" type="button" onclick="markDone(this)">تم التنفيذ</button>
-      `;
+  trainerReports.forEach(r => trainerBox.innerHTML += createReportCard(r));
+  traineeReports.forEach(r => traineeBox.innerHTML += createReportCard(r));
 
-      applyFilter();
-    }
+  applyFilter();
+}
 
-    // تم التنفيذ: يطلع زر واحد فقط
-    function markDone(btn){
-      const card = btn.closest(".report-card");
-      card.dataset.status = "done";
+function createReportCard(r){
 
-      card.querySelector(".actions").innerHTML = `
-        <button class="btn-done solid" type="button" disabled>تم التنفيذ</button>
-      `;
+  let transferFields = "";
+  if(r.type === "نقل"){
+    transferFields = `
+      <p><b>من:</b> ${r.from || "-"}</p>
+      <p><b>إلى:</b> ${r.to || "-"}</p>
+    `;
+  }
 
-      applyFilter();
-    }
+  let locationField = "";
+  if(r.type !== "نقل"){
+    locationField = `<p><b>الموقع:</b> ${r.location || "-"}</p>`;
+  }
 
-    updateCounts();
-    setFilter("all");
-  </script>
+  let statusText =
+    r.status === "processing" ? "قيد المراجعة" :
+    r.status === "running" ? "تحت التنفيذ" :
+    r.status === "done" ? "تم التنفيذ" :
+    r.status;
+
+  return `
+    <div class="report-card" data-status="${r.status}">
+      <h3>#${r.id} - ${r.type}</h3>
+
+      <p><b>الوصف:</b> ${r.desc}</p>
+
+      ${locationField}
+      ${transferFields}
+
+      <div class="actions" style="
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        width:100%;
+        margin-top:10px;
+        position:relative;
+      ">
+
+        <div style="width:80px;"></div>
+
+        <span class="status-tag" style="
+          position:absolute;
+          left:60%;
+          transform:translateX(-50%);
+        ">
+          ${statusText}
+        </span>
+
+        <button class="btn-process" type="button" onclick="openReport('${r.id}')">
+          عرض البلاغ
+        </button>
+
+      </div>
+    </div>
+  `;
+}
+
+function openReport(id){
+  localStorage.setItem("adminSelectedReport", id);
+  window.location.href = "admin_report.html";
+}
+
+loadReports();
+</script>
+
+<footer class="main-footer">
+  <div class="footer-content">
+      <p>&copy; 2026 حقوق محفوظة | محطة الدعم</p>
+      <ul class="footer-links">
+          <li><a href="index.html">الرئيسية</a></li>
+          <li><a href="#">عن الموقع</a></li>
+          <li><a href="mailto:example@example.com">اتصل بنا</a></li>
+      </ul>
+  </div>
+</footer>
 
 </body>
-
 </html>
