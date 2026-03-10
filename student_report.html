@@ -10,52 +10,52 @@
 
 <div class="header">تفاصيل البلاغ</div>
 
-<div class="container">
+<div class="container" style="margin-top:200px;">
   <div class="card">
     <div id="details"></div>
 
     <button class="light" onclick="deleteReport()" style="background:#ffdddd; color:#b30000;">حذف البلاغ</button>
     <button class="light" onclick="window.location.href='student_main_page.html'">رجوع</button>
-  </div>
+  </div> 
 </div>
 
 <script>
   // قراءة البلاغ المختار
-  let report = JSON.parse(localStorage.getItem("selectedReport"));
+  // قراءة البلاغ المختار
+let report = JSON.parse(localStorage.getItem("selectedTraineeReport"));
 
-  const details = document.getElementById("details");
+const details = document.getElementById("details");
 
-  if(!report){
-    details.innerHTML = "<p>❌ لم يتم اختيار بلاغ.</p>";
-  } else {
-    details.innerHTML = `
-      <p><b>رقم البلاغ:</b> #${report.id}</p>
-      <p><b>النوع:</b> ${report.type}</p>
-      <p><b>الموقع:</b> ${report.type === "نقل" ? "-" : report.location}</p>
-      <p><b>من:</b> ${report.from || "-"}</p>
-      <p><b>إلى:</b> ${report.to || "-"}</p>
-      <p><b>الوصف:</b> ${report.desc}</p>
-      <p><b>الحالة:</b> ${report.status}</p>
-    `;
-  }
+if(!report){
+  details.innerHTML = "<p>❌ لم يتم اختيار بلاغ.</p>";
+} else {
+  details.innerHTML = `
+    <p><b>رقم البلاغ:</b> #${report.id}</p>
+    <p><b>النوع:</b> ${report.type}</p>
+    <p><b>الموقع:</b> ${report.type === "نقل" ? "-" : report.location}</p>
+    <p><b>من:</b> ${report.from || "-"}</p>
+    <p><b>إلى:</b> ${report.to || "-"}</p>
+    <p><b>الوصف:</b> ${report.desc}</p>
+    <p><b>الحالة:</b> ${report.status}</p>
+  `;
+}
 
-  // دالة حذف البلاغ
-  function deleteReport(){
-    if(!confirm("هل أنتِ متأكدة من حذف البلاغ؟")) return;
+// دالة حذف البلاغ
+function deleteReport(){
+  if(!confirm("هل أنتِ متأكدة من حذف البلاغ؟")) return;
 
-    let reports = JSON.parse(localStorage.getItem("reports")) || [];
+  let reports = JSON.parse(localStorage.getItem("traineeReports")) || [];
 
-    // حذف البلاغ من القائمة
-    reports = reports.filter(r => r.id !== report.id);
+  // حذف البلاغ من القائمة
+  reports = reports.filter(r => r.id !== report.id);
 
-    // حفظ القائمة الجديدة
-    localStorage.setItem("reports", JSON.stringify(reports));
+  // حفظ القائمة الجديدة
+  localStorage.setItem("traineeReports", JSON.stringify(reports));
 
-    alert("تم حذف البلاغ بنجاح");
+  alert("تم حذف البلاغ بنجاح");
 
-    // الرجوع للصفحة السابقة
-    window.location.href = "student_main_page.html";
-  }
+  window.location.href = "student_main_page.html";
+}
 </script>
 
 </body>
@@ -69,5 +69,4 @@
         </ul>
     </div>
 </footer>
-
 </html>
