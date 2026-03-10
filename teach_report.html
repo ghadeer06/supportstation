@@ -6,11 +6,12 @@
   <title>تفاصيل البلاغ</title>
   <link rel="stylesheet" href="style_report.css">
 </head>
+
 <body>
 
 <div class="header">تفاصيل البلاغ</div>
 
-<div class="container">
+<div class="container" style="margin-top:200px;">
   <div class="card">
     <div id="details"></div>
 
@@ -20,36 +21,36 @@
 </div>
 
 <script>
-  // قراءة البلاغ المختار
-  let report = JSON.parse(localStorage.getItem("selectedReport"));
+  // قراءة البلاغ المختار الصحيح
+  let report = JSON.parse(localStorage.getItem("selectedTeacherReport"));
 
   const details = document.getElementById("details");
 
-  if(!report){
+  if (!report) {
     details.innerHTML = "<p>❌ لم يتم اختيار بلاغ.</p>";
   } else {
     details.innerHTML = `
       <p><b>رقم البلاغ:</b> #${report.id}</p>
       <p><b>النوع:</b> ${report.type}</p>
-      <p><b>الموقع:</b> ${report.type === "نقل" ? "-" : report.location}</p>
+      <p><b>الموقع:</b> ${report.type === "نقل" ? "-" : (report.location || "-")}</p>
       <p><b>من:</b> ${report.from || "-"}</p>
       <p><b>إلى:</b> ${report.to || "-"}</p>
-      <p><b>الوصف:</b> ${report.desc}</p>
-      <p><b>الحالة:</b> ${report.status}</p>
+      <p><b>الوصف:</b> ${report.desc || "-"}</p>
+      <p><b>الحالة:</b> ${report.status || "-"}</p>
     `;
   }
 
   // دالة حذف البلاغ
-  function deleteReport(){
-    if(!confirm("هل أنتِ متأكدة من حذف البلاغ؟")) return;
+  function deleteReport() {
+    if (!confirm("هل أنتِ متأكدة من حذف البلاغ؟")) return;
 
-    let reports = JSON.parse(localStorage.getItem("reports")) || [];
+    let reports = JSON.parse(localStorage.getItem("teacherReport")) || [];
 
     // حذف البلاغ من القائمة
     reports = reports.filter(r => r.id !== report.id);
 
     // حفظ القائمة الجديدة
-    localStorage.setItem("reports", JSON.stringify(reports));
+    localStorage.setItem("teacherReport", JSON.stringify(reports));
 
     alert("تم حذف البلاغ بنجاح");
 
@@ -58,15 +59,16 @@
   }
 </script>
 
-</body>
 <footer class="main-footer">
-    <div class="footer-content">
-        <p>&copy; 2026 حقوق محفوظة | محطة الدعم </p>
-        <ul class="footer-links">
-            <li><a href="index.html">الرئيسية</a></li>
-            <li><a href="#">عن الموقع</a></li>
-            <li>@example اتصل بنا</a></li>
-        </ul>
-    </div>
+  <div class="footer-content">
+      <p>&copy; 2026 حقوق محفوظة | محطة الدعم</p>
+      <ul class="footer-links">
+          <li><a href="index.html">الرئيسية</a></li>
+          <li><a href="#">عن الموقع</a></li>
+          <li><a href="mailto:example@example.com">اتصل بنا</a></li>
+      </ul>
+  </div>
 </footer>
+
+</body>
 </html>
