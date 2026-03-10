@@ -1,80 +1,121 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>بلاغات سابقة</title>
-  <link rel="stylesheet" href="style_report.css">
+  <title>بلاغات المتدرب</title>
+  <link rel="stylesheet" href="adminStyles.css">
 </head>
-<body>
 
-<div class="header">بلاغات سابقة</div>
+<body class="admin-body" style="display:flex; flex-direction:column; min-height:100vh;">
 
-<div class="container">
-
-  <button class="add-btn" onclick="window.location.href='add_stu_report.html'">➕ إضافة بلاغ جديد</button>
-
-  <div class="card">
-    <h3>البلاغات التي قمت بإرسالها مسبقًا</h3>
-
-    <table>
-      <thead>
-        <tr>
-          <th>رقم</th>
-          <th>النوع</th>
-          <th>الموقع</th>
-          <th>الحالة</th>
-          <th>تفاصيل</th>
-        </tr>
-      </thead>
-      <tbody id="rows"></tbody>
-    </table>
+<!-- ===== Header ===== -->
+<header class="admin-header">
+  <div class="admin-left">
+    <img src="img/logo.png" class="admin-logo" alt="Logo">
+    <div class="admin-title">
+      <h1>بلاغات المتدرب</h1>
+      <span>محطة الدعم</span>
+    </div>
   </div>
-</div>
+
+  <a href="index.html" class="logout">تسجيل الخروج</a>
+</header>
+
+<!-- ===== Main ===== -->
+<main class="admin-main" style="flex:1; padding-top:50px;">
+
+  <!-- زر إضافة بلاغ بالنص -->
+  <div class="add-report-box" style="margin-right:0px;">
+    <button class="stat-card" onclick="window.location.href='add_stu_report.html'">
+      <h2>➕ إضافة بلاغ جديد</h2>
+    </button>
+  </div>
+
+  <!-- كروت البلاغات -->
+  <section class="reports-section" style="max-width:900px; margin:auto; margin-top:100px;">
+    <h2 class="section-title" style="text-align:center;">بلاغاتك السابقة</h2>
+
+    <div class="reports-box">
+      <div class="reports-scroll" id="reportCards"></div>
+    </div>
+  </section>
+
+</main>
 
 <script>
+const container = document.getElementById("reportCards");
 
-  const tbody = document.getElementById("rows");
+// قراءة البلاغات
+let reports = JSON.parse(localStorage.getItem("traineeReports")) || [];
 
-  // قراءة البلاغات من localStorage
-  let reports = JSON.parse(localStorage.getItem("reports")) || [];
+// لو ما فيه بلاغات
+if (reports.length === 0) {
+  container.innerHTML = `
+    <div class="report-card" style="
+      background:#fff;
+      padding:20px;
+      border-radius:12px;
+      text-align:center;
+      box-shadow:0 4px 12px rgba(0,0,0,.08);
+    ">
+      لا توجد بلاغات حتى الآن
+    </div>`;
+}
 
-  // لو ما فيه بلاغات
-  if(reports.length === 0){
-    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">لا توجد بلاغات حتى الآن</td></tr>`;
+// عرض البلاغات ككروت
+reports.forEach(r => {
+
+  let statusText =
+    r.status === "processing" ? "قيد المراجعة" :
+    r.status === "running" ? "تحت التنفيذ" :
+    r.status === "done" ? "تم الحل" :
+    r.status || "غير محدد";
+
+  let card = `
+    <div class="report-card" style="
+      background:#fff;
+      padding:18px;
+      border-radius:12px;
+      box-shadow:0 4px 12px rgba(0,0,0,.08);
+      margin-bottom:15px;
+    ">
+      <h3>#${r.id} - ${r.type}</h3>
+
+      <p><b>الوصف:</b> ${r.desc}</p>
+      <p><b>الموقع:</b> ${r.type === "نقل" ? "-" : (r.location || "-")}</p>
+      <p><b>الحالة:</b> ${statusText}</p>
+
+      <button class="btn-process" onclick="openReport(${r.id})">عرض البلاغ</button>
+    </div>
+  `;
+
+  container.innerHTML += card;
+});
+
+function openReport(id) {
+  const selected = reports.find(x => x.id === id);
+
+  if (!selected) {
+    alert("حدث خطأ: البلاغ غير موجود");
+    return;
   }
 
-  // عرض البلاغات
-  reports.forEach(r=>{
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td>#${r.id}</td>
-      <td>${r.type}</td>
-      <td>${r.type === "نقل" ? "-" : r.location}</td>
-      <td>${r.status}</td>
-      <td><button class="light" onclick="openReport(${r.id})">عرض</button></td>
-    `;
-    tbody.appendChild(tr);
-  });
-
-  function openReport(id){
-    const selected = reports.find(x => x.id === id);
-    localStorage.setItem("selectedReport", JSON.stringify(selected));
-    window.location.href = "student_report.html"; 
-  }
-
+  localStorage.setItem("selectedTraineeReport", JSON.stringify(selected));
+  window.location.href = "student_report.html";
+}
 </script>
 
-</body>
 <footer class="main-footer">
-    <div class="footer-content">
-        <p>&copy; 2026 حقوق محفوظة | محطة الدعم </p>
-        <ul class="footer-links">
-            <li><a href="index.html">الرئيسية</a></li>
-            <li><a href="#">عن الموقع</a></li>
-            <li>@example اتصل بنا</a></li>
-        </ul>
-    </div>
+  <div class="footer-content">
+      <p>&copy; 2026 حقوق محفوظة | محطة الدعم</p>
+      <ul class="footer-links">
+          <li><a href="index.html">الرئيسية</a></li>
+          <li><a href="#">عن الموقع</a></li>
+          <li><a href="mailto:example@example.com">اتصل بنا</a></li>
+      </ul>
+  </div>
 </footer>
 
+</body>
 </html>
