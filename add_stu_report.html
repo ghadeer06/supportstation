@@ -10,7 +10,7 @@
 
 <div class="header">إنشاء بلاغ جديد</div>
 
-<div class="container">
+<div class="container" style="margin-top:200px;">
   <div class="card">
 
     <label>نوع البلاغ</label>
@@ -102,6 +102,7 @@ function saveReport(){
 
   let from = "";
   let to = "";
+  
 
   // التحقق من الحقول
   if(type === "نقل"){
@@ -125,7 +126,7 @@ function saveReport(){
   }
 
   // قراءة البلاغات
-  let reports = JSON.parse(localStorage.getItem("reports")) || [];
+  let reports = JSON.parse(localStorage.getItem("traineeReports")) || [];
 
   // إنشاء البلاغ الجديد
   const newReport = {
@@ -143,7 +144,7 @@ function saveReport(){
   reports.push(newReport);
 
   // حفظه
-  localStorage.setItem("reports", JSON.stringify(reports));
+  localStorage.setItem("traineeReports", JSON.stringify(reports));
 
   alert("تم إرسال البلاغ بنجاح ✔");
   window.location.href = "student_main_page.html";
