@@ -49,7 +49,7 @@
 let selectedId = localStorage.getItem("adminSelectedReport");
 
 let trainerReports = JSON.parse(localStorage.getItem("teacherReport")) || [];
-let traineeReports = JSON.parse(localStorage.getItem("studentreports")) || [];
+let traineeReports = JSON.parse(localStorage.getItem("traineeReports")) || [];
 
 let all = [...trainerReports, ...traineeReports];
 let report = all.find(r => r.id == selectedId);
@@ -139,4 +139,5 @@ function saveStatus(){
 </body>
 
 </html>
+
 
