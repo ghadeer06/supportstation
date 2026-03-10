@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>عرض البلاغ</title>
+  <link rel="stylesheet" href="style_report.css">
+</head>
+
+<body>
+
+<div class="header">عرض البلاغ</div>
+
+<div class="container" style="margin-top:200px;">
+  <div class="card" id="reportCard">
+
+    <h3 id="r_id"></h3>
+
+    <p><b>نوع البلاغ:</b> <span id="r_type"></span></p>
+    <p><b>الوصف:</b> <span id="r_desc"></span></p>
+    <p><b>الموقع:</b> <span id="r_location"></span></p>
+    <p><b>من:</b> <span id="r_from"></span></p>
+    <p><b>إلى:</b> <span id="r_to"></span></p>
+    <p><b>شدة البلاغ:</b> <span id="r_rate"></span></p>
+
+    <br>
+
+    <label><b>الحالة الحالية:</b></label>
+    <div class="custom-select" onclick="toggleDropdownStatus()">
+      <div id="selectedStatus">قيد المراجعة</div>
+      <ul id="statusOptions" class="options">
+        <li onclick="selectStatus('قيد المراجعة', event)">قيد المراجعة</li>
+        <li onclick="selectStatus('قيد التنفيذ', event)">قيد التنفيذ</li>
+        <li onclick="selectStatus('تم الحل', event)">تم الحل</li>
+      </ul>
+    </div>
+<br>
+    <input type="hidden" id="statusValue">
+
+    <button class="primary" onclick="saveStatus()">حفظ الحالة</button>
+	<br>
+    <button class="light" onclick="window.location.href='admin.html'">رجوع</button>
+
+  </div>
+</div>
+
+<script>
+// تحميل البلاغ
+let selectedId = localStorage.getItem("adminSelectedReport");
+
+let trainerReports = JSON.parse(localStorage.getItem("teacherReport")) || [];
+let traineeReports = JSON.parse(localStorage.getItem("studentreports")) || [];
+
+let all = [...trainerReports, ...traineeReports];
+let report = all.find(r => r.id == selectedId);
+
+if(report){
+  document.getElementById("r_id").innerText = "بلاغ #" + report.id;
+  document.getElementById("r_type").innerText = report.type;
+  document.getElementById("r_desc").innerText = report.desc;
+  document.getElementById("r_location").innerText = report.location || "-";
+  document.getElementById("r_from").innerText = report.from || "-";
+  document.getElementById("r_to").innerText = report.to || "-";
+  document.getElementById("r_rate").innerText = report.rate;
+
+  document.getElementById("selectedStatus").innerText = report.status;
+  document.getElementById("statusValue").value = report.status;
+}
+// إخفاء الموقع إذا كان البلاغ نقل
+if(report.type === "نقل"){
+  const locationRow = document.getElementById("r_location").parentElement;
+  locationRow.style.display = "none";
+}
+// القائمة المنسدلة
+function toggleDropdownStatus() {
+  const list = document.getElementById("statusOptions");
+  list.style.display = list.style.display === "block" ? "none" : "block";
+}
+
+function selectStatus(value, event) {
+  event.stopPropagation();
+  document.getElementById("selectedStatus").innerText = value;
+  document.getElementById("statusValue").value = value;
+  document.getElementById("statusOptions").style.display = "none";
+}
+
+document.addEventListener("click", function(e){
+  const list = document.getElementById("statusOptions");
+  const select = document.querySelector(".custom-select");
+  if(select && !select.contains(e.target)){
+    list.style.display = "none";
+  }
+});
+
+// حفظ الحالة
+function saveStatus(){
+  let newStatus = document.getElementById("statusValue").value;
+
+  // تحديث teacherReport
+  trainerReports = trainerReports.map(r => {
+    if(r.id == selectedId){
+      r.status =
+        newStatus === "قيد المراجعة" ? "processing" :
+        newStatus === "قيد التنفيذ" ? "running" :
+        "done";
+    }
+    return r;
+  });
+  localStorage.setItem("teacherReport", JSON.stringify(trainerReports));
+
+  // تحديث studentreports
+  traineeReports = traineeReports.map(r => {
+    if(r.id == selectedId){
+      r.status =
+        newStatus === "قيد المراجعة" ? "processing" :
+        newStatus === "قيد التنفيذ" ? "running" :
+        "done";
+    }
+    return r;
+  });
+  localStorage.setItem("studentreports", JSON.stringify(traineeReports));
+
+  alert("تم تحديث حالة البلاغ");
+  window.location.href = "admin.html";
+}
+</script>
+
+<footer class="main-footer">
+  <div class="footer-content">
+      <p>&copy; 2026 حقوق محفوظة | محطة الدعم</p>
+      <ul class="footer-links">
+          <li><a href="index.html">الرئيسية</a></li>
+          <li><a href="#">عن الموقع</a></li>
+          <li><a href="mailto:example@example.com">اتصل بنا</a></li>
+      </ul>
+  </div>
+</footer>
+
+</body>
+</html>
