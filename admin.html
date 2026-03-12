@@ -8,75 +8,63 @@
 
 <body class="admin-body" style="display:flex; flex-direction:column; min-height:100vh;">
 
-  <!-- ===== Header ===== -->
-  <header class="admin-header">
-    <div class="admin-left">
-      <img src="img/logo.png" class="admin-logo" alt="Logo">
-      <div class="admin-title">
-        <h1>لوحة تحكم المسؤول</h1>
-        <span>محطة الدعم</span>
-      </div>
+<header class="admin-header">
+  <div class="admin-left">
+    <img src="img/logo.png" class="admin-logo" alt="Logo">
+    <div class="admin-title">
+      <h1>لوحة تحكم المسؤول</h1>
+      <span>محطة الدعم</span>
     </div>
+  </div>
+  <a href="index.html" class="logout">تسجيل الخروج</a>
+</header>
 
-    <a href="index.html" class="logout">تسجيل الخروج</a>
-  </header>
+<main class="admin-main" style="flex:1;">
 
-  <!-- ===== Main ===== -->
-  <main class="admin-main" style="flex:1;">
+  <!-- ===== Stats ===== -->
+  <div class="admin-cards" style="margin-top:100px;">
+    <button class="stat-card stat-click active" data-filter="all" onclick="setFilter('all')">
+      <h3>إجمالي البلاغات</h3>
+      <p id="countAll">0</p>
+    </button>
 
-    <!-- ===== Stats ===== -->
-    <div class="admin-cards">
-      <button class="stat-card stat-click active" type="button" data-filter="all" onclick="setFilter('all')">
-        <h3>إجمالي البلاغات</h3>
-        <p id="countAll">0</p>
-      </button>
+    <button class="stat-card stat-click" data-filter="processing" onclick="setFilter('processing')">
+      <h3>قيد التنفيذ</h3>
+      <p id="countProcessing">0</p>
+    </button>
 
-      <button class="stat-card stat-click" type="button" data-filter="processing" onclick="setFilter('processing')">
-        <h3>قيد المراجعة</h3>
-        <p id="countProcessing">0</p>
-      </button>
+    <button class="stat-card stat-click" data-filter="done" onclick="setFilter('done')">
+      <h3>تم الحل</h3>
+      <p id="countDone">0</p>
+    </button>
+  </div>
 
-      <button class="stat-card stat-click" type="button" data-filter="running" onclick="setFilter('running')">
-        <h3>تحت التنفيذ</h3>
-        <p id="countRunning">0</p>
-      </button>
-
-      <button class="stat-card stat-click" type="button" data-filter="done" onclick="setFilter('done')">
-        <h3>تم الحل</h3>
-        <p id="countDone">0</p>
-      </button>
+  <!-- Trainers -->
+  <section class="reports-section">
+    <h2 class="section-title">بلاغات المدربين</h2>
+    <div class="reports-box">
+      <div class="reports-scroll" id="trainerList"></div>
     </div>
+  </section>
 
-    <!-- ===== Trainers ===== -->
-    <section class="reports-section">
-      <h2 class="section-title">بلاغات المدربين</h2>
+  <!-- Trainees -->
+  <section class="reports-section">
+    <h2 class="section-title">بلاغات المتدربين</h2>
+    <div class="reports-box">
+      <div class="reports-scroll" id="traineeList"></div>
+    </div>
+  </section>
 
-      <div class="reports-box">
-        <div class="reports-scroll" id="trainerList"></div>
-      </div>
-    </section>
-
-    <!-- ===== Trainees ===== -->
-    <section class="reports-section">
-      <h2 class="section-title">بلاغات المتدربين</h2>
-
-      <div class="reports-box">
-        <div class="reports-scroll" id="traineeList"></div>
-      </div>
-    </section>
-
-  </main>
+</main>
 
 <script>
 let currentFilter = "all";
 
 function setFilter(filter){
   currentFilter = filter;
-
   document.querySelectorAll(".stat-click").forEach(b=>{
     b.classList.toggle("active", b.dataset.filter === filter);
   });
-
   applyFilter();
 }
 
@@ -87,9 +75,13 @@ function applyFilter(){
     const s = card.dataset.status;
 
     if(currentFilter === "all"){
-      card.style.display = "";
-    } else {
-      card.style.display = (s === currentFilter) ? "" : "none";
+      card.style.display = (s !== "done") ? "" : "none";
+    }
+    else if(currentFilter === "processing"){
+      card.style.display = (s === "processing" || s === "running") ? "" : "none";
+    }
+    else if(currentFilter === "done"){
+      card.style.display = (s === "done") ? "" : "none";
     }
   });
 
@@ -98,22 +90,37 @@ function applyFilter(){
 
 function updateCounts(){
   const cards = document.querySelectorAll(".report-card");
-  let total=0, processing=0, running=0, done=0;
+  let total=0, processing=0, done=0;
 
   cards.forEach(card=>{
-    total++;
-    if(card.dataset.status === "processing") processing++;
-    if(card.dataset.status === "running") running++;
-    if(card.dataset.status === "done") done++;
+    const status = card.dataset.status;
+
+    if(status !== "done") total++;  
+    if(status === "processing" || status === "running") processing++;
+    if(status === "done") done++;
   });
 
   document.getElementById("countAll").textContent = total;
   document.getElementById("countProcessing").textContent = processing;
-  document.getElementById("countRunning").textContent = running;
   document.getElementById("countDone").textContent = done;
 }
 
+function deleteOldReports() {
+  const now = Date.now();
+  const fiveMinutes = 5 * 60 * 1000;
+
+  let trainer = JSON.parse(localStorage.getItem("teacherReport")) || [];
+  trainer = trainer.filter(r => !(r.status === "done" && r.solvedAt && (now - r.solvedAt) >= fiveMinutes));
+  localStorage.setItem("teacherReport", JSON.stringify(trainer));
+
+  let trainee = JSON.parse(localStorage.getItem("traineeReports")) || [];
+  trainee = trainee.filter(r => !(r.status === "done" && r.solvedAt && (now - r.solvedAt) >= fiveMinutes));
+  localStorage.setItem("traineeReports", JSON.stringify(trainee));
+}
+
 function loadReports() {
+  deleteOldReports();
+
   let trainerReports = JSON.parse(localStorage.getItem("teacherReport")) || [];
   let traineeReports = JSON.parse(localStorage.getItem("traineeReports")) || [];
 
@@ -123,66 +130,36 @@ function loadReports() {
   trainerBox.innerHTML = "";
   traineeBox.innerHTML = "";
 
-  trainerReports.forEach(r => trainerBox.innerHTML += createReportCard(r));
-  traineeReports.forEach(r => traineeBox.innerHTML += createReportCard(r));
+  if (trainerReports.length === 0) {
+    trainerBox.innerHTML = `<p style="text-align:center; padding:20px; color:#777;">لا توجد بلاغات</p>`;
+  } else {
+    trainerReports.forEach(r => trainerBox.innerHTML += createReportCard(r));
+  }
+
+  if (traineeReports.length === 0) {
+    traineeBox.innerHTML = `<p style="text-align:center; padding:20px; color:#777;">لا توجد بلاغات</p>`;
+  } else {
+    traineeReports.forEach(r => traineeBox.innerHTML += createReportCard(r));
+  }
 
   applyFilter();
 }
 
 function createReportCard(r){
-
-  let transferFields = "";
-  if(r.type === "نقل"){
-    transferFields = `
-      <p><b>من:</b> ${r.from || "-"}</p>
-      <p><b>إلى:</b> ${r.to || "-"}</p>
-    `;
-  }
-
-  let locationField = "";
-  if(r.type !== "نقل"){
-    locationField = `<p><b>الموقع:</b> ${r.location || "-"}</p>`;
-  }
-
   let statusText =
     r.status === "processing" ? "قيد المراجعة" :
-    r.status === "running" ? "تحت التنفيذ" :
-    r.status === "done" ? "تم التنفيذ" :
-    r.status;
+    r.status === "running" ? "قيد التنفيذ" :
+    "تم الحل";
 
   return `
     <div class="report-card" data-status="${r.status}">
       <h3>#${r.id} - ${r.type}</h3>
-
       <p><b>الوصف:</b> ${r.desc}</p>
+      <p><b>الموقع:</b> ${r.location || "-"}</p>
 
-      ${locationField}
-      ${transferFields}
+      <span class="status-tag">${statusText}</span>
 
-      <div class="actions" style="
-        display:flex;
-        justify-content:space-between;
-        align-items:center;
-        width:100%;
-        margin-top:10px;
-        position:relative;
-      ">
-
-        <div style="width:80px;"></div>
-
-        <span class="status-tag" style="
-          position:absolute;
-          left:60%;
-          transform:translateX(-50%);
-        ">
-          ${statusText}
-        </span>
-
-        <button class="btn-process" type="button" onclick="openReport('${r.id}')">
-          عرض البلاغ
-        </button>
-
-      </div>
+      <button class="btn-process" onclick="openReport('${r.id}')">عرض البلاغ</button>
     </div>
   `;
 }
@@ -198,14 +175,8 @@ loadReports();
 <footer class="main-footer">
   <div class="footer-content">
       <p>&copy; 2026 حقوق محفوظة | محطة الدعم</p>
-      <ul class="footer-links">
-          <li><a href="index.html">الرئيسية</a></li>
-          <li><a href="#">عن الموقع</a></li>
-          <li><a href="mailto:example@example.com">اتصل بنا</a></li>
-      </ul>
   </div>
 </footer>
 
 </body>
 </html>
-
