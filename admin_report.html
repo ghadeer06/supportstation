@@ -34,22 +34,29 @@
         <li onclick="selectStatus('تم الحل', event)">تم الحل</li>
       </ul>
     </div>
-<br>
+
+    <br>
+
     <input type="hidden" id="statusValue">
 
     <button class="primary" onclick="saveStatus()">حفظ الحالة</button>
-	<br>
-    <button class="light" onclick="window.location.href='admin.html'">رجوع</button>
+
+    <div style="display:flex; justify-content:space-between; margin-top:20px;">
+      <button class="light" onclick="window.location.href='admin.html'">رجوع</button>
+
+      <button class="danger" onclick="deleteReport()" style="background:#d9534f; color:white;">
+        حذف البلاغ
+      </button>
+    </div>
 
   </div>
 </div>
 
 <script>
-// تحميل البلاغ
 let selectedId = localStorage.getItem("adminSelectedReport");
 
 let trainerReports = JSON.parse(localStorage.getItem("teacherReport")) || [];
-let traineeReports = JSON.parse(localStorage.getItem("studentreports")) || [];
+let traineeReports = JSON.parse(localStorage.getItem("traineeReports")) || [];
 
 let all = [...trainerReports, ...traineeReports];
 let report = all.find(r => r.id == selectedId);
@@ -63,15 +70,14 @@ if(report){
   document.getElementById("r_to").innerText = report.to || "-";
   document.getElementById("r_rate").innerText = report.rate;
 
-  document.getElementById("selectedStatus").innerText = report.status;
+  document.getElementById("selectedStatus").innerText =
+    report.status === "processing" ? "قيد المراجعة" :
+    report.status === "running" ? "قيد التنفيذ" :
+    "تم الحل";
+
   document.getElementById("statusValue").value = report.status;
 }
-// إخفاء الموقع إذا كان البلاغ نقل
-if(report.type === "نقل"){
-  const locationRow = document.getElementById("r_location").parentElement;
-  locationRow.style.display = "none";
-}
-// القائمة المنسدلة
+
 function toggleDropdownStatus() {
   const list = document.getElementById("statusOptions");
   list.style.display = list.style.display === "block" ? "none" : "block";
@@ -80,7 +86,12 @@ function toggleDropdownStatus() {
 function selectStatus(value, event) {
   event.stopPropagation();
   document.getElementById("selectedStatus").innerText = value;
-  document.getElementById("statusValue").value = value;
+
+  document.getElementById("statusValue").value =
+    value === "قيد المراجعة" ? "processing" :
+    value === "قيد التنفيذ" ? "running" :
+    "done";
+
   document.getElementById("statusOptions").style.display = "none";
 }
 
@@ -92,53 +103,46 @@ document.addEventListener("click", function(e){
   }
 });
 
-// حفظ الحالة
 function saveStatus(){
   let newStatus = document.getElementById("statusValue").value;
 
-  // تحديث teacherReport
   trainerReports = trainerReports.map(r => {
     if(r.id == selectedId){
-      r.status =
-        newStatus === "قيد المراجعة" ? "processing" :
-        newStatus === "قيد التنفيذ" ? "running" :
-        "done";
+      r.status = newStatus;
+      if(newStatus === "done") r.solvedAt = Date.now();
     }
     return r;
   });
   localStorage.setItem("teacherReport", JSON.stringify(trainerReports));
 
-  // تحديث studentreports
   traineeReports = traineeReports.map(r => {
     if(r.id == selectedId){
-      r.status =
-        newStatus === "قيد المراجعة" ? "processing" :
-        newStatus === "قيد التنفيذ" ? "running" :
-        "done";
+      r.status = newStatus;
+      if(newStatus === "done") r.solvedAt = Date.now();
     }
     return r;
   });
-  localStorage.setItem("studentreports", JSON.stringify(traineeReports));
+  localStorage.setItem("traineeReports", JSON.stringify(traineeReports));
+
+  localStorage.setItem("adminFilter", "processing");
 
   alert("تم تحديث حالة البلاغ");
   window.location.href = "admin.html";
 }
+
+function deleteReport() {
+  if(!confirm("هل أنت متأكد؟")) return;
+
+  trainerReports = trainerReports.filter(r => r.id != selectedId);
+  localStorage.setItem("teacherReport", JSON.stringify(trainerReports));
+
+  traineeReports = traineeReports.filter(r => r.id != selectedId);
+  localStorage.setItem("traineeReports", JSON.stringify(traineeReports));
+
+  alert("تم حذف البلاغ");
+  window.location.href = "admin.html";
+}
 </script>
 
-<footer class="main-footer">
-  <div class="footer-content">
-      <p>&copy; 2026 حقوق محفوظة | محطة الدعم</p>
-      <ul class="footer-links">
-          <li><a href="index.html">الرئيسية</a></li>
-          <li><a href="#">عن الموقع</a></li>
-          <li><a href="mailto:example@example.com">اتصل بنا</a></li>
-      </ul>
-  </div>
-</footer>
-
 </body>
-
 </html>
-
-
-
