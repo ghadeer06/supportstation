@@ -75,10 +75,10 @@ function applyFilter(){
     const s = card.dataset.status;
 
     if(currentFilter === "all"){
-      card.style.display = (s !== "done") ? "" : "none";
+      card.style.display = (s === "processing") ? "" : "none";
     }
     else if(currentFilter === "processing"){
-      card.style.display = (s === "processing" || s === "running") ? "" : "none";
+      card.style.display = (s === "running") ? "" : "none";
     }
     else if(currentFilter === "done"){
       card.style.display = (s === "done") ? "" : "none";
@@ -95,8 +95,13 @@ function updateCounts(){
   cards.forEach(card=>{
     const status = card.dataset.status;
 
-    if(status !== "done") total++;  
-    if(status === "processing" || status === "running") processing++;
+    // إجمالي البلاغات = قيد المراجعة فقط
+    if(status === "processing") total++;
+
+    // قيد التنفيذ = running فقط
+    if(status === "running") processing++;
+
+    // تم الحل
     if(status === "done") done++;
   });
 
@@ -119,11 +124,35 @@ function deleteOldReports() {
 }
 
 function loadReports() {
+
+  // 1) نقل البلاغات القديمة
+  let old = JSON.parse(localStorage.getItem("studentreports"));
+  if(old){
+    localStorage.setItem("traineeReports", JSON.stringify(old));
+    localStorage.removeItem("studentreports");
+  }
+
   deleteOldReports();
 
+  // 2) تحميل البلاغات
   let trainerReports = JSON.parse(localStorage.getItem("teacherReport")) || [];
   let traineeReports = JSON.parse(localStorage.getItem("traineeReports")) || [];
 
+  // 3) تحويل الحالات القديمة
+  function normalizeStatus(r){
+    if(r.status === "قيد المراجعة") r.status = "processing";
+    if(r.status === "قيد التنفيذ") r.status = "running";
+    if(r.status === "تم الحل") r.status = "done";
+    return r;
+  }
+
+  trainerReports = trainerReports.map(normalizeStatus);
+  traineeReports = traineeReports.map(normalizeStatus);
+
+  localStorage.setItem("teacherReport", JSON.stringify(trainerReports));
+  localStorage.setItem("traineeReports", JSON.stringify(traineeReports));
+
+  // 4) عرض البلاغات
   const trainerBox = document.getElementById("trainerList");
   const traineeBox = document.getElementById("traineeList");
 
