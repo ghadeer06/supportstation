@@ -62,7 +62,7 @@
             <input type="password" id="password" placeholder="أدخل كلمة المرور" required />
           </label>
 
-          <button class="btn btn--solid" type="submit">تسجيل الدخول</button>
+          <button class="btn btn--solid" type="submit" onclick="login()">تسجيل الدخول</button>
 
           <div id="msg" class="msg" aria-live="polite"></div>
         </form>
@@ -113,6 +113,8 @@
         </ul>
     </div>
 </footer>
+  <script type="module" src="supabase.js"></script>
+<script type="module" src="login.js"></script>
 </body>
 
 </html>
