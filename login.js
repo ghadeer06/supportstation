@@ -3,27 +3,40 @@ import { supabase } from './supabase.js';
 async function login() {
   const email = document.getElementById("username").value;
   const password = document.getElementById("password").value;
+  const msgElement = document.getElementById("msg");
 
-  const { data, error } = await supabase
-    .from('users')
-    .select('*')
-    .eq('email', email)
-    .eq('password', password)
-    .single();
+  // 1. تسجيل الدخول عبر نظام الحماية في سوبابيس
+  const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+    email: email,
+    password: password,
+  });
 
-  if (error || !data) {
-    alert("خطأ في تسجيل الدخول");
+  if (authError) {
+    msgElement.innerText = "خطأ: " + authError.message;
     return;
   }
 
-  if (data.role === 'admin') {
-    window.location.href = "admin.html";
-  } else if (data.role === 'trainer') {
-    window.location.href = "trainer.html";
-  } else {
-    window.location.href = "trainee.html";
+  // 2. جلب بيانات المستخدم (مثل الـ role) من جدولك الخاص
+  const { data: userProfile, error: profileError } = await supabase
+    .from('users')
+    .select('role')
+    .eq('id', authData.user.id) // نستخدم الـ ID الذي رجع من تسجيل الدخول
+    .single();
+
+  if (profileError || !userProfile) {
+    msgElement.innerText = "فشل في جلب صلاحيات المستخدم";
+    return;
   }
+
+  // 3. التوجيه بناءً على الدور
+  const routes = {
+    'admin': 'admin.html',
+    'trainer': 'trainer.html',
+    'trainee': 'trainee.html'
+  };
+
+  window.location.href = routes[userProfile.role] || 'trainee.html';
 }
 
-// مهم جداً جداً:
+// ربطها بـ window لتعمل مع onclick في HTML
 window.login = login;
