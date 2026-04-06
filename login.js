@@ -1,7 +1,7 @@
 import { supabase } from './supabase.js';
 
 export async function login() {
-  const email = document.getElementById("email").value;
+  const email = document.getElementById("username").value; // ← عدلناها
   const password = document.getElementById("password").value;
 
   const { data, error } = await supabase
