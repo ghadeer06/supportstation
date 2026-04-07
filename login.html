@@ -1,8 +1,7 @@
-<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>تسجيل الدخول | محطة الدعم</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
@@ -14,25 +13,31 @@
 
     <div class="wrap">
 
-      <!-- رأس الصفحة -->
+      <!-- رأس الصفحة (الشعار + اسم الجهة) -->
       <div class="top top--auth">
         <img class="logo" src="img/logo.png" alt="الشعار">
-        <div class="org"></div>
+        <div class="org">
+          
+        </div>
       </div>
 
       <!-- بطاقة تسجيل الدخول -->
-      <main class="auth-card">
+      <main class="auth-card" aria-label="نموذج تسجيل الدخول">
         <h1 class="auth-title">تسجيل الدخول</h1>
-        <p class="auth-sub">الرجاء اختيار نوع الحساب ثم إدخال بيانات الدخول.</p>
+        <p class="auth-sub">
+          الرجاء اختيار نوع الحساب ثم إدخال بيانات الدخول.
+        </p>
+
+
 
         <!-- نوع المستخدم -->
-        <div class="role-group" role="radiogroup">
+        <div class="role-group" role="radiogroup" aria-label="نوع الحساب">
           <label class="role">
             <input type="radio" name="role" value="trainee" checked>
             <span>متدرب</span>
           </label>
 
-          <label class="role">
+          <label class="role" >
             <input type="radio" name="role" value="trainer">
             <span>مدرب</span>
           </label>
@@ -44,13 +49,16 @@
         </div>
 
         <!-- بيانات الدخول -->
-        <form id="loginForm" class="auth-form">
+        <form id="loginForm" class="auth-form" autocomplete="on">
           <label class="field">
             <span>البريد الإلكتروني</span>
             <input type="email" id="email" placeholder="example@tvtc.edu.sa" required />
-            <div class="field-note">
-              <span class="note-icon">💡 يرجى استخدام البريد الجامعي</span>
-            </div>
+          
+			<!-- مربع الملاحظة الصغير -->
+    <div class="field-note">
+      <span class="note-icon">💡يرجى استخدام البريد الإلكتروني الجامعي الخاص بك (college@tvtc.edu.sa)</span>
+ 
+    </div>
           </label>
 
           <label class="field">
@@ -58,32 +66,37 @@
             <input type="password" id="password" placeholder="أدخل كلمة المرور" required />
           </label>
 
-          <button class="btn btn--solid" type="button" onclick="login()">تسجيل الدخول</button>
+          <button class="btn btn--solid" type="button" onclick="login()" >تسجيل الدخول</button>
 
-          <div id="msg" class="msg"></div>
+          <div id="msg" class="msg" aria-live="polite"></div>
         </form>
 
+      
       </main>
 
     </div>
   </header>
-
-  <!-- تحميل supabase -->
+<div id="msg" class="msg"></div>
+ 
+  
   <script type="module" src="supabase.js"></script>
-
-  <!-- تحميل كود تسجيل الدخول -->
   <script type="module" src="login.js"></script>
-
-  <footer class="main-footer">
+  
+<footer class="main-footer">
     <div class="footer-content">
-      <p>&copy; 2026 حقوق محفوظة | محطة الدعم</p>
-      <ul class="footer-links">
-        <li><a href="index.html">الرئيسية</a></li>
-        <li><a href="#">عن الموقع</a></li>
-        <li>@example اتصل بنا</li>
-      </ul>
+        <p>&copy; 2026 حقوق محفوظة | محطة الدعم </p>
+        <ul class="footer-links">
+            <li><a href="index.html">الرئيسية</a></li>
+            <li><a href="#">عن الموقع</a></li>
+            <li>@example اتصل بنا</a></li>
+        </ul>
     </div>
-  </footer>
-
+</footer>
 </body>
+
 </html>
+
+
+
+
+
