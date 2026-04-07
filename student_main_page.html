@@ -43,6 +43,16 @@
 
 </main>
 
+<script type="module">
+  import { supabase } from "./supabase.js";
+
+  supabase.auth.getSession().then(({ data }) => {
+    if (!data.session) {
+      window.location.href = "send_magic_link.html";
+    }
+  });
+</script>
+  
 <script>
 const container = document.getElementById("reportCards");
 
