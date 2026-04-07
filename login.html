@@ -1,67 +1,154 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>اختبار الزر</title>
-  <style>
-    body{
-      font-family: Arial, sans-serif;
-      direction: rtl;
-      background:#0F2F4A;
-      color:white;
-      min-height:100vh;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      margin:0;
-    }
-    .box{
-      background:rgba(255,255,255,0.12);
-      padding:30px;
-      border-radius:16px;
-      width:320px;
-    }
-    input, button{
-      width:100%;
-      padding:12px;
-      margin-top:10px;
-      border-radius:10px;
-      border:none;
-      font-size:16px;
-      box-sizing:border-box;
-    }
-    button{
-      background:white;
-      color:#0F2F4A;
-      cursor:pointer;
-      font-weight:bold;
-    }
-    #msg{
-      margin-top:12px;
-      font-size:14px;
-    }
-  </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>تسجيل الدخول</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
-<body>
 
-  <div class="box">
-    <h2>اختبار الزر</h2>
-    <input type="email" id="email" placeholder="اكتب الإيميل">
-    <button type="button" id="sendBtn">اضغط هنا</button>
-    <p id="msg">إذا اشتغل الزر بيتغير هذا النص</p>
-  </div>
+<body class="auth-body">
+  <header class="hero hero--auth">
+    <div class="overlay"></div>
 
+    <div class="wrap">
+      <div class="top top--auth">
+        <img class="logo" src="img/logo.png" alt="">
+      </div>
+
+      <div class="auth-card">
+        <h2 class="auth-title">تسجيل الدخول</h2>
+        <p class="auth-sub">ادخلي بريدك الإلكتروني وسنرسل لك رمز تحقق على الإيميل.</p>
+
+        <div class="role-group">
+          <label class="role">
+            <input type="radio" name="role" value="trainee" checked>
+            <span>متدرب</span>
+          </label>
+
+          <label class="role">
+            <input type="radio" name="role" value="trainer">
+            <span>مدرب</span>
+          </label>
+
+          <label class="role">
+            <input type="radio" name="role" value="admin">
+            <span>مسؤول</span>
+          </label>
+        </div>
+
+        <div class="auth-form">
+          <label class="field">
+            <span>البريد الإلكتروني</span>
+            <input type="email" id="email" placeholder="example@tvtc.edu.sa">
+          </label>
+
+          <p class="msg" id="msg">يرجى استخدام البريد الإلكتروني الجامعي الخاص بك</p>
+
+          <button type="button" class="btn btn--solid" id="sendBtn">إرسال الرمز</button>
+
+          <div class="otp-box" id="otpBox" style="display:none;">
+            <label class="field">
+              <span>رمز التحقق</span>
+              <input type="text" id="otp" placeholder="أدخلي الرمز">
+            </label>
+
+            <button type="button" class="btn btn--solid" id="verifyBtn">تحقق</button>
+          </div>
+
+          <a class="back-link" href="index.html">العودة للصفحة الرئيسية</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
-    const btn = document.getElementById("sendBtn");
-    const msg = document.getElementById("msg");
+    const supabase = window.supabase.createClient(
+      'https://mcxdjisoyqdnyieboqpy.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1jeGRqaXNveXFkbnlpZWJvcXB5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0MDI3NDAsImV4cCI6MjA5MDk3ODc0MH0.kIwJ1pc-GLX1lTvstLSDZ5Li1rd9vwutI4-Wz_HR6nE'
+    );
 
-    btn.addEventListener("click", function () {
-      alert("الزر اشتغل");
-      msg.innerText = "اشتغل الزر فعلاً";
+    const emailInput = document.getElementById("email");
+    const otpInput = document.getElementById("otp");
+    const msg = document.getElementById("msg");
+    const sendBtn = document.getElementById("sendBtn");
+    const verifyBtn = document.getElementById("verifyBtn");
+    const otpBox = document.getElementById("otpBox");
+
+    sendBtn.addEventListener("click", async function () {
+      const email = emailInput.value.trim();
+      const role = document.querySelector('input[name="role"]:checked')?.value || "trainee";
+
+      if (email === "") {
+        msg.innerText = "يرجى إدخال البريد الإلكتروني";
+        return;
+      }
+
+      if (!email.endsWith("@tvtc.edu.sa")) {
+        msg.innerText = "يرجى استخدام البريد الإلكتروني الجامعي فقط";
+        return;
+      }
+
+      sendBtn.disabled = true;
+      msg.innerText = "جاري إرسال الرمز...";
+
+      const { error } = await supabase.auth.signInWithOtp({
+        email: email,
+        options: {
+          shouldCreateUser: true,
+          data: {
+            role: role
+          }
+        }
+      });
+
+      sendBtn.disabled = false;
+
+      if (error) {
+        msg.innerText = error.message;
+        return;
+      }
+
+      otpBox.style.display = "block";
+      msg.innerText = "تم إرسال رمز التحقق إلى بريدك الإلكتروني";
+    });
+
+    verifyBtn.addEventListener("click", async function () {
+      const email = emailInput.value.trim();
+      const otp = otpInput.value.trim();
+
+      if (otp === "") {
+        msg.innerText = "يرجى إدخال رمز التحقق";
+        return;
+      }
+
+      verifyBtn.disabled = true;
+      msg.innerText = "جاري التحقق...";
+
+      const { data, error } = await supabase.auth.verifyOtp({
+        email: email,
+        token: otp,
+        type: "email"
+      });
+
+      verifyBtn.disabled = false;
+
+      if (error) {
+        msg.innerText = error.message;
+        return;
+      }
+
+      const role = data.user?.user_metadata?.role;
+
+      if (role === "admin") {
+        window.location.href = "admin.html";
+      } else if (role === "trainer") {
+        window.location.href = "teachers_main_page.html";
+      } else {
+        window.location.href = "student_main_page.html";
+      }
     });
   </script>
-
 </body>
 </html>
