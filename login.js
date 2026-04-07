@@ -1,19 +1,15 @@
 console.log("login.js LOADED");
 
-// لا تستوردين supabase هنا
-// لأنه محمّل من login.html
-
 async function login() {
   console.log("login() CALLED");
 
-  const email = document.getElementById("email").value.trim();
+  const email = document.getElementById("email").value.trim();   // ← هنا التعديل
   const password = document.getElementById("password").value.trim();
   const msg = document.getElementById("msg");
 
   msg.textContent = "جاري التحقق...";
 
   try {
-    // جلب المستخدم من جدول users
     const { data, error } = await supabase
       .from('users')
       .select('*')
@@ -34,7 +30,6 @@ async function login() {
 
     msg.textContent = "تم تسجيل الدخول بنجاح...";
 
-    // التوجيه حسب الدور
     if (data.role === 'admin') {
       window.location.href = "admin.html";
     } else if (data.role === 'trainer') {
@@ -49,5 +44,4 @@ async function login() {
   }
 }
 
-// مهم جداً
 window.login = login;
