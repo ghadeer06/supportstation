@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>تسجيل الدخول</title>
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="styles.css">
 </head>
 
 <body class="auth-body">
+
   <header class="hero hero--auth">
     <div class="overlay"></div>
 
@@ -15,12 +16,11 @@
 
       <div class="top top--auth">
         <img class="logo" src="img/logo.png" alt="">
-        <div class="org"></div>
       </div>
 
       <div class="auth-card">
         <h2 class="auth-title">تسجيل الدخول</h2>
-        <p class="auth-sub">أدخلي بريدك الإلكتروني وسيصلك رابط الدخول على الإيميل.</p>
+        <p class="auth-sub">ادخل بريدك الإلكتروني وسنرسل لك رابط الدخول</p>
 
         <div class="role-group">
           <label class="role">
@@ -40,22 +40,27 @@
         </div>
 
         <div class="auth-form">
+
           <label class="field">
             <span>البريد الإلكتروني</span>
-            <input type="email" id="username" placeholder="ادخلي البريد الإلكتروني">
+            <input type="email" id="email" placeholder="example@tvtc.edu.sa">
           </label>
 
-          <p class="msg" id="msg">يرجى استخدام البريد الإلكتروني الجامعي الخاص بك</p>
+          <p class="msg" id="msg">يرجى استخدام بريدك الجامعي</p>
 
-          <button type="button" class="btn btn--solid" onclick="sendMagicLink()">إرسال رابط الدخول</button>
+          <button type="button" class="btn btn--solid" onclick="sendMagicLink()">
+            أرسل رابط الدخول
+          </button>
 
           <a class="back-link" href="index.html">العودة للصفحة الرئيسية</a>
+
         </div>
       </div>
 
     </div>
   </header>
 
+  <!-- سكربت Supabase -->
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
@@ -64,45 +69,19 @@
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1jeGRqaXNveXFkbnlpZWJvcXB5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0MDI3NDAsImV4cCI6MjA5MDk3ODc0MH0.kIwJ1pc-GLX1lTvstLSDZ5Li1rd9vwutI4-Wz_HR6nE'
     )
 
-    async function handleSessionAfterRedirect() {
-      const { data, error } = await supabase.auth.getSession()
-
-      if (error) {
-        return
-      }
-
-      const user = data.session?.user
-      if (!user) return
-
-      const role = user.user_metadata?.role
-
-      if (role === "admin") {
-        window.location.href = "admin.html"
-      } else if (role === "trainer") {
-        window.location.href = "teachers_main_page.html"
-      } else {
-        window.location.href = "student_main_page.html"
-      }
-    }
-
     window.sendMagicLink = async function () {
-      const email = document.getElementById("username").value.trim()
-      const role = document.querySelector('input[name="role"]:checked')?.value || "trainee"
+      const email = document.getElementById("email").value.trim()
       const msg = document.getElementById("msg")
 
       if (email === "") {
-        msg.innerText = "يرجى إدخال البريد الإلكتروني"
+        msg.innerText = "اكتبي البريد الإلكتروني أول"
         return
       }
 
       const { error } = await supabase.auth.signInWithOtp({
-        email,
+        email: email,
         options: {
           emailRedirectTo: 'https://ghadeer06.github.io/supportstation/login.html'
-          shouldCreateUser: true,
-          data: {
-            role: role
-          }
         }
       })
 
@@ -111,14 +90,9 @@
         return
       }
 
-      msg.innerText = "تم إرسال رابط الدخول إلى بريدك الإلكتروني"
+      msg.innerText = "تم إرسال رابط الدخول لبريدك 📩"
     }
-
-    handleSessionAfterRedirect()
   </script>
+
 </body>
 </html>
-
-
-
-
