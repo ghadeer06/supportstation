@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
@@ -25,33 +26,15 @@
         <p class="auth-sub">
           الرجاء إدخال بريدك الإلكتروني لإنشاء حساب جديد.
         </p>
-<div class="role-group" role="radiogroup" aria-label="نوع الحساب">
-          <label class="role">
-            <input type="radio" name="role" value="trainee" checked>
-            <span>متدرب</span>
-          </label>
 
-          <label class="role" >
-            <input type="radio" name="role" value="trainer">
-            <span>مدرب</span>
-          </label>
-
-          <label class="role">
-            <input type="radio" name="role" value="admin">
-            <span>مسؤول</span>
-          </label>
-        </div>
-        <!-- بيانات التسجيل -->
+        <!-- نموذج التسجيل -->
         <form id="signupForm" class="auth-form" autocomplete="on">
 
           <label class="field">
             <span>البريد الإلكتروني</span>
             <input type="email" id="email" placeholder="example@tvtc.edu.sa" required />
           </label>
-    <div class="field-note">
-      <span class="note-icon">💡يرجى استخدام البريد الإلكتروني الجامعي الخاص بك (college@tvtc.edu.sa)</span>
- 
-    </div>
+
           <label class="field">
             <span>كلمة المرور</span>
             <input type="password" id="password" placeholder="أدخل كلمة المرور" required />
@@ -68,6 +51,7 @@
     </div>
   </header>
 
+  <!-- سكربت التسجيل -->
   <script type="module">
     import { supabase } from "./supabase.js";
 
@@ -82,7 +66,7 @@
         email: email,
         password: password,
         options: {
-          emailRedirectTo: "https://ghadeer06.github.io/supportstation/"
+          emailRedirectTo: "https://YOUR_DOMAIN/verify.html"
         }
       });
 
@@ -94,16 +78,10 @@
 
       msg.textContent = "تم إرسال رابط التفعيل إلى بريدك الإلكتروني.";
     }
+
+    // مهم جداً: عشان HTML يقدر يشوف الدالة
+    window.signUp = signUp;
   </script>
-<footer class="main-footer">
-    <div class="footer-content">
-        <p>&copy; 2026 حقوق محفوظة | محطة الدعم </p>
-        <ul class="footer-links">
-            <li><a href="index.html">الرئيسية</a></li>
-            <li><a href="#">عن الموقع</a></li>
-            <li>@example اتصل بنا</a></li>
-        </ul>
-    </div>
-</footer>
+
 </body>
 </html>
