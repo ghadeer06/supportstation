@@ -1,133 +1,67 @@
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>تسجيل الدخول</title>
-  <link rel="stylesheet" href="styles.css">
-
+  <title>اختبار الزر</title>
   <style>
-    .overlay{ pointer-events:none; }
-    .btn{ cursor:pointer; }
-    .otp-box{ display:none; margin-top:10px; }
+    body{
+      font-family: Arial, sans-serif;
+      direction: rtl;
+      background:#0F2F4A;
+      color:white;
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      margin:0;
+    }
+    .box{
+      background:rgba(255,255,255,0.12);
+      padding:30px;
+      border-radius:16px;
+      width:320px;
+    }
+    input, button{
+      width:100%;
+      padding:12px;
+      margin-top:10px;
+      border-radius:10px;
+      border:none;
+      font-size:16px;
+      box-sizing:border-box;
+    }
+    button{
+      background:white;
+      color:#0F2F4A;
+      cursor:pointer;
+      font-weight:bold;
+    }
+    #msg{
+      margin-top:12px;
+      font-size:14px;
+    }
   </style>
 </head>
+<body>
 
-<body class="auth-body">
-
-<header class="hero hero--auth">
-  <div class="overlay"></div>
-
-  <div class="wrap">
-
-    <div class="top top--auth">
-      <img class="logo" src="img/logo.png" alt="">
-    </div>
-
-    <div class="auth-card">
-
-      <h2 class="auth-title">تسجيل الدخول</h2>
-      <p class="auth-sub">أدخل بريدك وسيصلك رمز تحقق</p>
-
-      <div class="auth-form">
-
-        <label class="field">
-          <span>البريد الإلكتروني</span>
-          <input type="email" id="email" placeholder="example@tvtc.edu.sa">
-        </label>
-
-        <p id="msg">اكتب بريدك الجامعي</p>
-
-        <!-- زر الإرسال -->
-        <button type="button" id="sendBtn">إرسال الرمز</button>
-
-        <!-- خانة الرمز -->
-        <div class="otp-box" id="otpBox">
-          <input type="text" id="otp" placeholder="أدخل الرمز">
-          <button type="button" id="verifyBtn">تحقق</button>
-        </div>
-
-      </div>
-
-    </div>
-
+  <div class="box">
+    <h2>اختبار الزر</h2>
+    <input type="email" id="email" placeholder="اكتب الإيميل">
+    <button type="button" id="sendBtn">اضغط هنا</button>
+    <p id="msg">إذا اشتغل الزر بيتغير هذا النص</p>
   </div>
-</header>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const btn = document.getElementById("sendBtn");
+    const msg = document.getElementById("msg");
 
-<script>
-const supabase = window.supabase.createClient(
-  'https://mcxdjisoyqdnyieboqpy.supabase.co',
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1jeGRqaXNveXFkbnlpZWJvcXB5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0MDI3NDAsImV4cCI6MjA5MDk3ODc0MH0.kIwJ1pc-GLX1lTvstLSDZ5Li1rd9vwutI4-Wz_HR6nE'
-);
-
-const emailInput = document.getElementById("email");
-const msg = document.getElementById("msg");
-const sendBtn = document.getElementById("sendBtn");
-const verifyBtn = document.getElementById("verifyBtn");
-const otpBox = document.getElementById("otpBox");
-const otpInput = document.getElementById("otp");
-
-/* إرسال الرمز */
-sendBtn.addEventListener("click", async () => {
-
-  const email = emailInput.value.trim();
-
-  if(email === ""){
-    msg.innerText = "اكتبي الإيميل أول";
-    return;
-  }
-
-  msg.innerText = "جاري إرسال الرمز...";
-
-  const { error } = await supabase.auth.signInWithOtp({
-    email: email,
-    options: {
-      shouldCreateUser: true
-    }
-  });
-
-  if(error){
-    msg.innerText = error.message;
-    return;
-  }
-
-  msg.innerText = "تم إرسال الرمز 📩";
-  otpBox.style.display = "block";
-});
-
-/* التحقق */
-verifyBtn.addEventListener("click", async () => {
-
-  const email = emailInput.value.trim();
-  const otp = otpInput.value.trim();
-
-  if(otp === ""){
-    msg.innerText = "اكتبي الرمز";
-    return;
-  }
-
-  msg.innerText = "جاري التحقق...";
-
-  const { error } = await supabase.auth.verifyOtp({
-    email: email,
-    token: otp,
-    type: 'email'
-  });
-
-  if(error){
-    msg.innerText = error.message;
-    return;
-  }
-
-  msg.innerText = "تم الدخول بنجاح";
-
-  // تحويل
-  window.location.href = "index.html";
-
-});
-</script>
+    btn.addEventListener("click", function () {
+      alert("الزر اشتغل");
+      msg.innerText = "اشتغل الزر فعلاً";
+    });
+  </script>
 
 </body>
 </html>
