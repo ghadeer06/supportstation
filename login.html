@@ -65,7 +65,7 @@
             <input type="password" id="password" placeholder="أدخل كلمة المرور" required />
           </label>
 
-          <button class="btn btn--solid" type="submit">تسجيل الدخول</button>
+          <button class="btn btn--solid" type="button" onclick="login()" >تسجيل الدخول</button>
 
           <div id="msg" class="msg" aria-live="polite"></div>
         </form>
@@ -76,36 +76,10 @@
     </div>
   </header>
 
-  <script>
-    // يغيّر وجهة الدخول حسب الدور المختار
-    const form = document.getElementById('loginForm');
-    const msg  = document.getElementById('msg');
-
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-
-      const role = document.querySelector('input[name="role"]:checked').value;
-      const username = document.getElementById('username').value.trim();
-      const password = document.getElementById('password').value.trim();
-
-      if (!username || !password) {
-        msg.textContent = "يرجى إدخال اسم المستخدم وكلمة المرور.";
-        return;
-      }
-
-      // روابط افتراضية — عدّليها حسب صفحاتك
-      const routes = {
-        trainee: "student_main_page.html",
-        trainer: "teachers_main_page.html",
-        admin:   "admin.html"
-      };
-
-      msg.textContent = "جارٍ التحقق من البيانات...";
-      setTimeout(() => {
-        window.location.href = routes[role];
-      }, 400);
-    });
-  </script>
+ 
+  
+  <script type="module" src="supabase.js"></script>
+  <script type="module" src="login.js"></script>
   
 <footer class="main-footer">
     <div class="footer-content">
