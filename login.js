@@ -1,4 +1,4 @@
-console.log("login.js loaded");
+console.log("login.js LOADED");
 
 import { supabase } from './supabase.js';
 
