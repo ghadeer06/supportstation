@@ -1,7 +1,10 @@
 console.log("supabase.js LOADED");
-import { createClient } from 'https://mcxdjisoyqdnyieboqpy.supabase.co';
 
-const supabase = createClient(
-  "sb_publishable_CoPFxO5-flUjMYi-jOdikw_kwAaUoZr"
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+
+export const supabase = createClient(
+  "https://mcxdjisoyqdnyieboqpy.supabase.co",   // رابط مشروعك
+  "sb-publishable-key"                          // مفتاحك الصحيح
 );
+
 console.log("supabase.js loaded");
