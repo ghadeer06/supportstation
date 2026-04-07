@@ -1,4 +1,4 @@
-<div id="msg" class="msg"></div>
+console.log("login.js loaded");
 
 import { supabase } from './supabase.js';
 
