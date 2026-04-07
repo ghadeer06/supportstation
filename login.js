@@ -1,3 +1,4 @@
+import { supabase } from "./supabase.js";
 console.log("login.js LOADED");
 
 async function login() {
