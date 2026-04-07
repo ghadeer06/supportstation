@@ -3,6 +3,7 @@ console.log("login.js LOADED");
 import { supabase } from './supabase.js';
 
 async function login() {
+  console.log("login() CALLED");
   console.log("login() function called");
   const email = document.getElementById("username").value;
   const password = document.getElementById("password").value;
