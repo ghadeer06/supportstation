@@ -14,21 +14,16 @@
 
     <div class="wrap">
 
-      <!-- رأس الصفحة -->
       <div class="top top--auth">
         <img class="logo" src="img/logo.png" alt="الشعار">
         <div class="org"></div>
       </div>
 
-      <!-- بطاقة التسجيل -->
-      <main class="auth-card" aria-label="نموذج إنشاء حساب">
+      <main class="auth-card">
         <h1 class="auth-title">إنشاء حساب جديد</h1>
-        <p class="auth-sub">
-          الرجاء إدخال بريدك الإلكتروني لإنشاء حساب جديد.
-        </p>
+        <p class="auth-sub">الرجاء إدخال بريدك الإلكتروني لإنشاء حساب جديد.</p>
 
-        <!-- نموذج التسجيل -->
-        <form id="signupForm" class="auth-form" autocomplete="on">
+        <form id="signupForm" class="auth-form">
 
           <label class="field">
             <span>البريد الإلكتروني</span>
@@ -42,7 +37,7 @@
 
           <button class="btn btn--solid" type="button" onclick="signUp()">إنشاء الحساب</button>
 
-          <div id="msg" class="msg" aria-live="polite"></div>
+          <div id="msg" class="msg"></div>
         </form>
 
         <a class="back-link" href="login.html">لديك حساب؟ تسجيل الدخول</a>
@@ -50,10 +45,12 @@
 
     </div>
   </header>
- <script type="module" src="supabase.js"></script>
+
+  <!-- تحميل supabase.js -->
+  <script type="module" src="supabase.js"></script>
+
   <!-- سكربت التسجيل -->
   <script type="module">
-    import { supabase } from "./supabase.js";
 
     async function signUp() {
       const email = document.getElementById("email").value.trim();
@@ -66,7 +63,7 @@
         email: email,
         password: password,
         options: {
-          emailRedirectTo: "https://ghadeer06.github.io/supportstation/"
+          emailRedirectTo: "https://ghadeer06.github.io/supportstation/verify.html"
         }
       });
 
@@ -79,8 +76,9 @@
       msg.textContent = "تم إرسال رابط التفعيل إلى بريدك الإلكتروني.";
     }
 
-    // مهم جداً: عشان HTML يقدر يشوف الدالة
+    // مهم جداً
     window.signUp = signUp;
+
   </script>
 
 </body>
