@@ -51,8 +51,9 @@
         <!-- بيانات الدخول -->
         <form id="loginForm" class="auth-form" autocomplete="on">
           <label class="field">
-            <span>اسم المستخدم</span>
-            <input type="text" id="username" placeholder="أدخل اسم المستخدم" required />
+            <span>البريد الإلكتروني</span>
+            <input type="email" id="email" placeholder="example@tvtc.edu.sa" required />
+          
 			<!-- مربع الملاحظة الصغير -->
     <div class="field-note">
       <span class="note-icon">💡يرجى استخدام البريد الإلكتروني الجامعي الخاص بك (college@tvtc.edu.sa)</span>
@@ -70,13 +71,13 @@
           <div id="msg" class="msg" aria-live="polite"></div>
         </form>
 
-        <a class="back-link" href="index.html">العودة للصفحة الرئيسية</a>
+        <a class="back-link" href="sign_up.html">ليس لديك حساب؟ سجل</a>
       </main>
 
     </div>
   </header>
-
- <div id="msg" class="msg"></div>
+<div id="msg" class="msg"></div>
+ 
   
   <script type="module" src="supabase.js"></script>
   <script type="module" src="login.js"></script>
@@ -94,6 +95,8 @@
 </body>
 
 </html>
+
+
 
 
 
