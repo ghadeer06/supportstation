@@ -1,43 +1,34 @@
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>تسجيل الدخول | محطة الدعم</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>تسجيل الدخول</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 
 <body class="auth-body">
-
   <header class="hero hero--auth">
     <div class="overlay"></div>
 
     <div class="wrap">
 
-      <!-- رأس الصفحة (الشعار + اسم الجهة) -->
       <div class="top top--auth">
-        <img class="logo" src="img/logo.png" alt="الشعار">
-        <div class="org">
-          
-        </div>
+        <img class="logo" src="img/logo.png" alt="">
+        <div class="org"></div>
       </div>
 
-      <!-- بطاقة تسجيل الدخول -->
-      <main class="auth-card" aria-label="نموذج تسجيل الدخول">
-        <h1 class="auth-title">تسجيل الدخول</h1>
-        <p class="auth-sub">
-          الرجاء اختيار نوع الحساب ثم إدخال بيانات الدخول.
-        </p>
+      <div class="auth-card">
+        <h2 class="auth-title">تسجيل الدخول</h2>
+        <p class="auth-sub">أدخلي بريدك الإلكتروني وسيصلك رابط الدخول على الإيميل.</p>
 
-
-
-        <!-- نوع المستخدم -->
-        <div class="role-group" role="radiogroup" aria-label="نوع الحساب">
+        <div class="role-group">
           <label class="role">
             <input type="radio" name="role" value="trainee" checked>
             <span>متدرب</span>
           </label>
 
-          <label class="role" >
+          <label class="role">
             <input type="radio" name="role" value="trainer">
             <span>مدرب</span>
           </label>
@@ -48,54 +39,85 @@
           </label>
         </div>
 
-        <!-- بيانات الدخول -->
-        <form id="loginForm" class="auth-form" autocomplete="on">
+        <div class="auth-form">
           <label class="field">
             <span>البريد الإلكتروني</span>
-            <input type="email" id="email" placeholder="example@tvtc.edu.sa" required />
-          
-			<!-- مربع الملاحظة الصغير -->
-    <div class="field-note">
-      <span class="note-icon">💡يرجى استخدام البريد الإلكتروني الجامعي الخاص بك (college@tvtc.edu.sa)</span>
- 
-    </div>
+            <input type="email" id="username" placeholder="ادخلي البريد الإلكتروني">
           </label>
 
-          <label class="field">
-            <span>كلمة المرور</span>
-            <input type="password" id="password" placeholder="أدخل كلمة المرور" required />
-          </label>
+          <p class="msg" id="msg">يرجى استخدام البريد الإلكتروني الجامعي الخاص بك</p>
 
-          <button class="btn btn--solid" type="button" onclick="login()" >تسجيل الدخول</button>
+          <button type="button" class="btn btn--solid" onclick="sendMagicLink()">إرسال رابط الدخول</button>
 
-          <div id="msg" class="msg" aria-live="polite"></div>
-        </form>
-
-      
-      </main>
+          <a class="back-link" href="index.html">العودة للصفحة الرئيسية</a>
+        </div>
+      </div>
 
     </div>
   </header>
 
- 
-  
-  <script type="module" src="supabase.js"></script>
-  <script type="module" src="login.js"></script>
-  
-<footer class="main-footer">
-    <div class="footer-content">
-        <p>&copy; 2026 حقوق محفوظة | محطة الدعم </p>
-        <ul class="footer-links">
-            <li><a href="index.html">الرئيسية</a></li>
-            <li><a href="#">عن الموقع</a></li>
-            <li>@example اتصل بنا</a></li>
-        </ul>
-    </div>
-</footer>
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
+
+    const supabase = createClient(
+      'https://mcxdjisoyqdnyieboqpy.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1jeGRqaXNveXFkbnlpZWJvcXB5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0MDI3NDAsImV4cCI6MjA5MDk3ODc0MH0.kIwJ1pc-GLX1lTvstLSDZ5Li1rd9vwutI4-Wz_HR6nE'
+    )
+
+    async function handleSessionAfterRedirect() {
+      const { data, error } = await supabase.auth.getSession()
+
+      if (error) {
+        return
+      }
+
+      const user = data.session?.user
+      if (!user) return
+
+      const role = user.user_metadata?.role
+
+      if (role === "admin") {
+        window.location.href = "admin.html"
+      } else if (role === "trainer") {
+        window.location.href = "teachers_main_page.html"
+      } else {
+        window.location.href = "student_main_page.html"
+      }
+    }
+
+    window.sendMagicLink = async function () {
+      const email = document.getElementById("username").value.trim()
+      const role = document.querySelector('input[name="role"]:checked')?.value || "trainee"
+      const msg = document.getElementById("msg")
+
+      if (email === "") {
+        msg.innerText = "يرجى إدخال البريد الإلكتروني"
+        return
+      }
+
+      const { error } = await supabase.auth.signInWithOtp({
+        email,
+        options: {
+          emailRedirectTo: 'https://ghadeer06.github.io/supportstation/login.html'
+          shouldCreateUser: true,
+          data: {
+            role: role
+          }
+        }
+      })
+
+      if (error) {
+        msg.innerText = error.message
+        return
+      }
+
+      msg.innerText = "تم إرسال رابط الدخول إلى بريدك الإلكتروني"
+    }
+
+    handleSessionAfterRedirect()
+  </script>
 </body>
-
 </html>
-
 
 
 
