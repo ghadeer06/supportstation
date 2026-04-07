@@ -1,3 +1,4 @@
+console.log("supabase.js LOADED");
 import { createClient } from 'https://mcxdjisoyqdnyieboqpy.supabase.co';
 
 const supabase = createClient(
