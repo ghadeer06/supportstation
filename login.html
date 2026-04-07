@@ -1,26 +1,29 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>تسجيل الدخول</title>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .overlay { pointer-events: none; }
+    .btn[disabled] { opacity: .7; cursor: not-allowed; }
+    .otp-box { display: none; margin-top: 12px; }
+  </style>
 </head>
 
 <body class="auth-body">
-
   <header class="hero hero--auth">
     <div class="overlay"></div>
 
     <div class="wrap">
-
       <div class="top top--auth">
         <img class="logo" src="img/logo.png" alt="">
       </div>
 
       <div class="auth-card">
         <h2 class="auth-title">تسجيل الدخول</h2>
-        <p class="auth-sub">ادخل بريدك الإلكتروني وسنرسل لك رابط الدخول</p>
+        <p class="auth-sub">أدخلي بريدك الإلكتروني وسنرسل لك رمز تحقق على الإيميل.</p>
 
         <div class="role-group">
           <label class="role">
@@ -40,59 +43,114 @@
         </div>
 
         <div class="auth-form">
-
           <label class="field">
             <span>البريد الإلكتروني</span>
             <input type="email" id="email" placeholder="example@tvtc.edu.sa">
           </label>
 
-          <p class="msg" id="msg">يرجى استخدام بريدك الجامعي</p>
+          <p class="msg" id="msg">يرجى استخدام البريد الإلكتروني الجامعي الخاص بك</p>
 
-          <button type="button" class="btn btn--solid" onclick="sendMagicLink()">
-            أرسل رابط الدخول
-          </button>
+          <button type="button" class="btn btn--solid" id="sendBtn">إرسال الرمز</button>
+
+          <div class="otp-box" id="otpBox">
+            <label class="field">
+              <span>رمز التحقق</span>
+              <input type="text" id="otp" placeholder="أدخلي الرمز">
+            </label>
+
+            <button type="button" class="btn btn--solid" id="verifyBtn">تحقق</button>
+          </div>
 
           <a class="back-link" href="index.html">العودة للصفحة الرئيسية</a>
-
         </div>
       </div>
-
     </div>
   </header>
 
-  <!-- سكربت Supabase -->
-  <script type="module">
-    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const supabaseUrl = 'https://mcxdjisoyqdnyieboqpy.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1jeGRqaXNveXFkbnlpZWJvcXB5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0MDI3NDAsImV4cCI6MjA5MDk3ODc0MH0.kIwJ1pc-GLX1lTvstLSDZ5Li1rd9vwutI4-Wz_HR6nE';
+    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-    const supabase = createClient(
-      'https://mcxdjisoyqdnyieboqpy.supabase.co',
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1jeGRqaXNveXFkbnlpZWJvcXB5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0MDI3NDAsImV4cCI6MjA5MDk3ODc0MH0.kIwJ1pc-GLX1lTvstLSDZ5Li1rd9vwutI4-Wz_HR6nE'
-    )
+    const emailInput = document.getElementById('email');
+    const otpInput = document.getElementById('otp');
+    const msg = document.getElementById('msg');
+    const sendBtn = document.getElementById('sendBtn');
+    const verifyBtn = document.getElementById('verifyBtn');
+    const otpBox = document.getElementById('otpBox');
 
-    window.sendMagicLink = async function () {
-      const email = document.getElementById("email").value.trim()
-      const msg = document.getElementById("msg")
+    sendBtn.addEventListener('click', async function () {
+      const email = emailInput.value.trim();
+      const role = document.querySelector('input[name="role"]:checked')?.value || 'trainee';
 
-      if (email === "") {
-        msg.innerText = "اكتبي البريد الإلكتروني أول"
-        return
+      if (!email) {
+        msg.innerText = 'ادخل البريد الإلكتروني أول';
+        return;
       }
+
+      if (!email.endsWith('@tvtc.edu.sa')) {
+        msg.innerText = 'ادخل البريد الجامعي فقط';
+        return;
+      }
+
+      sendBtn.disabled = true;
+      msg.innerText = 'جاري إرسال الرمز...';
 
       const { error } = await supabase.auth.signInWithOtp({
         email: email,
         options: {
-          emailRedirectTo: 'https://ghadeer06.github.io/supportstation/login.html'
+          shouldCreateUser: true,
+          data: { role: role }
         }
-      })
+      });
+
+      sendBtn.disabled = false;
 
       if (error) {
-        msg.innerText = error.message
-        return
+        msg.innerText = error.message;
+        return;
       }
 
-      msg.innerText = "تم إرسال رابط الدخول لبريدك 📩"
-    }
-  </script>
+      otpBox.style.display = 'block';
+      msg.innerText = 'تم إرسال رمز التحقق إلى بريدك الإلكتروني';
+    });
 
+    verifyBtn.addEventListener('click', async function () {
+      const email = emailInput.value.trim();
+      const otp = otpInput.value.trim();
+
+      if (!otp) {
+        msg.innerText = 'ادخل رمز التحقق';
+        return;
+      }
+
+      verifyBtn.disabled = true;
+      msg.innerText = 'جاري التحقق...';
+
+      const { data, error } = await supabase.auth.verifyOtp({
+        email: email,
+        token: otp,
+        type: 'email'
+      });
+
+      verifyBtn.disabled = false;
+
+      if (error) {
+        msg.innerText = error.message;
+        return;
+      }
+
+      const role = data.user?.user_metadata?.role;
+
+      if (role === 'admin') {
+        window.location.href = 'admin.html';
+      } else if (role === 'trainer') {
+        window.location.href = 'teachers_main_page.html';
+      } else {
+        window.location.href = 'student_main_page.html';
+      }
+    });
+  </script>
 </body>
 </html>
