@@ -1,3 +1,5 @@
+<div id="msg" class="msg"></div>
+
 import { supabase } from './supabase.js';
 
 async function login() {
