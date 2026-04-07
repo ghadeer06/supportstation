@@ -5,6 +5,51 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>تسجيل الدخول</title>
   <link rel="stylesheet" href="styles.css" />
+
+  <style>
+    .overlay{
+      pointer-events: none !important;
+      z-index: 0 !important;
+    }
+
+    .wrap{
+      position: relative !important;
+      z-index: 2 !important;
+    }
+
+    .auth-card{
+      position: absolute !important;
+      left: 50% !important;
+      top: 50% !important;
+      transform: translate(-50%, -50%) !important;
+      z-index: 9999 !important;
+      width: min(520px, 92%);
+    }
+
+    .auth-form,
+    .field,
+    .role-group,
+    .msg,
+    .otp-box{
+      position: relative !important;
+      z-index: 10000 !important;
+    }
+
+    #sendBtn,
+    #verifyBtn{
+      position: relative !important;
+      z-index: 10001 !important;
+      pointer-events: auto !important;
+      cursor: pointer !important;
+      width: 100%;
+      display: block;
+    }
+
+    .otp-box{
+      display: none;
+      margin-top: 12px;
+    }
+  </style>
 </head>
 
 <body class="auth-body">
@@ -47,7 +92,7 @@
 
           <button type="button" class="btn btn--solid" id="sendBtn">إرسال الرمز</button>
 
-          <div class="otp-box" id="otpBox" style="display:none;">
+          <div class="otp-box" id="otpBox">
             <label class="field">
               <span>رمز التحقق</span>
               <input type="text" id="otp" placeholder="أدخلي الرمز">
@@ -76,7 +121,7 @@
     const verifyBtn = document.getElementById("verifyBtn");
     const otpBox = document.getElementById("otpBox");
 
-    sendBtn.addEventListener("click", async function () {
+    sendBtn.onclick = async function () {
       const email = emailInput.value.trim();
       const role = document.querySelector('input[name="role"]:checked')?.value || "trainee";
 
@@ -90,7 +135,6 @@
         return;
       }
 
-      sendBtn.disabled = true;
       msg.innerText = "جاري إرسال الرمز...";
 
       const { error } = await supabase.auth.signInWithOtp({
@@ -103,8 +147,6 @@
         }
       });
 
-      sendBtn.disabled = false;
-
       if (error) {
         msg.innerText = error.message;
         return;
@@ -112,9 +154,9 @@
 
       otpBox.style.display = "block";
       msg.innerText = "تم إرسال رمز التحقق إلى بريدك الإلكتروني";
-    });
+    };
 
-    verifyBtn.addEventListener("click", async function () {
+    verifyBtn.onclick = async function () {
       const email = emailInput.value.trim();
       const otp = otpInput.value.trim();
 
@@ -123,7 +165,6 @@
         return;
       }
 
-      verifyBtn.disabled = true;
       msg.innerText = "جاري التحقق...";
 
       const { data, error } = await supabase.auth.verifyOtp({
@@ -131,8 +172,6 @@
         token: otp,
         type: "email"
       });
-
-      verifyBtn.disabled = false;
 
       if (error) {
         msg.innerText = error.message;
@@ -148,7 +187,7 @@
       } else {
         window.location.href = "student_main_page.html";
       }
-    });
+    };
   </script>
 </body>
 </html>
