@@ -1,21 +1,22 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>حقوق المتدرب</title>
+
+<link rel="stylesheet" href="styles.css">
 
 <style>
     body {
         font-family: Arial;
-        background-color: white;
-        direction: rtl;
-        text-align: center;
+        background-color: #F3F1EC; /* نفس المشروع */
         margin: 0;
+        text-align: center;
     }
 
-    /* الهيدر الكحلي */
     header {
-        background-color: #1f2a44;
+        background: linear-gradient(135deg, #0F2F4A, #5E7B93);
         color: white;
         padding: 20px;
     }
@@ -29,7 +30,7 @@
     }
 
     h2 {
-        color: #1f2a44;
+        color: #0F2F4A;
     }
 
     .cards {
@@ -38,38 +39,36 @@
         justify-content: center;
     }
 
-    /* الكروت */
     .card {
-        background: #f9f9f9;
+        background: white;
         padding: 15px;
         margin: 10px;
         width: 250px;
-        border-radius: 10px;
-        border-top: 5px solid #1f2a44;
-        box-shadow: 0 0 8px #ddd;
+        border-radius: 12px;
+        border-top: 4px solid #0F2F4A;
+        box-shadow: 0 6px 15px rgba(0,0,0,.08);
     }
 
-    /* التنبيه */
+    /* التنبيه (عدّلناه بدون ما يخالف الهوية) */
     .alert {
-        background-color: #1f2a44;
+        background-color: #0F2F4A;
         color: white;
         padding: 15px;
         margin: 20px;
-        border-radius: 8px;
+        border-radius: 10px;
     }
 
-    /* الزر */
     button {
         padding: 10px 20px;
-        background-color: #1f2a44;
+        background: linear-gradient(135deg, #0F2F4A, #5E7B93);
         color: white;
         border: none;
-        border-radius: 5px;
+        border-radius: 8px;
         cursor: pointer;
     }
 
     button:hover {
-        background-color: #162033;
+        opacity: 0.9;
     }
 </style>
 </head>
@@ -168,6 +167,17 @@
 
 <br>
 <button onclick="history.back()">رجوع</button>
+
+<!-- الفوتر -->
+<footer class="main-footer">
+  <div class="footer-content">
+    <p>&copy; 2026 حقوق محفوظة | محطة الدعم</p>
+    <ul class="footer-links">
+      <li><a href="index.html">الرئيسية</a></li>
+      <li><a href="about.html">عن الموقع</a></li>
+    </ul>
+  </div>
+</footer>
 
 </body>
 </html>
