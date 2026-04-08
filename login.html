@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -98,7 +97,7 @@
       font-size:13px;
       line-height:1.7;
     }
-    .otp-box{
+    .otp-box, .name-box{
       display:none;
       margin-top:12px;
     }
@@ -111,6 +110,10 @@
     }
     .back-link:hover{
       text-decoration:underline;
+    }
+    #email{
+      direction:ltr;
+      text-align:left;
     }
   </style>
 </head>
@@ -152,6 +155,14 @@
       <button type="button" class="btn" onclick="verifyOtpCode()">تحقق</button>
     </div>
 
+    <div class="name-box" id="nameBox">
+      <div class="field">
+        <span>الاسم</span>
+        <input type="text" id="name" placeholder="أدخلي اسمك">
+      </div>
+      <button type="button" class="btn" onclick="saveNameAndContinue()">تأكيد الاسم</button>
+    </div>
+
     <p class="msg" id="msg">يرجى استخدام البريد الإلكتروني الجامعي الخاص بك</p>
 
     <a class="back-link" href="index.html">العودة للصفحة الرئيسية</a>
@@ -160,15 +171,14 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
     function getClient() {
-      if (!window.supabase) {
-        throw new Error("مكتبة Supabase ما تحملت");
-      }
-
       return window.supabase.createClient(
         'https://mcxdjisoyqdnyieboqpy.supabase.co',
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1jeGRqaXNveXFkbnlpZWJvcXB5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0MDI3NDAsImV4cCI6MjA5MDk3ODc0MH0.kIwJ1pc-GLX1lTvstLSDZ5Li1rd9vwutI4-Wz_HR6nE'
+        'حطي_هنا_الـ_anon_key_الحقيقي'
       );
     }
+
+    let currentUser = null;
+    let currentRole = null;
 
     async function startOtp() {
       const msg = document.getElementById("msg");
@@ -205,6 +215,7 @@
           return;
         }
 
+        currentRole = role;
         document.getElementById("otpBox").style.display = "block";
         msg.innerText = "تم إرسال الرمز إلى بريدك الإلكتروني";
       } catch (e) {
@@ -238,17 +249,81 @@
           return;
         }
 
-        const role = data.user?.user_metadata?.role;
+        currentUser = data.user;
+        currentRole = data.user?.user_metadata?.role || currentRole || "trainee";
 
-        if (role === "admin") {
-          window.location.href = "admin.html";
-        } else if (role === "trainer") {
-          window.location.href = "teachers_main_page.html";
-        } else {
-          window.location.href = "student_main_page.html";
+        localStorage.setItem("user_email", email);
+        localStorage.setItem("user_role", currentRole);
+
+        const { data: existingUser, error: findError } = await supabase
+          .from("users")
+          .select("*")
+          .eq("email", email)
+          .maybeSingle();
+
+        if (findError) {
+          msg.innerText = "تم التحقق لكن صار خطأ في جلب بيانات المستخدم";
+          return;
         }
+
+        if (existingUser && existingUser.name) {
+          localStorage.setItem("userName", existingUser.name);
+          msg.innerText = "تم تسجيل الدخول بنجاح";
+          goToPage(currentRole);
+          return;
+        }
+
+        document.getElementById("nameBox").style.display = "block";
+        msg.innerText = "أدخلي اسمك لإكمال التسجيل أول مرة";
       } catch (e) {
         msg.innerText = "صار خطأ: " + e.message;
+      }
+    }
+
+    async function saveNameAndContinue() {
+      const msg = document.getElementById("msg");
+      const name = document.getElementById("name").value.trim();
+      const email = document.getElementById("email").value.trim();
+
+      if (name === "") {
+        msg.innerText = "يرجى إدخال الاسم";
+        return;
+      }
+
+      try {
+        const supabase = getClient();
+
+        const { error } = await supabase
+          .from("users")
+          .upsert([
+            {
+              id: currentUser.id,
+              email: email,
+              name: name,
+              role: currentRole
+            }
+          ], { onConflict: "email" });
+
+        if (error) {
+          msg.innerText = "صار خطأ في حفظ الاسم: " + error.message;
+          return;
+        }
+
+        localStorage.setItem("userName", name);
+        msg.innerText = "تم حفظ الاسم وتسجيل الدخول بنجاح";
+        goToPage(currentRole);
+      } catch (e) {
+        msg.innerText = "صار خطأ: " + e.message;
+      }
+    }
+
+    function goToPage(role) {
+      if (role === "admin") {
+        window.location.href = "admin.html";
+      } else if (role === "trainer") {
+        window.location.href = "teachers_main_page.html";
+      } else {
+        window.location.href = "student_main_page.html";
       }
     }
   </script>
