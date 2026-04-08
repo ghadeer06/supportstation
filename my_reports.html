@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>بلاغاتي</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .reports-wrapper{
+      width:90%;
+      max-width:1000px;
+      margin:40px auto;
+    }
+
+    .report-card{
+      background:#fff;
+      border-radius:14px;
+      padding:20px;
+      margin-bottom:15px;
+      box-shadow:0 8px 20px rgba(0,0,0,.08);
+      border-right:4px solid #5E7B93;
+    }
+
+    .report-card p{
+      margin:6px 0;
+      color:#333;
+      line-height:1.8;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">بلاغاتي</div>
+
+  <div class="reports-wrapper">
+    <div id="myReports"></div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    function getClient() {
+      return window.supabase.createClient(
+        'https://mcxdjisoyqdnyieboqpy.supabase.co',
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1jeGRqaXNveXFkbnlpZWJvcXB5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0MDI3NDAsImV4cCI6MjA5MDk3ODc0MH0.kIwJ1pc-GLX1lTvstLSDZ5Li1rd9vwutI4-Wz_HR6nE'
+      );
+    }
+
+    async function loadMyReports() {
+      const supabase = getClient();
+      const email = localStorage.getItem("user_email");
+      const container = document.getElementById("myReports");
+
+      if (!email) {
+        container.innerHTML = "<p>لا يوجد مستخدم مسجل حالياً</p>";
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from("reports")
+        .select("*")
+        .eq("sender_email", email)
+        .order("id", { ascending: false });
+
+      if (error) {
+        container.innerHTML = "<p>صار خطأ في جلب البلاغات</p>";
+        return;
+      }
+
+      if (!data || data.length === 0) {
+        container.innerHTML = "<p>لا توجد بلاغات لك حالياً</p>";
+        return;
+      }
+
+      container.innerHTML = "";
+      data.forEach(r => {
+        container.innerHTML += `
+          <div class="report-card">
+            <p><b>نوع البلاغ:</b> ${r.type || "-"}</p>
+            <p><b>الوصف:</b> ${r.description || "-"}</p>
+            <p><b>الموقع:</b> ${r.location || "-"}</p>
+            <p><b>شدة البلاغ:</b> ${r.rate || "-"}</p>
+            <p><b>الحالة:</b> ${r.status || "-"}</p>
+          </div>
+        `;
+      });
+    }
+
+    loadMyReports();
+  </script>
+</body>
+</html>
