@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ar">
 <head>
@@ -10,41 +11,38 @@
 
 <div class="header">إنشاء بلاغ جديد</div>
 
-<div class="container" style="margin-top:200px;">
+<div class="container" style="margin-top:20px;">
   <div class="card">
 
     <label>نوع البلاغ</label>
 
-    <!-- قائمة اختيار نوع البلاغ -->
     <div class="custom-select" onclick="toggleDropdown()">
       <div id="selectedOption">صيانة</div>
       <ul id="optionsList" class="options">
         <li onclick="selectOption('صيانة',event)">صيانة</li>
         <li onclick="selectOption('نظافة',event)">نظافة</li>
-        
+        <li onclick="selectOption('حماية الحقوق',event)">حماية الحقوق</li>
       </ul>
     </div>
 
     <input type="hidden" id="type" value="صيانة">
 
+    <div id="rightsNote" class="rights-note" style="display:none;">
+      يتم تحويل البلاغ مباشرة إلى المسؤول المختص مع المحافظة على سرية المعالجة.
+    </div>
+
+    <div id="rightsGuideBox" class="rights-guide-box" style="display:none;">
+      <span>اطلع على حقوقك قبل الإبلاغ</span>
+      <button type="button" class="rights-btn" onclick="goToRights()">الحقوق</button>
+    </div>
+
     <br><br>
 
-    <!-- شدة البلاغ -->
     <label>شدة البلاغ: <span id="rateValue">1</span> / 10</label>
     <input type="range" id="rate" min="1" max="10" value="1" oninput="updateRate()">
 
-    <!-- حقول النقل -->
-    <div id="transferFields" style="display:none; margin-top:10px;">
-      <label>من</label>
-      <input type="text" id="from" placeholder="مثال: مبنى A - قاعة 1">
-
-      <label>إلى</label>
-      <input type="text" id="to" placeholder="مثال: مبنى B - قاعة 4">
-    </div>
-
-    <!-- الموقع -->
     <div id="locationField">
-      <label>الموقع</label>
+      <label id="locationLabel">الموقع</label>
       <input type="text" id="location" placeholder="مثال: مبنى A - قاعة 3">
     </div>
 
@@ -58,13 +56,11 @@
 </div>
 
 <script>
-/* فتح وإغلاق القائمة */
 function toggleDropdown() {
   const list = document.getElementById("optionsList");
   list.style.display = list.style.display === "block" ? "none" : "block";
 }
 
-/* اختيار نوع البلاغ */
 function selectOption(value, event) {
   event.stopPropagation();
   document.getElementById("selectedOption").innerText = value;
@@ -73,91 +69,95 @@ function selectOption(value, event) {
   toggleFields();
 }
 
-/* إظهار/إخفاء الحقول حسب النوع */
 function toggleFields(){
   const type = document.getElementById("type").value;
-  const transferDiv = document.getElementById("transferFields");
   const locationDiv = document.getElementById("locationField");
+  const note = document.getElementById("rightsNote");
+  const guideBox = document.getElementById("rightsGuideBox");
+  const label = document.getElementById("locationLabel");
+  const locationInput = document.getElementById("location");
 
-  if(type === "نقل"){
-    transferDiv.style.display = "block";
-    locationDiv.style.display = "none";
+  locationDiv.style.display = "block";
+
+  if(type === "حماية الحقوق"){
+    note.style.display = "block";
+    guideBox.style.display = "flex";
+    label.innerText = "الجهة المرتبطة بالبلاغ";
+    locationInput.placeholder = "مثال: القسم أو الجهة أو الموقع المرتبط بالبلاغ";
   } else {
-    transferDiv.style.display = "none";
-    locationDiv.style.display = "block";
+    note.style.display = "none";
+    guideBox.style.display = "none";
+    label.innerText = "الموقع";
+    locationInput.placeholder = "مثال: مبنى A - قاعة 3";
   }
 }
 
-/* تحديث شدة البلاغ */
 function updateRate(){
   document.getElementById("rateValue").innerText = document.getElementById("rate").value;
 }
 
-/* حفظ البلاغ */
+function goToRights() {
+  window.location.href = "rights.html";
+}
+
 function saveReport(){
   const type = document.getElementById("type").value;
   const location = document.getElementById("location").value.trim();
   const desc = document.getElementById("desc").value.trim();
   const rate = document.getElementById("rate").value;
 
-  let from = "";
-  let to = "";
-  
-
-  // التحقق من الحقول
-  if(type === "نقل"){
-    from = document.getElementById("from").value.trim();
-    to = document.getElementById("to").value.trim();
-
-    if(from === "" || to === ""){
-      alert("⚠️ الرجاء تعبئة حقول (من - إلى)");
-      return;
+  if(location === ""){
+    if(type === "حماية الحقوق"){
+      alert("الرجاء تعبئة الجهة المرتبطة بالبلاغ");
+    } else {
+      alert("الرجاء تعبئة الموقع");
     }
-  } else {
-    if(location === ""){
-      alert("⚠️ الرجاء تعبئة الموقع");
-      return;
-    }
-  }
-
-  if(desc === ""){
-    alert("⚠️ الرجاء كتابة وصف البلاغ");
     return;
   }
 
-  // قراءة البلاغات
+  if(desc === ""){
+    alert("الرجاء كتابة وصف البلاغ");
+    return;
+  }
+
   let reports = JSON.parse(localStorage.getItem("traineeReports")) || [];
 
-  // إنشاء البلاغ الجديد
   const newReport = {
     id: Date.now(),
     type: type,
-    location: type === "نقل" ? "" : location,
+    location: location,
     desc: desc,
-    from: from,
-    to: to,
     rate: rate,
     status: "قيد المراجعة"
   };
 
-  // إضافة البلاغ
   reports.push(newReport);
-
-  // حفظه
   localStorage.setItem("traineeReports", JSON.stringify(reports));
 
-  alert("تم إرسال البلاغ بنجاح ✔");
+  alert("تم إرسال البلاغ بنجاح");
   window.location.href = "student_main_page.html";
 }
+
+document.addEventListener("click", function(e) {
+  const list = document.getElementById("optionsList");
+  const select = document.querySelector(".custom-select");
+
+  if (select && !select.contains(e.target)) {
+    list.style.display = "none";
+  }
+});
+
+toggleFields();
+updateRate();
 </script>
 
 <footer class="main-footer">
     <div class="footer-content">
         <p>&copy; 2026 حقوق محفوظة | محطة الدعم </p>
-
         <ul class="footer-links">
             <li><a href="index.html">الرئيسية</a></li>
-            <li><a href="about.html">عن الموقع</a></li>
+            <li><a href="#">عن الموقع</a></li>
+            <li><a href="mailto:example@example.com">اتصل بنا</a></li>
         </ul>
     </div>
 </footer>
