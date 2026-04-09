@@ -8,11 +8,35 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
-    /* ترتيب الأقسام من اليمين لليسار */
-    .reports-wrapper {
+    /* أزرار التبويبات */
+    .tabs {
       display: flex;
-      flex-direction: column;
-      gap: 25px;
+      gap: 15px;
+      margin-bottom: 25px;
+    }
+
+    .tab-btn {
+      padding: 12px 25px;
+      border: none;
+      background: #eee;
+      cursor: pointer;
+      border-radius: 8px;
+      font-size: 16px;
+      transition: 0.2s;
+    }
+
+    .tab-btn.active {
+      background: #4a6cf7;
+      color: white;
+      font-weight: bold;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
     }
   </style>
 </head>
@@ -33,49 +57,36 @@
 
 <main class="admin-main">
 
-  <!-- الإحصائيات -->
-  <section class="admin-cards">
-    <div class="stat-card">
-      <h3>تم الحل</h3>
-      <p id="doneCount">0</p>
-    </div>
+  <!-- أزرار التبويبات -->
+  <section class="admin-cards tabs">
+    <button class="tab-btn active" onclick="showTab('all')">كل البلاغات</button>
+    <button class="tab-btn" onclick="showTab('processing')">قيد المعالجة</button>
+    <button class="tab-btn" onclick="showTab('done')">تم الحل</button>
+  </section>
 
-    <div class="stat-card">
-      <h3>قيد المعالجة</h3>
-      <p id="processingCount">0</p>
-    </div>
-
-    <div class="stat-card">
-      <h3>إجمالي البلاغات</h3>
-      <p id="totalCount">0</p>
+  <!-- كل البلاغات -->
+  <section id="tab-all" class="reports-section tab-content active">
+    <h2 class="section-title">كل البلاغات</h2>
+    <div class="reports-box">
+      <div class="reports-scroll" id="allReports"></div>
     </div>
   </section>
 
-  <!-- الأقسام -->
-  <div class="reports-wrapper">
+  <!-- قيد المعالجة -->
+  <section id="tab-processing" class="reports-section tab-content">
+    <h2 class="section-title">قيد المعالجة</h2>
+    <div class="reports-box">
+      <div class="reports-scroll" id="processingReports"></div>
+    </div>
+  </section>
 
-    <section class="reports-section">
-      <h2 class="section-title">كل البلاغات</h2>
-      <div class="reports-box">
-        <div class="reports-scroll" id="allReports"></div>
-      </div>
-    </section>
-
-    <section class="reports-section">
-      <h2 class="section-title">قيد المعالجة</h2>
-      <div class="reports-box">
-        <div class="reports-scroll" id="processingReports"></div>
-      </div>
-    </section>
-
-    <section class="reports-section">
-      <h2 class="section-title">تم الحل</h2>
-      <div class="reports-box">
-        <div class="reports-scroll" id="doneReports"></div>
-      </div>
-    </section>
-
-  </div>
+  <!-- تم الحل -->
+  <section id="tab-done" class="reports-section tab-content">
+    <h2 class="section-title">تم الحل</h2>
+    <div class="reports-box">
+      <div class="reports-scroll" id="doneReports"></div>
+    </div>
+  </section>
 
 </main>
 
@@ -156,23 +167,14 @@ async function loadReports() {
     .select("*")
     .order("id", { ascending: false });
 
-  if (error) {
-    return;
-  }
+  if (error) return;
 
   const reports = data || [];
 
-  // تقسيم الحالات
   const allReports = reports;
   const processingReports = reports.filter(r => r.status === "قيد المعالجة");
   const doneReports = reports.filter(r => r.status === "تم التنفيذ");
 
-  // الإحصائيات
-  document.getElementById("totalCount").innerText = reports.length;
-  document.getElementById("processingCount").innerText = processingReports.length;
-  document.getElementById("doneCount").innerText = doneReports.length;
-
-  // عرض كل تبويب
   document.getElementById("allReports").innerHTML =
     allReports.length ? allReports.map(makeReportCard).join("") : "لا توجد بلاغات";
 
@@ -181,6 +183,14 @@ async function loadReports() {
 
   document.getElementById("doneReports").innerHTML =
     doneReports.length ? doneReports.map(makeReportCard).join("") : "لا توجد بلاغات";
+}
+
+function showTab(tab) {
+  document.querySelectorAll('.tab-content').forEach(sec => sec.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+
+  document.getElementById(`tab-${tab}`).classList.add('active');
+  event.target.classList.add('active');
 }
 
 loadReports();
