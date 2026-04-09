@@ -7,59 +7,69 @@
   <link rel="stylesheet" href="adminStyles.css" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
+
 <body class="admin-body">
 
-  <header class="admin-header">
-    <a href="login.html" class="logout">تسجيل الخروج</a>
+<header class="admin-header">
+  <a href="login.html" class="logout">تسجيل الخروج</a>
 
-    <div class="admin-left">
-      <div class="admin-title">
-        <h1>لوحة تحكم المسؤول</h1>
-        <span>متابعة البلاغات</span>
-      </div>
-      <img src="img/logo.png" class="admin-logo" alt="الشعار">
+  <div class="admin-left">
+    <div class="admin-title">
+      <h1>لوحة تحكم المسؤول</h1>
+      <span>متابعة البلاغات</span>
     </div>
-  </header>
+    <img src="img/logo.png" class="admin-logo" alt="الشعار">
+  </div>
+</header>
 
-  <main class="admin-main">
+<main class="admin-main">
 
-    <!-- الإحصائيات -->
-    <section class="admin-cards">
-      <div class="stat-card">
-        <h3>تم الحل</h3>
-        <p id="doneCount">0</p>
-      </div>
+  <!-- الإحصائيات -->
+  <section class="admin-cards">
+    <div class="stat-card">
+      <h3>تم الحل</h3>
+      <p id="doneCount">0</p>
+    </div>
 
-      <div class="stat-card">
-        <h3>قيد المعالجة</h3>
-        <p id="processingCount">0</p>
-      </div>
+    <div class="stat-card">
+      <h3>قيد المعالجة</h3>
+      <p id="processingCount">0</p>
+    </div>
 
-      <div class="stat-card">
-        <h3>إجمالي البلاغات</h3>
-        <p id="totalCount">0</p>
-      </div>
-    </section>
+    <div class="stat-card">
+      <h3>إجمالي البلاغات</h3>
+      <p id="totalCount">0</p>
+    </div>
+  </section>
 
-    <!-- بلاغات المدربين -->
-    <section class="reports-section">
-      <h2 class="section-title">بلاغات المدربين</h2>
-      <div class="reports-box">
-        <div class="reports-scroll" id="trainerReports"></div>
-      </div>
-    </section>
+  <!-- كل البلاغات -->
+  <section class="reports-section">
+    <h2 class="section-title">كل البلاغات</h2>
+    <div class="reports-box">
+      <div class="reports-scroll" id="allReports"></div>
+    </div>
+  </section>
 
-    <!-- بلاغات المتدربين -->
-    <section class="reports-section">
-      <h2 class="section-title">بلاغات المتدربين</h2>
-      <div class="reports-box">
-        <div class="reports-scroll" id="traineeReports"></div>
-      </div>
-    </section>
+  <!-- قيد المعالجة -->
+  <section class="reports-section">
+    <h2 class="section-title">قيد المعالجة</h2>
+    <div class="reports-box">
+      <div class="reports-scroll" id="processingReports"></div>
+    </div>
+  </section>
 
-  </main>
+  <!-- تم الحل -->
+  <section class="reports-section">
+    <h2 class="section-title">تم الحل</h2>
+    <div class="reports-box">
+      <div class="reports-scroll" id="doneReports"></div>
+    </div>
+  </section>
+
+</main>
 
 <script>
+
 function getClient() {
   return window.supabase.createClient(
     'https://mcxdjisoyqdnyieboqpy.supabase.co',
@@ -139,41 +149,43 @@ async function loadReports() {
     .order("id", { ascending: false });
 
   if (error) {
-    document.getElementById("trainerReports").innerHTML = "حدث خطأ في تحميل البلاغات";
-    document.getElementById("traineeReports").innerHTML = "حدث خطأ في تحميل البلاغات";
+    document.getElementById("allReports").innerHTML = "حدث خطأ في تحميل البلاغات";
+    document.getElementById("processingReports").innerHTML = "حدث خطأ في تحميل البلاغات";
+    document.getElementById("doneReports").innerHTML = "حدث خطأ في تحميل البلاغات";
     return;
   }
 
   const reports = data || [];
 
-  const trainerData = reports.filter(r => r.sender_role === "trainer");
-  const traineeData = reports.filter(r => r.sender_role === "trainee");
+  // تقسيم البلاغات حسب الحالة
+  const allReports = reports;
+  const processingReports = reports.filter(r => r.status === "قيد المعالجة");
+  const doneReports = reports.filter(r => r.status === "تم التنفيذ");
 
-  const totalCount = reports.length;
-  const processingCount = reports.filter(r => r.status === "قيد المعالجة").length;
-  const doneCount = reports.filter(r => r.status === "تم التنفيذ").length;
+  // الإحصائيات
+  document.getElementById("totalCount").innerText = reports.length;
+  document.getElementById("processingCount").innerText = processingReports.length;
+  document.getElementById("doneCount").innerText = doneReports.length;
 
-  document.getElementById("totalCount").innerText = totalCount;
-  document.getElementById("processingCount").innerText = processingCount;
-  document.getElementById("doneCount").innerText = doneCount;
+  // تعبئة التبويبات
+  document.getElementById("allReports").innerHTML =
+    allReports.length === 0
+      ? `<div class="report-card"><div class="report-body"><div class="report-text">لا توجد بلاغات</div></div></div>`
+      : allReports.map(makeReportCard).join("");
 
-  const trainerBox = document.getElementById("trainerReports");
-  const traineeBox = document.getElementById("traineeReports");
+  document.getElementById("processingReports").innerHTML =
+    processingReports.length === 0
+      ? `<div class="report-card"><div class="report-body"><div class="report-text">لا توجد بلاغات</div></div></div>`
+      : processingReports.map(makeReportCard).join("");
 
-  if (trainerData.length === 0) {
-    trainerBox.innerHTML = `<div class="report-card"><div class="report-body"><div class="report-text">لا توجد بلاغات</div></div></div>`;
-  } else {
-    trainerBox.innerHTML = trainerData.map(makeReportCard).join("");
-  }
-
-  if (traineeData.length === 0) {
-    traineeBox.innerHTML = `<div class="report-card"><div class="report-body"><div class="report-text">لا توجد بلاغات</div></div></div>`;
-  } else {
-    traineeBox.innerHTML = traineeData.map(makeReportCard).join("");
-  }
+  document.getElementById("doneReports").innerHTML =
+    doneReports.length === 0
+      ? `<div class="report-card"><div class="report-body"><div class="report-text">لا توجد بلاغات</div></div></div>`
+      : doneReports.map(makeReportCard).join("");
 }
 
 loadReports();
+
 </script>
 
 </body>
