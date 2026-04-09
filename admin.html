@@ -1,139 +1,150 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
   <title>لوحة المسؤول</title>
-  <link rel="stylesheet" href="styles.css" />
-  <style>
-    .reports-wrapper{
-      width:90%;
-      max-width:1100px;
-      margin:40px auto;
-    }
 
-    .report-card{
-      background:#fff;
-      border-radius:14px;
-      padding:20px;
-      margin-bottom:15px;
-      box-shadow:0 8px 20px rgba(0,0,0,.08);
-      border-right:4px solid #5E7B93;
-    }
-
-    .report-card h3{
-      margin-bottom:10px;
-      color:#0F2F4A;
-    }
-
-    .report-card p{
-      margin:6px 0;
-      color:#333;
-      line-height:1.8;
-    }
-
-    .status-box{
-      margin-top:10px;
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-    }
-
-    .status-btn{
-      padding:8px 12px;
-      border:none;
-      border-radius:8px;
-      cursor:pointer;
-      background:#5E7B93;
-      color:#fff;
-    }
-  </style>
-</head>
-<body class="admin-body">
-
-  <header class="admin-header">
-    <div class="admin-left">
-      <img src="img/logo.png" class="admin-logo" alt="">
-      <h1>لوحة المسؤول</h1>
-    </div>
-    <a href="login.html" class="logout">تسجيل الخروج</a>
-  </header>
-
-  <main class="reports-wrapper">
-    <h2 class="admin-section-title">جميع البلاغات</h2>
-    <div id="reportsList"></div>
-  </main>
+  <link rel="stylesheet" href="adminStyles.css">
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script>
-    function getClient() {
-      return window.supabase.createClient(
-        'https://mcxdjisoyqdnyieboqpy.supabase.co',
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1jeGRqaXNveXFkbnlpZWJvcXB5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0MDI3NDAsImV4cCI6MjA5MDk3ODc0MH0.kIwJ1pc-GLX1lTvstLSDZ5Li1rd9vwutI4-Wz_HR6nE'
-      );
-    }
+</head>
 
-    async function updateStatus(id, newStatus) {
-      const supabase = getClient();
+<body class="admin-body">
 
-      const { error } = await supabase
-        .from("reports")
-        .update({ status: newStatus })
-        .eq("id", id);
+<!-- ===== Header ===== -->
+<header class="admin-header">
+  <div class="admin-left">
+    <div class="admin-title">
+      <h1>لوحة المسؤول</h1>
+      <span>إدارة البلاغات</span>
+    </div>
+    <img src="img/logo.png" class="admin-logo">
+  </div>
 
-      if (error) {
-        alert("خطأ في تحديث الحالة: " + error.message);
-        return;
-      }
+  <a href="login.html" class="logout">تسجيل الخروج</a>
+</header>
 
-      loadReports();
-    }
+<!-- ===== Main ===== -->
+<main class="admin-main">
 
-    async function loadReports() {
-      const supabase = getClient();
+  <section class="reports-section">
+    <h2 class="section-title">جميع البلاغات</h2>
 
-      const { data, error } = await supabase
-        .from("reports")
-        .select("*")
-        .order("id", { ascending: false });
+    <div class="reports-box">
+      <div class="reports-scroll" id="reportsList"></div>
+    </div>
+  </section>
 
-      const container = document.getElementById("reportsList");
-      container.innerHTML = "";
+</main>
 
-      if (error) {
-        container.innerHTML = "<p>صار خطأ في جلب البلاغات</p>";
-        return;
-      }
+<!-- ===== Script ===== -->
+<script>
+function getClient(){
+  return window.supabase.createClient(
+    'https://mcxdjisoyqdnyieboqpy.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1jeGRqaXNveXFkbnlpZWJvcXB5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0MDI3NDAsImV4cCI6MjA5MDk3ODc0MH0.kIwJ1pc-GLX1lTvstLSDZ5Li1rd9vwutI4-Wz_HR6nE'
+  );
+}
 
-      if (!data || data.length === 0) {
-        container.innerHTML = "<p>لا توجد بلاغات حالياً</p>";
-        return;
-      }
+// حماية الصفحة (فقط مسؤول)
+const role = localStorage.getItem("user_role");
+if(role !== "admin"){
+  window.location.href = "login.html";
+}
 
-      data.forEach(r => {
-        container.innerHTML += `
-          <div class="report-card">
-            <h3>بلاغ #${r.id}</h3>
-            <p><b>نوع البلاغ:</b> ${r.type || "-"}</p>
-            <p><b>الوصف:</b> ${r.description || "-"}</p>
-            <p><b>الموقع:</b> ${r.location || "-"}</p>
-            <p><b>شدة البلاغ:</b> ${r.rate || "-"}</p>
-            <p><b>الحالة:</b> ${r.status || "-"}</p>
-            <p><b>مقدم البلاغ:</b> ${r.sender_name || "-"}</p>
-            <p><b>الإيميل:</b> ${r.sender_email || "-"}</p>
-            <p><b>الدور:</b> ${r.sender_role || "-"}</p>
+// تحميل البلاغات
+loadReports();
 
-            <div class="status-box">
-              <button class="status-btn" onclick="updateStatus(${r.id}, 'قيد المراجعة')">قيد المراجعة</button>
-              <button class="status-btn" onclick="updateStatus(${r.id}, 'قيد المعالجة')">قيد المعالجة</button>
-              <button class="status-btn" onclick="updateStatus(${r.id}, 'تم الحل')">تم الحل</button>
-            </div>
+async function loadReports(){
+  const container = document.getElementById("reportsList");
+  container.innerHTML = "جاري التحميل...";
+
+  const supabase = getClient();
+
+  const { data, error } = await supabase
+    .from("reports")
+    .select("*")
+    .order("id", { ascending: false });
+
+  if(error){
+    container.innerHTML = "خطأ في تحميل البيانات";
+    return;
+  }
+
+  if(!data || data.length === 0){
+    container.innerHTML = "لا يوجد بلاغات";
+    return;
+  }
+
+  container.innerHTML = "";
+
+  data.forEach(r => {
+
+    container.innerHTML += `
+      <div class="report-card">
+
+        <!-- يمين -->
+        <div class="right-tags">
+          <span class="tag id">#${r.id}</span>
+          <span class="tag type">${r.type || "-"}</span>
+        </div>
+
+        <!-- المحتوى -->
+        <div class="report-body">
+
+          <div class="report-meta">
+            <strong>الموقع:</strong> ${r.location || "-"}
+            <span class="dot">•</span>
+            <strong>الحالة:</strong> ${r.status || "-"}
           </div>
-        `;
-      });
-    }
 
-    loadReports();
-  </script>
+          <div class="badges">
+            <span class="badge sev">شدة البلاغ: ${r.severity || "-"}</span>
+            <span class="badge priority">الدور: ${r.sender_role || "-"}</span>
+          </div>
+
+          <div class="report-text">
+            <strong>الوصف:</strong> ${r.description || "-"}<br>
+            <strong>مقدم البلاغ:</strong> ${r.sender_name || "-"}<br>
+            <strong>الإيميل:</strong> ${r.sender_email || "-"}
+          </div>
+
+          <div class="actions">
+            <button class="btn-process"
+              onclick="updateStatus(${r.id}, 'قيد المعالجة')">
+              قيد المعالجة
+            </button>
+
+            <button class="btn-done"
+              onclick="updateStatus(${r.id}, 'تم التنفيذ')">
+              تم التنفيذ
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+    `;
+  });
+}
+
+// تحديث الحالة
+async function updateStatus(id, status){
+  const supabase = getClient();
+
+  const { error } = await supabase
+    .from("reports")
+    .update({ status: status })
+    .eq("id", id);
+
+  if(error){
+    alert("خطأ في التحديث");
+    return;
+  }
+
+  loadReports();
+}
+</script>
+
 </body>
 </html>
