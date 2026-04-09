@@ -28,13 +28,11 @@
     <br>
 
     <label><b>الحالة الحالية:</b></label>
-
     <div class="custom-select" onclick="toggleDropdownStatus()">
       <div id="selectedStatus">قيد المراجعة</div>
-
-      <!-- فقط خيارين -->
       <ul id="statusOptions" class="options">
         <li onclick="selectStatus('قيد المراجعة', event)">قيد المراجعة</li>
+        <li onclick="selectStatus('قيد المعالجة', event)">قيد المعالجة</li>
         <li onclick="selectStatus('تم التنفيذ', event)">تم التنفيذ</li>
       </ul>
     </div>
@@ -99,10 +97,8 @@ async function loadReport(){
   document.getElementById("r_email").innerText = data.sender_email || "-";
   document.getElementById("r_role").innerText = data.sender_role || "-";
 
-  const status = data.status || "قيد المراجعة";
-
-  document.getElementById("selectedStatus").innerText = status;
-  document.getElementById("statusValue").value = status;
+  document.getElementById("selectedStatus").innerText = data.status || "قيد المراجعة";
+  document.getElementById("statusValue").value = data.status || "قيد المراجعة";
 }
 
 function toggleDropdownStatus() {
@@ -177,3 +173,6 @@ loadReport();
 
 </body>
 </html>
+
+
+وهذي admin_report.html
