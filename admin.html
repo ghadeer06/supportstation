@@ -1,179 +1,182 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>عرض البلاغ</title>
-  <link rel="stylesheet" href="style_report.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>لوحة المسؤول</title>
+  <link rel="stylesheet" href="adminStyles.css" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
+<body class="admin-body">
 
-<body>
+  <header class="admin-header">
+    <a href="login.html" class="logout">تسجيل الخروج</a>
 
-<div class="header">عرض البلاغ</div>
-
-<div class="container" style="margin-top:80px;">
-  <div class="card" id="reportCard">
-
-    <h3 id="r_id"></h3>
-
-    <p><b>نوع البلاغ:</b> <span id="r_type"></span></p>
-    <p><b>الوصف:</b> <span id="r_desc"></span></p>
-    <p><b>الموقع:</b> <span id="r_location"></span></p>
-    <p><b>شدة البلاغ:</b> <span id="r_rate"></span></p>
-    <p><b>مقدم البلاغ:</b> <span id="r_name"></span></p>
-    <p><b>الإيميل:</b> <span id="r_email"></span></p>
-    <p><b>الدور:</b> <span id="r_role"></span></p>
-
-    <br>
-
-    <label><b>الحالة الحالية:</b></label>
-
-    <div class="custom-select" onclick="toggleDropdownStatus()">
-      <div id="selectedStatus">قيد المراجعة</div>
-
-      <!-- فقط خيارين -->
-      <ul id="statusOptions" class="options">
-        <li onclick="selectStatus('قيد المراجعة', event)">قيد المراجعة</li>
-        <li onclick="selectStatus('تم التنفيذ', event)">تم التنفيذ</li>
-      </ul>
+    <div class="admin-left">
+      <div class="admin-title">
+        <h1>لوحة تحكم المسؤول</h1>
+        <span>متابعة البلاغات</span>
+      </div>
+      <img src="img/logo.png" class="admin-logo" alt="الشعار">
     </div>
+  </header>
 
-    <br>
+  <main class="admin-main">
 
-    <input type="hidden" id="statusValue">
-
-    <button class="primary" onclick="saveStatus()">حفظ الحالة</button>
-
-    <div style="display:flex; justify-content:space-between; margin-top:20px;">
-      <button class="light" onclick="window.location.href='admin.html'">رجوع</button>
-
-      <button class="danger" onclick="deleteReport()" style="background:#d9534f; color:white;">
-        حذف البلاغ
+    <section class="admin-cards">
+      <button type="button" class="stat-card stat-filter active" id="filterAll">
+        <h3>إجمالي البلاغات</h3>
+        <p id="totalCount">0</p>
       </button>
-    </div>
 
-  </div>
-</div>
+      <button type="button" class="stat-card stat-filter" id="filterReview">
+        <h3>قيد المراجعة</h3>
+        <p id="reviewCount">0</p>
+      </button>
+
+      <button type="button" class="stat-card stat-filter" id="filterDone">
+        <h3>تم التنفيذ</h3>
+        <p id="doneCount">0</p>
+      </button>
+    </section>
+
+    <section class="reports-section">
+      <h2 class="section-title">بلاغات المدربين</h2>
+      <div class="reports-box">
+        <div class="reports-scroll" id="trainerReports"></div>
+      </div>
+    </section>
+
+    <section class="reports-section">
+      <h2 class="section-title">بلاغات المتدربين</h2>
+      <div class="reports-box">
+        <div class="reports-scroll" id="traineeReports"></div>
+      </div>
+    </section>
+
+  </main>
 
 <script>
-function getClient(){
+function getClient() {
   return window.supabase.createClient(
     'https://mcxdjisoyqdnyieboqpy.supabase.co',
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1jeGRqaXNveXFkbnlpZWJvcXB5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0MDI3NDAsImV4cCI6MjA5MDk3ODc0MH0.kIwJ1pc-GLX1lTvstLSDZ5Li1rd9vwutI4-Wz_HR6nE'
   );
 }
 
-let selectedId = localStorage.getItem("adminSelectedReport");
-let currentReport = null;
+let currentFilter = "all";
 
-async function loadReport(){
-  if(!selectedId){
-    alert("لم يتم تحديد البلاغ");
-    window.location.href = "admin.html";
-    return;
+function normalizeStatus(status) {
+  if (status === "تم الحل") return "تم التنفيذ";
+  if (status === "قيد المعالجة") return "قيد المراجعة";
+  return status || "قيد المراجعة";
+}
+
+function mapStatusToFilter(status) {
+  const s = normalizeStatus(status);
+  if (s === "تم التنفيذ") return "done";
+  return "review";
+}
+
+function setFilter(filter, clickedCard) {
+  currentFilter = filter;
+
+  document.querySelectorAll(".stat-filter").forEach(card => {
+    card.classList.remove("active");
+  });
+
+  clickedCard.classList.add("active");
+  loadReports();
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("filterAll").addEventListener("click", function () {
+    setFilter("all", this);
+  });
+
+  document.getElementById("filterReview").addEventListener("click", function () {
+    setFilter("review", this);
+  });
+
+  document.getElementById("filterDone").addEventListener("click", function () {
+    setFilter("done", this);
+  });
+
+  loadReports();
+});
+
+function openReport(id) {
+  localStorage.setItem("adminSelectedReport", id);
+  window.location.href = "admin_report.html";
+}
+
+function makeReportRow(r) {
+  const statusText = normalizeStatus(r.status);
+  const statusFilter = mapStatusToFilter(r.status);
+
+  if (currentFilter !== "all" && currentFilter !== statusFilter) {
+    return "";
   }
 
+  return `
+    <div class="legacy-report-row">
+      <div class="legacy-report-content">
+        <span class="legacy-id">#${r.id}</span>
+        <span class="legacy-type">${r.type || "-"}</span>
+        <span><strong>الوصف:</strong> ${r.description || "-"}</span>
+        <span><strong>الموقع:</strong> ${r.location || "-"}</span>
+        <span><strong>الحالة:</strong> ${statusText}</span>
+      </div>
+
+      <div class="legacy-report-btns">
+        <button type="button" class="legacy-view-btn" onclick="openReport(${r.id})">عرض بلاغ</button>
+      </div>
+    </div>
+  `;
+}
+
+async function loadReports() {
   const supabase = getClient();
 
   const { data, error } = await supabase
     .from("reports")
     .select("*")
-    .eq("id", selectedId)
-    .single();
+    .order("id", { ascending: false });
 
-  if(error || !data){
-    alert("تعذر تحميل البلاغ");
-    window.location.href = "admin.html";
+  const trainerBox = document.getElementById("trainerReports");
+  const traineeBox = document.getElementById("traineeReports");
+
+  if (error) {
+    trainerBox.innerHTML = `<div class="empty-row">حدث خطأ في تحميل البلاغات</div>`;
+    traineeBox.innerHTML = `<div class="empty-row">حدث خطأ في تحميل البلاغات</div>`;
     return;
   }
 
-  currentReport = data;
+  const reports = data || [];
 
-  document.getElementById("r_id").innerText = "بلاغ #" + data.id;
-  document.getElementById("r_type").innerText = data.type || "-";
-  document.getElementById("r_desc").innerText = data.description || "-";
-  document.getElementById("r_location").innerText = data.location || "-";
-  document.getElementById("r_rate").innerText = data.rate || "-";
-  document.getElementById("r_name").innerText = data.sender_name || "-";
-  document.getElementById("r_email").innerText = data.sender_email || "-";
-  document.getElementById("r_role").innerText = data.sender_role || "-";
+  const trainerData = reports.filter(r => r.sender_role === "trainer");
+  const traineeData = reports.filter(r => r.sender_role === "trainee");
 
-  const status = data.status || "قيد المراجعة";
+  const normalizedReports = reports.map(r => ({
+    ...r,
+    status: normalizeStatus(r.status)
+  }));
 
-  document.getElementById("selectedStatus").innerText = status;
-  document.getElementById("statusValue").value = status;
+  const totalCount = normalizedReports.length;
+  const reviewCount = normalizedReports.filter(r => r.status === "قيد المراجعة").length;
+  const doneCount = normalizedReports.filter(r => r.status === "تم التنفيذ").length;
+
+  document.getElementById("totalCount").innerText = totalCount;
+  document.getElementById("reviewCount").innerText = reviewCount;
+  document.getElementById("doneCount").innerText = doneCount;
+
+  const trainerHtml = trainerData.map(makeReportRow).join("");
+  const traineeHtml = traineeData.map(makeReportRow).join("");
+
+  trainerBox.innerHTML = trainerHtml || `<div class="empty-row">لا توجد بلاغات</div>`;
+  traineeBox.innerHTML = traineeHtml || `<div class="empty-row">لا توجد بلاغات</div>`;
 }
-
-function toggleDropdownStatus() {
-  const list = document.getElementById("statusOptions");
-  list.style.display = list.style.display === "block" ? "none" : "block";
-}
-
-function selectStatus(value, event) {
-  event.stopPropagation();
-  document.getElementById("selectedStatus").innerText = value;
-  document.getElementById("statusValue").value = value;
-  document.getElementById("statusOptions").style.display = "none";
-}
-
-document.addEventListener("click", function(e){
-  const list = document.getElementById("statusOptions");
-  const select = document.querySelector(".custom-select");
-  if(select && !select.contains(e.target)){
-    list.style.display = "none";
-  }
-});
-
-async function saveStatus(){
-  const newStatus = document.getElementById("statusValue").value;
-  const supabase = getClient();
-
-  const { error } = await supabase
-    .from("reports")
-    .update({ status: newStatus })
-    .eq("id", selectedId);
-
-  if(error){
-    alert("حدث خطأ في تحديث الحالة");
-    return;
-  }
-
-  alert("تم تحديث حالة البلاغ");
-  window.location.href = "admin.html";
-}
-
-async function deleteReport() {
-  if(!confirm("هل أنت متأكد؟")) return;
-
-  const supabase = getClient();
-
-  const { error } = await supabase
-    .from("reports")
-    .delete()
-    .eq("id", selectedId);
-
-  if(error){
-    alert("حدث خطأ أثناء الحذف");
-    return;
-  }
-
-  alert("تم حذف البلاغ");
-  window.location.href = "admin.html";
-}
-
-loadReport();
 </script>
-
-<footer class="main-footer">
-  <div class="footer-content">
-    <p>&copy; 2026 حقوق محفوظة | محطة الدعم </p>
-    <ul class="footer-links">
-      <li><a href="index.html">الرئيسية</a></li>
-      <li><a href="about.html">عن الموقع</a></li>
-    </ul>
-  </div>
-</footer>
 
 </body>
 </html>
