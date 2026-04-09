@@ -134,25 +134,21 @@ function openReport(id) {
   localStorage.setItem("adminSelectedReport", id);
   window.location.href = "admin_report.html";
 
-  
-  function createReportCard(r) {
-  const statusText = normalizeStatus(r.status);
+function createReportCard(r){
+  let statusText =
+    r.status === "processing" ? "قيد المراجعة" :
+    r.status === "running" ? "قيد التنفيذ" :
+    "تم الحل";
 
   return `
-    <div class="report-card" data-status="${statusText}">
-      
-      <div style="display:flex; flex-direction:column; gap:4px;">
-        <strong>#${r.id} - ${r.type || "-"}</strong>
-        <span style="color:#6b7280; font-size:13px;">
-          ${r.description || "-"}
-        </span>
-      </div>
+    <div class="report-card" data-status="${r.status}">
+      <h3>#${r.id} - ${r.type}</h3>
+      <p><b>الوصف:</b> ${r.desc}</p>
+      <p><b>الموقع:</b> ${r.location || "-"}</p>
 
+      <span class="status-tag">${statusText}</span>
 
-      <button class="btn-process" onclick="openReport('${r.id}')">
-        عرض بلاغ
-      </button>
-
+      <button class="btn-process" onclick="openReport('${r.id}')">عرض البلاغ</button>
     </div>
   `;
 }
