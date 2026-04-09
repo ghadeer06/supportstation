@@ -24,6 +24,15 @@ body{
 }
 
 /* ===== عام ===== */
+.header{
+  background:linear-gradient(135deg, var(--dark), var(--mid));
+  color:#fff;
+  padding:18px;
+  text-align:center;
+  font-size:20px;
+  font-weight:bold;
+}
+
 .container{
   width:90%;
   max-width:900px;
@@ -36,15 +45,6 @@ body{
   padding:20px;
   border-radius:15px;
   box-shadow:0 8px 20px rgba(0,0,0,.08);
-}
-
-.header{
-  background:linear-gradient(135deg, var(--dark), var(--mid));
-  color:#fff;
-  padding:18px;
-  text-align:center;
-  font-size:20px;
-  font-weight:bold;
 }
 
 /* ===== Dropdown ===== */
@@ -101,7 +101,7 @@ body{
   color:#fff;
 }
 
-/* ===== أزرار عامة ===== */
+/* ===== Buttons عامة ===== */
 button{
   padding:12px;
   border:none;
@@ -208,8 +208,6 @@ body.admin-body{
 .admin-main{
   flex:1;
   padding:30px 40px;
-  position:relative;
-  z-index:1;
 }
 
 /* ===== الإحصائيات ===== */
@@ -245,7 +243,7 @@ body.admin-body{
   margin:0;
 }
 
-/* ===== العناوين ===== */
+/* ===== الفلاتر فوق ===== */
 .reports-section{
   margin-top:16px;
 }
@@ -256,15 +254,12 @@ body.admin-body{
   font-weight:900;
 }
 
-/* ===== الفلاتر فوق ===== */
 .admin-filters{
   display:flex;
   gap:14px;
   justify-content:center;
   flex-wrap:wrap;
   margin:10px 0 18px;
-  position:relative;
-  z-index:9999;
 }
 
 .filter-btn{
@@ -279,11 +274,6 @@ body.admin-body{
   cursor:pointer;
   box-shadow:0 6px 20px rgba(0,0,0,.06);
   transition:.2s;
-  pointer-events:auto !important;
-}
-
-.filter-btn:hover{
-  transform:translateY(-1px);
 }
 
 .filter-btn.active{
@@ -298,19 +288,15 @@ body.admin-body{
   padding:12px;
   box-shadow:0 6px 20px rgba(0,0,0,.05);
   border-right:6px solid #5E7B93;
-  position:relative;
-  z-index:1;
 }
 
 .reports-scroll{
   max-height:220px;
   overflow:auto;
   padding-left:4px;
-  position:relative;
-  z-index:1;
 }
 
-/* ===== الصفوف المختصرة ===== */
+/* ===== سطر البلاغ ===== */
 .legacy-report-row{
   background:#fff;
   border:1px solid #e5ebf2;
@@ -379,7 +365,7 @@ body.admin-body{
   border:1px solid #e8edf3;
 }
 
-/* ===== الجوال ===== */
+/* ===== جوال ===== */
 @media (max-width:768px){
   .admin-header{
     padding:14px 16px;
