@@ -6,6 +6,7 @@
   <title>تسجيل الدخول</title>
   <style>
     * { box-sizing: border-box; }
+
     body{
       margin:0;
       min-height:100vh;
@@ -19,6 +20,7 @@
       justify-content:center;
       color:#fff;
     }
+
     .card{
       width:min(520px, 92%);
       background:rgba(255,255,255,0.14);
@@ -27,23 +29,27 @@
       padding:22px;
       backdrop-filter: blur(6px);
     }
+
     h2{
       margin:0 0 8px;
       font-size:26px;
       font-weight:900;
     }
+
     .sub{
       font-size:14px;
       line-height:1.8;
       margin:0 0 14px;
       opacity:.95;
     }
+
     .role-group{
       display:flex;
       gap:10px;
       flex-wrap:wrap;
       margin-bottom:16px;
     }
+
     .role{
       display:flex;
       align-items:center;
@@ -55,14 +61,17 @@
       cursor:pointer;
       user-select:none;
     }
+
     .field{
       margin-bottom:12px;
     }
+
     .field span{
       display:block;
       font-size:13px;
       margin-bottom:6px;
     }
+
     .field input{
       width:100%;
       padding:12px;
@@ -73,9 +82,16 @@
       outline:none;
       font-size:15px;
     }
+
     .field input::placeholder{
       color:rgba(255,255,255,0.75);
     }
+
+    #email{
+      direction:ltr;
+      text-align:left;
+    }
+
     .btn{
       width:100%;
       padding:12px;
@@ -88,19 +104,24 @@
       cursor:pointer;
       margin-top:8px;
     }
+
     .btn:hover{
       background:rgba(255,255,255,0.32);
     }
+
     .msg{
       margin-top:10px;
       min-height:22px;
       font-size:13px;
       line-height:1.7;
     }
-    .otp-box, .name-box{
+
+    .otp-box,
+    .name-box{
       display:none;
       margin-top:12px;
     }
+
     .back-link{
       display:inline-block;
       margin-top:14px;
@@ -108,12 +129,9 @@
       text-decoration:none;
       font-size:13px;
     }
+
     .back-link:hover{
       text-decoration:underline;
-    }
-    #email{
-      direction:ltr;
-      text-align:left;
     }
   </style>
 </head>
@@ -178,17 +196,12 @@
     }
 
     let currentUser = null;
-    let currentRole = null;
-
-    // حطي هنا إيميلات المسؤولين
-    const adminEmails = [
-      "445153760@tvtc.edu.sa"
-    ];
+    let selectedRole = null;
 
     async function startOtp() {
       const msg = document.getElementById("msg");
       const email = document.getElementById("email").value.trim();
-      const selectedRole = document.querySelector('input[name="role"]:checked')?.value || "trainee";
+      selectedRole = document.querySelector('input[name="role"]:checked')?.value || "trainee";
 
       if (email === "") {
         msg.innerText = "يرجى إدخال البريد الإلكتروني";
@@ -205,16 +218,10 @@
       try {
         const supabase = getClient();
 
-        // إذا الإيميل من إيميلات المسؤولين نخليه أدمن مهما كان الاختيار
-        const finalSelectedRole = adminEmails.includes(email) ? "admin" : selectedRole;
-
         const { error } = await supabase.auth.signInWithOtp({
           email: email,
           options: {
-            shouldCreateUser: true,
-            data: {
-              role: finalSelectedRole
-            }
+            shouldCreateUser: true
           }
         });
 
@@ -223,7 +230,6 @@
           return;
         }
 
-        currentRole = finalSelectedRole;
         document.getElementById("otpBox").style.display = "block";
         msg.innerText = "تم إرسال الرمز إلى بريدك الإلكتروني";
       } catch (e) {
@@ -259,14 +265,7 @@
 
         currentUser = data.user;
 
-        // إذا الإيميل ضمن المسؤولين نخليه admin غصب
-        const authRole = data.user?.user_metadata?.role || currentRole || "trainee";
-        const finalRole = adminEmails.includes(email) ? "admin" : authRole;
-        currentRole = finalRole;
-
-        localStorage.setItem("user_email", email);
-        localStorage.setItem("user_role", finalRole);
-
+        // نبحث في جدول users بالإيميل
         const { data: existingUser, error: findError } = await supabase
           .from("users")
           .select("*")
@@ -274,30 +273,24 @@
           .maybeSingle();
 
         if (findError) {
-          msg.innerText = "تم التحقق لكن صار خطأ في جلب بيانات المستخدم";
+          msg.innerText = "صار خطأ في جلب بيانات المستخدم: " + findError.message;
           return;
         }
 
-        if (existingUser && existingUser.name) {
-          // إذا كان موجود من قبل نثبت الرول الصحيح
-          if (existingUser.role !== finalRole) {
-            const { error: updateRoleError } = await supabase
-              .from("users")
-              .update({ role: finalRole })
-              .eq("email", email);
+        // إذا المستخدم موجود من قبل
+        if (existingUser) {
+          const finalRole = existingUser.role || "trainee";
 
-            if (updateRoleError) {
-              msg.innerText = "تم التحقق لكن صار خطأ في تحديث الدور";
-              return;
-            }
-          }
+          localStorage.setItem("user_email", email);
+          localStorage.setItem("user_role", finalRole);
+          localStorage.setItem("userName", existingUser.name || "");
 
-          localStorage.setItem("userName", existingUser.name);
           msg.innerText = "تم تسجيل الدخول بنجاح";
           goToPage(finalRole);
           return;
         }
 
+        // إذا المستخدم جديد
         document.getElementById("nameBox").style.display = "block";
         msg.innerText = "أدخلي اسمك لإكمال التسجيل أول مرة";
       } catch (e) {
@@ -318,17 +311,17 @@
       try {
         const supabase = getClient();
 
-        const finalRole = adminEmails.includes(email) ? "admin" : currentRole;
+        const finalRole = selectedRole || "trainee";
 
         const { error } = await supabase
           .from("users")
-          .upsert([
+          .insert([
             {
               email: email,
               name: name,
               role: finalRole
             }
-          ], { onConflict: "email" });
+          ]);
 
         if (error) {
           msg.innerText = "صار خطأ في حفظ الاسم: " + error.message;
