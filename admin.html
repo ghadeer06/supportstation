@@ -1,79 +1,69 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
   <title>لوحة المسؤول</title>
-  <link rel="stylesheet" href="adminStyles.css" />
+  <link rel="stylesheet" href="adminStyles.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 
-<body class="admin-body">
+<body>
 
-  <!-- الهيدر -->
-  <header class="admin-header">
+<!-- ===== HEADER ===== -->
+<header class="admin-header">
+  <div class="admin-right">
+    <img src="img/logo.png" class="admin-logo">
+    <div class="admin-title">
+      <h1>لوحة تحكم المسؤول</h1>
+      <span>متابعة البلاغات</span>
+    </div>
+  </div>
 
-    <div class="admin-right">
-      <img src="img/logo.png" class="admin-logo">
+  <a href="login.html" class="logout">تسجيل الخروج</a>
+</header>
 
-      <div class="admin-title">
-        <h1>لوحة تحكم المسؤول</h1>
-        <span>متابعة البلاغات</span>
-      </div>
+<!-- ===== MAIN ===== -->
+<main class="admin-main">
+
+  <!-- ===== CARDS ===== -->
+  <section class="admin-cards">
+
+    <div class="stat-card stat-filter" onclick="setFilter('done')">
+      <h3>تم التنفيذ</h3>
+      <p id="doneCount">0</p>
     </div>
 
-    <a href="login.html" class="logout">تسجيل الخروج</a>
+    <div class="stat-card stat-filter" onclick="setFilter('review')">
+      <h3>قيد المراجعة</h3>
+      <p id="reviewCount">0</p>
+    </div>
 
-  </header>
+    <div class="stat-card stat-filter" onclick="setFilter('all')">
+      <h3>إجمالي البلاغات</h3>
+      <p id="totalCount">0</p>
+    </div>
 
-  <!-- المحتوى -->
-  <main class="admin-main">
+  </section>
 
-    <!-- المربعات -->
-    <section class="admin-cards">
+  <!-- ===== REPORTS ===== -->
+  <section class="reports-section">
+    <h2 class="section-title">بلاغات المتدربين</h2>
 
-      <div class="stat-card" onclick="setFilter('done')">
-        <h3>تم التنفيذ</h3>
-        <p id="doneCount">0</p>
-      </div>
+    <div class="reports-box">
+      <div id="reportsList"></div>
+    </div>
+  </section>
 
-      <div class="stat-card" onclick="setFilter('review')">
-        <h3>قيد المراجعة</h3>
-        <p id="reviewCount">0</p>
-      </div>
+</main>
 
-      <div class="stat-card" onclick="setFilter('all')">
-        <h3>إجمالي البلاغات</h3>
-        <p id="totalCount">0</p>
-      </div>
+<footer class="main-footer">
+  © 2026 محطة الدعم - جميع الحقوق محفوظة
+</footer>
 
-    </section>
-
-    <!-- المدربين -->
-    <section class="reports-section">
-      <h2 class="section-title">بلاغات المدربين</h2>
-      <div class="reports-box">
-        <div class="reports-scroll" id="trainerReports"></div>
-      </div>
-    </section>
-
-    <!-- المتدربين -->
-    <section class="reports-section">
-      <h2 class="section-title">بلاغات المتدربين</h2>
-      <div class="reports-box">
-        <div class="reports-scroll" id="traineeReports"></div>
-      </div>
-    </section>
-
-  </main>
-
-  <!-- الفوتر -->
-  <footer class="main-footer">
-    <p>© 2026 جميع الحقوق محفوظة | محطة الدعم</p>
-  </footer>
-
+<!-- ===== SCRIPT ===== -->
 <script>
-function getClient() {
+
+function getClient(){
   return window.supabase.createClient(
     'https://mcxdjisoyqdnyieboqpy.supabase.co',
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1jeGRqaXNveXFkbnlpZWJvcXB5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0MDI3NDAsImV4cCI6MjA5MDk3ODc0MH0.kIwJ1pc-GLX1lTvstLSDZ5Li1rd9vwutI4-Wz_HR6nE'
@@ -82,72 +72,86 @@ function getClient() {
 
 let currentFilter = "all";
 
-function normalizeStatus(status) {
-  if (status === "تم الحل") return "تم التنفيذ";
-  if (status === "قيد المعالجة") return "قيد المراجعة";
-  return status || "قيد المراجعة";
-}
+function setFilter(type){
+  currentFilter = type;
 
-function setFilter(filter) {
-  currentFilter = filter;
+  document.querySelectorAll(".stat-filter").forEach(el=>{
+    el.classList.remove("active");
+  });
+
+  event.currentTarget.classList.add("active");
+
   loadReports();
 }
 
-function openReport(id) {
-  localStorage.setItem("adminSelectedReport", id);
-  window.location.href = "admin_report.html";
-}
-
-function makeReportRow(r) {
-  const status = normalizeStatus(r.status);
-
-  if (currentFilter === "done" && status !== "تم التنفيذ") return "";
-  if (currentFilter === "review" && status !== "قيد المراجعة") return "";
-
-  return `
-    <div class="legacy-report-row">
-      <div class="legacy-report-content">
-        <span>#${r.id}</span>
-        <span>${r.type}</span>
-        <span>الوصف: ${r.description}</span>
-        <span>الموقع: ${r.location}</span>
-        <span>الحالة: ${status}</span>
-      </div>
-
-      <button class="legacy-view-btn" onclick="openReport(${r.id})">
-        عرض بلاغ
-      </button>
-    </div>
-  `;
-}
-
-async function loadReports() {
+async function loadReports(){
   const supabase = getClient();
 
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from("reports")
-    .select("*")
-    .order("id", { ascending: false });
+    .select("*");
 
-  const reports = data || [];
+  if(error) return;
 
-  const trainer = reports.filter(r => r.sender_role === "trainer");
-  const trainee = reports.filter(r => r.sender_role === "trainee");
+  const list = document.getElementById("reportsList");
+  list.innerHTML = "";
 
-  document.getElementById("totalCount").innerText = reports.length;
-  document.getElementById("reviewCount").innerText =
-    reports.filter(r => normalizeStatus(r.status) === "قيد المراجعة").length;
-  document.getElementById("doneCount").innerText =
-    reports.filter(r => normalizeStatus(r.status) === "تم التنفيذ").length;
+  let done = 0;
+  let review = 0;
 
-  document.getElementById("trainerReports").innerHTML =
-    trainer.map(makeReportRow).join("") || "لا توجد بلاغات";
+  data.forEach(r=>{
+    if(r.status === "تم التنفيذ") done++;
+    if(r.status === "قيد المراجعة") review++;
+  });
 
-  document.getElementById("traineeReports").innerHTML =
-    trainee.map(makeReportRow).join("") || "لا توجد بلاغات";
+  document.getElementById("doneCount").innerText = done;
+  document.getElementById("reviewCount").innerText = review;
+  document.getElementById("totalCount").innerText = data.length;
+
+  let filtered = data;
+
+  if(currentFilter === "done"){
+    filtered = data.filter(r => r.status === "تم التنفيذ");
+  }
+
+  if(currentFilter === "review"){
+    filtered = data.filter(r => r.status === "قيد المراجعة");
+  }
+
+  if(filtered.length === 0){
+    list.innerHTML = `<div class="empty">لا يوجد بلاغات</div>`;
+    return;
+  }
+
+  filtered.forEach(r=>{
+    list.innerHTML += `
+      <div class="report-row">
+        <div class="report-text">
+          <b>#${r.id}</b> - ${r.description}
+        </div>
+
+        <div class="report-actions">
+          <button onclick="updateStatus(${r.id}, 'قيد المراجعة')">قيد المراجعة</button>
+          <button onclick="updateStatus(${r.id}, 'تم التنفيذ')">تم التنفيذ</button>
+        </div>
+      </div>
+    `;
+  });
+}
+
+async function updateStatus(id, status){
+  const supabase = getClient();
+
+  await supabase
+    .from("reports")
+    .update({ status: status })
+    .eq("id", id);
+
+  loadReports();
 }
 
 loadReports();
+
 </script>
 
 </body>
