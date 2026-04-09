@@ -133,25 +133,20 @@ function updateCounts() {
 function openReport(id) {
   localStorage.setItem("adminSelectedReport", id);
   window.location.href = "admin_report.html";
-
-function createReportCard(r){
-  let statusText =
-    r.status === "processing" ? "قيد المراجعة" :
-    r.status === "running" ? "قيد التنفيذ" :
-    "تم الحل";
+  
+function createReportCard(r) {
+  const statusText = normalizeStatus(r.status);
 
   return `
-    <div class="report-card" data-status="${r.status}">
-      <h3>#${r.id} - ${r.type}</h3>
-      <p><b>الوصف:</b> ${r.desc}</p>
-      <p><b>الموقع:</b> ${r.location || "-"}</p>
+    <div class="report-card" data-status="${statusText}">
+      <div class="report-main">
+        <div class="report-head">
+          <h3>بلاغ #${r.id} - ${r.type || "-"}</h3>
+          <span class="status-tag">${statusText}</span>
+        </div>
+      
 
-      <span class="status-tag">${statusText}</span>
-
-      <button class="btn-process" onclick="openReport('${r.id}')">عرض البلاغ</button>
-    </div>
-  `;
-}
+  
         <p><b>الوصف:</b> ${r.description || "-"}</p>
         <p><b>الموقع:</b> ${r.location || "-"}</p>
         <p><b>مقدم البلاغ:</b> ${r.sender_name || "-"}</p>
