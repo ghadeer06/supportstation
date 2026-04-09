@@ -7,7 +7,6 @@
   <link rel="stylesheet" href="style_report.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
-
 <body>
 
 <div class="header">عرض البلاغ</div>
@@ -32,7 +31,6 @@
       <div id="selectedStatus">قيد المراجعة</div>
       <ul id="statusOptions" class="options">
         <li onclick="selectStatus('قيد المراجعة', event)">قيد المراجعة</li>
-        <li onclick="selectStatus('قيد المعالجة', event)">قيد المعالجة</li>
         <li onclick="selectStatus('تم التنفيذ', event)">تم التنفيذ</li>
       </ul>
     </div>
@@ -45,10 +43,7 @@
 
     <div style="display:flex; justify-content:space-between; margin-top:20px;">
       <button class="light" onclick="window.location.href='admin.html'">رجوع</button>
-
-      <button class="danger" onclick="deleteReport()" style="background:#d9534f; color:white;">
-        حذف البلاغ
-      </button>
+      <button class="danger" onclick="deleteReport()" style="background:#d9534f; color:white;">حذف البلاغ</button>
     </div>
 
   </div>
@@ -63,7 +58,6 @@ function getClient(){
 }
 
 let selectedId = localStorage.getItem("adminSelectedReport");
-let currentReport = null;
 
 async function loadReport(){
   if(!selectedId){
@@ -86,8 +80,6 @@ async function loadReport(){
     return;
   }
 
-  currentReport = data;
-
   document.getElementById("r_id").innerText = "بلاغ #" + data.id;
   document.getElementById("r_type").innerText = data.type || "-";
   document.getElementById("r_desc").innerText = data.description || "-";
@@ -97,8 +89,10 @@ async function loadReport(){
   document.getElementById("r_email").innerText = data.sender_email || "-";
   document.getElementById("r_role").innerText = data.sender_role || "-";
 
-  document.getElementById("selectedStatus").innerText = data.status || "قيد المراجعة";
-  document.getElementById("statusValue").value = data.status || "قيد المراجعة";
+  const status = data.status === "تم الحل" ? "تم التنفيذ" : (data.status || "قيد المراجعة");
+
+  document.getElementById("selectedStatus").innerText = status;
+  document.getElementById("statusValue").value = status;
 }
 
 function toggleDropdownStatus() {
