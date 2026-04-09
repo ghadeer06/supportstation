@@ -143,24 +143,22 @@ body{
   scrollbar-width:thin;
 }
 
-
 /* ===== Report Card ===== */
 .report-card{
-    display:flex;
-    justify-content:space-between;
-    gap:12px;
-    background:#fff;
-    border:1px solid #e7eef7;
-    border-radius:14px;
-    padding:12px;
-    margin-bottom:12px;
-    align-items:flex-start;
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  background:#fff;
+  border:1px solid #e7eef7;
+  border-radius:14px;
+  padding:12px;
+  margin-bottom:12px;
+  align-items:flex-start;
 }
 
 .report-card:last-child{
-    margin-bottom:0;
+  margin-bottom:0;
 }
-
 
 .report-main{
   flex:1;
