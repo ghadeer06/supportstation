@@ -23,7 +23,7 @@ body{
   background:var(--bg);
 }
 
-/* ===== عام ===== */
+/* ===== عناصر عامة ===== */
 .header{
   background:linear-gradient(135deg, var(--dark), var(--mid));
   color:#fff;
@@ -168,7 +168,7 @@ body.admin-body{
   align-items:center;
 }
 
-.admin-right{
+.admin-left{
   display:flex;
   align-items:center;
   gap:15px;
@@ -212,58 +212,55 @@ body.admin-body{
 
 /* ===== المربعات العلوية ===== */
 .admin-cards{
-  display:grid;
-  grid-template-columns:repeat(3, 1fr);
+  display:flex;
   gap:12px;
   margin-bottom:18px;
+  flex-wrap:wrap;
 }
 
 .stat-card{
+  flex:1;
+  min-width:220px;
   background:#fff;
   padding:20px 18px;
   border-radius:12px;
-  box-shadow:none;
-  border:1px solid #d7dce2;
+  box-shadow:0 6px 20px rgba(0,0,0,.05);
+  border-top:4px solid #0F2F4A;
   text-align:center;
-  min-height:92px;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
 }
 
 .stat-card h3{
-  font-size:12px;
-  color:#6b7280;
-  margin-bottom:8px;
-  font-weight:700;
+  font-size:13px;
+  color:#5E7B93;
+  margin-bottom:10px;
+  font-weight:900;
 }
 
 .stat-card p{
-  font-size:22px;
+  font-size:30px;
   font-weight:900;
   color:#0F2F4A;
   margin:0;
 }
 
+/* المربعات تصير فلترة */
 .stat-filter{
+  border:none;
   cursor:pointer;
-  background:#fff;
+  transition:.2s;
 }
 
 .stat-filter:hover{
-  border-color:#c3cad3;
+  transform:translateY(-2px);
 }
 
-/* مهم: بدون أزرق */
 .stat-filter.active{
-  background:#fff;
-  border:1px solid #d7dce2;
+  background:linear-gradient(135deg, #2457ff, #173ccf);
 }
 
 .stat-filter.active h3,
 .stat-filter.active p{
-  color:#0F2F4A;
+  color:#fff;
 }
 
 /* ===== العناوين ===== */
@@ -282,9 +279,8 @@ body.admin-body{
   background:#fff;
   border-radius:14px;
   padding:12px;
-  box-shadow:none;
-  border:1px solid #e0e5ea;
-  margin-bottom:14px;
+  box-shadow:0 6px 20px rgba(0,0,0,.05);
+  border-right:6px solid #5E7B93;
 }
 
 .reports-scroll{
@@ -297,27 +293,23 @@ body.admin-body{
 .legacy-report-row{
   background:#fff;
   border:1px solid #e5ebf2;
-  border-radius:12px;
-  padding:10px 12px;
-  margin-bottom:10px;
+  border-radius:14px;
+  padding:12px 14px;
+  margin-bottom:12px;
   display:flex;
   align-items:center;
   justify-content:space-between;
   gap:14px;
 }
 
-.legacy-report-row:last-child{
-  margin-bottom:0;
-}
-
 .legacy-report-content{
   flex:1;
   display:flex;
   align-items:center;
-  gap:8px;
+  gap:10px;
   flex-wrap:wrap;
   color:#213547;
-  font-size:13px;
+  font-size:14px;
   line-height:1.8;
 }
 
@@ -344,11 +336,11 @@ body.admin-body{
 
 .legacy-view-btn{
   border:none;
-  border-radius:8px;
-  padding:7px 11px;
-  background:#6f8ea8;
+  border-radius:10px;
+  padding:8px 12px;
+  background:#5E7B93;
   color:#fff;
-  font-size:11px;
+  font-size:12px;
   font-weight:900;
   cursor:pointer;
 }
@@ -380,10 +372,6 @@ body.admin-body{
     font-size:18px;
   }
 
-  .admin-cards{
-    grid-template-columns:1fr;
-  }
-
   .legacy-report-row{
     flex-direction:column;
     align-items:flex-start;
@@ -400,5 +388,4 @@ body.admin-body{
     flex-direction:column;
     gap:8px;
   }
-} 
-عدليلي عليهم وكتبيلي كل واحد ببلوك يعني html css html الثاني ترى سويت كذا عشان تعرفين بس
+}
