@@ -86,11 +86,11 @@ body{
 .stat-card{
   background:#fff;
   border-radius:12px;
-  padding:12px 14px; /* أصغر = أنحف */
+  padding:12px 14px;
   box-shadow:0 2px 8px rgba(0,0,0,0.05);
-  border-right:4px solid #5E7B93; /* خط أخف */
+  border-right:4px solid #5E7B93; 
   text-align:center;
-  height:75px; /* صغرناها */
+  height:75px; 
   display:flex;
   flex-direction:column;
   justify-content:center;
@@ -103,14 +103,14 @@ body{
 }
 
 .stat-card h3{
-  font-size:11px; /* أصغر */
+  font-size:11px; 
   color:#7b8a99;
   margin-bottom:4px;
   font-weight:700;
 }
 
 .stat-card p{
-  font-size:22px; /* أصغر */
+  font-size:22px; 
   font-weight:900;
   color:#0F2F4A;
   margin:0;
