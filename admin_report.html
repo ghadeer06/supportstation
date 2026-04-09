@@ -1,179 +1,140 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>عرض البلاغ</title>
-  <link rel="stylesheet" href="style_report.css">
+  <link rel="stylesheet" href="style_report.css" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
-
 <body>
 
-<div class="header">عرض البلاغ</div>
+  <div class="report-page">
+    <div class="report-card">
 
-<div class="container" style="margin-top:80px;">
-  <div class="card" id="reportCard">
+      <div class="report-info">
+        <h2 id="r_id">بلاغ #</h2>
 
-    <h3 id="r_id"></h3>
+        <p><strong>نوع البلاغ:</strong> <span id="r_type">-</span></p>
+        <p><strong>الوصف:</strong> <span id="r_desc">-</span></p>
+        <p><strong>الموقع:</strong> <span id="r_location">-</span></p>
+        <p><strong>من:</strong> <span id="r_from">-</span></p>
+        <p><strong>إلى:</strong> <span id="r_to">-</span></p>
+        <p><strong>شدة البلاغ:</strong> <span id="r_rate">-</span></p>
 
-    <p><b>نوع البلاغ:</b> <span id="r_type"></span></p>
-    <p><b>الوصف:</b> <span id="r_desc"></span></p>
-    <p><b>الموقع:</b> <span id="r_location"></span></p>
-    <p><b>شدة البلاغ:</b> <span id="r_rate"></span></p>
-    <p><b>مقدم البلاغ:</b> <span id="r_name"></span></p>
-    <p><b>الإيميل:</b> <span id="r_email"></span></p>
-    <p><b>الدور:</b> <span id="r_role"></span></p>
+        <div class="status-block">
+          <label for="statusValue"><strong>الحالة الحالية:</strong></label>
 
-    <br>
+          <div class="select-wrap">
+            <select id="statusValue">
+              <option value="قيد المراجعة">قيد المراجعة</option>
+              <option value="تم التنفيذ">تم التنفيذ</option>
+            </select>
+          </div>
+        </div>
 
-    <label><b>الحالة الحالية:</b></label>
+        <button class="save-btn" onclick="saveStatus()">حفظ الحالة</button>
 
-    <div class="custom-select" onclick="toggleDropdownStatus()">
-      <div id="selectedStatus">قيد المراجعة</div>
+        <div class="bottom-actions">
+          <button class="delete-btn" onclick="deleteReport()">حذف البلاغ</button>
+          <button class="back-btn" onclick="goBack()">رجوع</button>
+        </div>
+      </div>
 
-      <!-- فقط خيارين -->
-      <ul id="statusOptions" class="options">
-        <li onclick="selectStatus('قيد المراجعة', event)">قيد المراجعة</li>
-        <li onclick="selectStatus('تم التنفيذ', event)">تم التنفيذ</li>
-      </ul>
     </div>
-
-    <br>
-
-    <input type="hidden" id="statusValue">
-
-    <button class="primary" onclick="saveStatus()">حفظ الحالة</button>
-
-    <div style="display:flex; justify-content:space-between; margin-top:20px;">
-      <button class="light" onclick="window.location.href='admin.html'">رجوع</button>
-
-      <button class="danger" onclick="deleteReport()" style="background:#d9534f; color:white;">
-        حذف البلاغ
-      </button>
-    </div>
-
   </div>
-</div>
 
-<script>
-function getClient(){
-  return window.supabase.createClient(
-    'https://mcxdjisoyqdnyieboqpy.supabase.co',
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1jeGRqaXNveXFkbnlpZWJvcXB5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0MDI3NDAsImV4cCI6MjA5MDk3ODc0MH0.kIwJ1pc-GLX1lTvstLSDZ5Li1rd9vwutI4-Wz_HR6nE'
-  );
-}
+  <script>
+    function getClient() {
+      return window.supabase.createClient(
+        'https://mcxdjisoyqdnyieboqpy.supabase.co',
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1jeGRqaXNveXFkbnlpZWJvcXB5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0MDI3NDAsImV4cCI6MjA5MDk3ODc0MH0.kIwJ1pc-GLX1lTvstLSDZ5Li1rd9vwutI4-Wz_HR6nE'
+      );
+    }
 
-let selectedId = localStorage.getItem("adminSelectedReport");
-let currentReport = null;
+    let selectedId = localStorage.getItem("adminSelectedReport");
 
-async function loadReport(){
-  if(!selectedId){
-    alert("لم يتم تحديد البلاغ");
-    window.location.href = "admin.html";
-    return;
-  }
+    function normalizeStatus(status) {
+      if (status === "تم الحل") return "تم التنفيذ";
+      if (status === "قيد المعالجة") return "قيد المراجعة";
+      return status || "قيد المراجعة";
+    }
 
-  const supabase = getClient();
+    async function loadReport() {
+      if (!selectedId) {
+        alert("لم يتم تحديد البلاغ");
+        window.location.href = "admin.html";
+        return;
+      }
 
-  const { data, error } = await supabase
-    .from("reports")
-    .select("*")
-    .eq("id", selectedId)
-    .single();
+      const supabase = getClient();
 
-  if(error || !data){
-    alert("تعذر تحميل البلاغ");
-    window.location.href = "admin.html";
-    return;
-  }
+      const { data, error } = await supabase
+        .from("reports")
+        .select("*")
+        .eq("id", selectedId)
+        .single();
 
-  currentReport = data;
+      if (error || !data) {
+        alert("تعذر تحميل البلاغ");
+        window.location.href = "admin.html";
+        return;
+      }
 
-  document.getElementById("r_id").innerText = "بلاغ #" + data.id;
-  document.getElementById("r_type").innerText = data.type || "-";
-  document.getElementById("r_desc").innerText = data.description || "-";
-  document.getElementById("r_location").innerText = data.location || "-";
-  document.getElementById("r_rate").innerText = data.rate || "-";
-  document.getElementById("r_name").innerText = data.sender_name || "-";
-  document.getElementById("r_email").innerText = data.sender_email || "-";
-  document.getElementById("r_role").innerText = data.sender_role || "-";
+      document.getElementById("r_id").innerText = "بلاغ #" + data.id;
+      document.getElementById("r_type").innerText = data.type || "-";
+      document.getElementById("r_desc").innerText = data.description || "-";
+      document.getElementById("r_location").innerText = data.location || "-";
+      document.getElementById("r_from").innerText = data.from_location || "-";
+      document.getElementById("r_to").innerText = data.to_location || "-";
+      document.getElementById("r_rate").innerText = data.rate || "-";
 
-  const status = data.status || "قيد المراجعة";
+      document.getElementById("statusValue").value = normalizeStatus(data.status);
+    }
 
-  document.getElementById("selectedStatus").innerText = status;
-  document.getElementById("statusValue").value = status;
-}
+    async function saveStatus() {
+      const newStatus = document.getElementById("statusValue").value;
+      const supabase = getClient();
 
-function toggleDropdownStatus() {
-  const list = document.getElementById("statusOptions");
-  list.style.display = list.style.display === "block" ? "none" : "block";
-}
+      const { error } = await supabase
+        .from("reports")
+        .update({ status: newStatus })
+        .eq("id", selectedId);
 
-function selectStatus(value, event) {
-  event.stopPropagation();
-  document.getElementById("selectedStatus").innerText = value;
-  document.getElementById("statusValue").value = value;
-  document.getElementById("statusOptions").style.display = "none";
-}
+      if (error) {
+        alert("حدث خطأ أثناء حفظ الحالة");
+        return;
+      }
 
-document.addEventListener("click", function(e){
-  const list = document.getElementById("statusOptions");
-  const select = document.querySelector(".custom-select");
-  if(select && !select.contains(e.target)){
-    list.style.display = "none";
-  }
-});
+      alert("تم حفظ الحالة");
+      window.location.href = "admin.html";
+    }
 
-async function saveStatus(){
-  const newStatus = document.getElementById("statusValue").value;
-  const supabase = getClient();
+    async function deleteReport() {
+      if (!confirm("هل أنت متأكدة من حذف البلاغ؟")) return;
 
-  const { error } = await supabase
-    .from("reports")
-    .update({ status: newStatus })
-    .eq("id", selectedId);
+      const supabase = getClient();
 
-  if(error){
-    alert("حدث خطأ في تحديث الحالة");
-    return;
-  }
+      const { error } = await supabase
+        .from("reports")
+        .delete()
+        .eq("id", selectedId);
 
-  alert("تم تحديث حالة البلاغ");
-  window.location.href = "admin.html";
-}
+      if (error) {
+        alert("حدث خطأ أثناء حذف البلاغ");
+        return;
+      }
 
-async function deleteReport() {
-  if(!confirm("هل أنت متأكد؟")) return;
+      alert("تم حذف البلاغ");
+      window.location.href = "admin.html";
+    }
 
-  const supabase = getClient();
+    function goBack() {
+      window.location.href = "admin.html";
+    }
 
-  const { error } = await supabase
-    .from("reports")
-    .delete()
-    .eq("id", selectedId);
-
-  if(error){
-    alert("حدث خطأ أثناء الحذف");
-    return;
-  }
-
-  alert("تم حذف البلاغ");
-  window.location.href = "admin.html";
-}
-
-loadReport();
-</script>
-
-<footer class="main-footer">
-  <div class="footer-content">
-    <p>&copy; 2026 حقوق محفوظة | محطة الدعم </p>
-    <ul class="footer-links">
-      <li><a href="index.html">الرئيسية</a></li>
-      <li><a href="about.html">عن الموقع</a></li>
-    </ul>
-  </div>
-</footer>
+    loadReport();
+  </script>
 
 </body>
 </html>
