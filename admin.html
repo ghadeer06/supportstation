@@ -12,7 +12,7 @@
   <header class="admin-header">
     <a href="login.html" class="logout">تسجيل الخروج</a>
 
-    <div class="admin-right">
+    <div class="admin-left">
       <div class="admin-title">
         <h1>لوحة تحكم المسؤول</h1>
         <span>متابعة البلاغات</span>
@@ -23,23 +23,25 @@
 
   <main class="admin-main">
 
+    <!-- المربعات نفسها فلترة -->
     <section class="admin-cards">
-      <button type="button" class="stat-card stat-filter" id="filterDone">
-        <h3>تم التنفيذ</h3>
-        <p id="doneCount">0</p>
-      </button>
-
-      <button type="button" class="stat-card stat-filter" id="filterReview">
-        <h3>قيد المراجعة</h3>
-        <p id="reviewCount">0</p>
-      </button>
-
-      <button type="button" class="stat-card stat-filter" id="filterAll">
+      <button type="button" class="stat-card stat-filter active" id="filterAll">
         <h3>إجمالي البلاغات</h3>
         <p id="totalCount">0</p>
       </button>
+
+      <button type="button" class="stat-card stat-filter" id="filterProcessing">
+        <h3>قيد المعالجة</h3>
+        <p id="processingCount">0</p>
+      </button>
+
+      <button type="button" class="stat-card stat-filter" id="filterDone">
+        <h3>تم الحل</h3>
+        <p id="doneCount">0</p>
+      </button>
     </section>
 
+    <!-- بلاغات المدربين -->
     <section class="reports-section">
       <h2 class="section-title">بلاغات المدربين</h2>
       <div class="reports-box">
@@ -47,6 +49,7 @@
       </div>
     </section>
 
+    <!-- بلاغات المتدربين -->
     <section class="reports-section">
       <h2 class="section-title">بلاغات المتدربين</h2>
       <div class="reports-box">
@@ -55,16 +58,6 @@
     </section>
 
   </main>
-
-  <footer class="main-footer">
-    <div class="footer-content">
-      <p>&copy; 2026 حقوق محفوظة | محطة الدعم</p>
-      <ul class="footer-links">
-        <li><a href="index.html">الرئيسية</a></li>
-        <li><a href="about.html">عن الموقع</a></li>
-      </ul>
-    </div>
-  </footer>
 
 <script>
 function getClient() {
@@ -76,28 +69,34 @@ function getClient() {
 
 let currentFilter = "all";
 
-function normalizeStatus(status) {
-  if (status === "تم الحل") return "تم التنفيذ";
-  if (status === "قيد المعالجة") return "قيد المراجعة";
-  return status || "قيد المراجعة";
+function mapStatusToFilter(status) {
+  if (status === "قيد المعالجة") return "processing";
+  if (status === "تم التنفيذ" || status === "تم الحل") return "done";
+  return "all";
 }
 
-function setFilter(filter) {
+function setFilter(filter, clickedCard) {
   currentFilter = filter;
+
+  document.querySelectorAll(".stat-filter").forEach(card => {
+    card.classList.remove("active");
+  });
+
+  clickedCard.classList.add("active");
   loadReports();
 }
 
 document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("filterAll").addEventListener("click", function () {
-    setFilter("all");
+    setFilter("all", this);
   });
 
-  document.getElementById("filterReview").addEventListener("click", function () {
-    setFilter("review");
+  document.getElementById("filterProcessing").addEventListener("click", function () {
+    setFilter("processing", this);
   });
 
   document.getElementById("filterDone").addEventListener("click", function () {
-    setFilter("done");
+    setFilter("done", this);
   });
 
   loadReports();
@@ -109,10 +108,12 @@ function openReport(id) {
 }
 
 function makeReportRow(r) {
-  const statusText = normalizeStatus(r.status);
+  const statusText = r.status || "قيد المراجعة";
+  const statusFilter = mapStatusToFilter(statusText);
 
-  if (currentFilter === "done" && statusText !== "تم التنفيذ") return "";
-  if (currentFilter === "review" && statusText !== "قيد المراجعة") return "";
+  if (currentFilter !== "all" && currentFilter !== statusFilter) {
+    return "";
+  }
 
   return `
     <div class="legacy-report-row">
@@ -149,15 +150,16 @@ async function loadReports() {
   }
 
   const reports = data || [];
+
   const trainerData = reports.filter(r => r.sender_role === "trainer");
   const traineeData = reports.filter(r => r.sender_role === "trainee");
 
   const totalCount = reports.length;
-  const reviewCount = reports.filter(r => normalizeStatus(r.status) === "قيد المراجعة").length;
-  const doneCount = reports.filter(r => normalizeStatus(r.status) === "تم التنفيذ").length;
+  const processingCount = reports.filter(r => r.status === "قيد المعالجة").length;
+  const doneCount = reports.filter(r => r.status === "تم التنفيذ" || r.status === "تم الحل").length;
 
   document.getElementById("totalCount").innerText = totalCount;
-  document.getElementById("reviewCount").innerText = reviewCount;
+  document.getElementById("processingCount").innerText = processingCount;
   document.getElementById("doneCount").innerText = doneCount;
 
   const trainerHtml = trainerData.map(makeReportRow).join("");
