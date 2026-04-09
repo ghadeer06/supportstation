@@ -133,7 +133,8 @@ function updateCounts() {
 function openReport(id) {
   localStorage.setItem("adminSelectedReport", id);
   window.location.href = "admin_report.html";
-  
+}
+
 function createReportCard(r) {
   const statusText = normalizeStatus(r.status);
 
@@ -144,9 +145,7 @@ function createReportCard(r) {
           <h3>بلاغ #${r.id} - ${r.type || "-"}</h3>
           <span class="status-tag">${statusText}</span>
         </div>
-      
 
-  
         <p><b>الوصف:</b> ${r.description || "-"}</p>
         <p><b>الموقع:</b> ${r.location || "-"}</p>
         <p><b>مقدم البلاغ:</b> ${r.sender_name || "-"}</p>
