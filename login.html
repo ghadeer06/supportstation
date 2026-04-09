@@ -180,10 +180,15 @@
     let currentUser = null;
     let currentRole = null;
 
+    // حطي هنا إيميلات المسؤولين
+    const adminEmails = [
+      "445153760@tvtc.edu.sa"
+    ];
+
     async function startOtp() {
       const msg = document.getElementById("msg");
       const email = document.getElementById("email").value.trim();
-      const role = document.querySelector('input[name="role"]:checked')?.value || "trainee";
+      const selectedRole = document.querySelector('input[name="role"]:checked')?.value || "trainee";
 
       if (email === "") {
         msg.innerText = "يرجى إدخال البريد الإلكتروني";
@@ -200,12 +205,15 @@
       try {
         const supabase = getClient();
 
+        // إذا الإيميل من إيميلات المسؤولين نخليه أدمن مهما كان الاختيار
+        const finalSelectedRole = adminEmails.includes(email) ? "admin" : selectedRole;
+
         const { error } = await supabase.auth.signInWithOtp({
           email: email,
           options: {
             shouldCreateUser: true,
             data: {
-              role: role
+              role: finalSelectedRole
             }
           }
         });
@@ -215,7 +223,7 @@
           return;
         }
 
-        currentRole = role;
+        currentRole = finalSelectedRole;
         document.getElementById("otpBox").style.display = "block";
         msg.innerText = "تم إرسال الرمز إلى بريدك الإلكتروني";
       } catch (e) {
@@ -250,10 +258,14 @@
         }
 
         currentUser = data.user;
-        currentRole = data.user?.user_metadata?.role || currentRole || "trainee";
+
+        // إذا الإيميل ضمن المسؤولين نخليه admin غصب
+        const authRole = data.user?.user_metadata?.role || currentRole || "trainee";
+        const finalRole = adminEmails.includes(email) ? "admin" : authRole;
+        currentRole = finalRole;
 
         localStorage.setItem("user_email", email);
-        localStorage.setItem("user_role", currentRole);
+        localStorage.setItem("user_role", finalRole);
 
         const { data: existingUser, error: findError } = await supabase
           .from("users")
@@ -267,9 +279,22 @@
         }
 
         if (existingUser && existingUser.name) {
+          // إذا كان موجود من قبل نثبت الرول الصحيح
+          if (existingUser.role !== finalRole) {
+            const { error: updateRoleError } = await supabase
+              .from("users")
+              .update({ role: finalRole })
+              .eq("email", email);
+
+            if (updateRoleError) {
+              msg.innerText = "تم التحقق لكن صار خطأ في تحديث الدور";
+              return;
+            }
+          }
+
           localStorage.setItem("userName", existingUser.name);
           msg.innerText = "تم تسجيل الدخول بنجاح";
-          goToPage(currentRole);
+          goToPage(finalRole);
           return;
         }
 
@@ -293,14 +318,15 @@
       try {
         const supabase = getClient();
 
+        const finalRole = adminEmails.includes(email) ? "admin" : currentRole;
+
         const { error } = await supabase
           .from("users")
           .upsert([
             {
-            
               email: email,
-               name: name,
-              role: currentRole
+              name: name,
+              role: finalRole
             }
           ], { onConflict: "email" });
 
@@ -310,8 +336,11 @@
         }
 
         localStorage.setItem("userName", name);
+        localStorage.setItem("user_email", email);
+        localStorage.setItem("user_role", finalRole);
+
         msg.innerText = "تم حفظ الاسم وتسجيل الدخول بنجاح";
-        goToPage(currentRole);
+        goToPage(finalRole);
       } catch (e) {
         msg.innerText = "صار خطأ: " + e.message;
       }
