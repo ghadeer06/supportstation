@@ -4,34 +4,26 @@
   --bg:#F3F1EC;
 }
 
-*{box-sizing:border-box}
-html, body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
-}
-
-body {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+*{
+  box-sizing:border-box;
   margin:0;
-  font-family: Arial, sans-serif;
-  direction: rtl;
-  background: var(--bg);
+  padding:0;
 }
 
-/* ===== Header ===== */
-.header{
-  background: linear-gradient(135deg, var(--dark), var(--mid));
-  color:#fff;
-  padding:18px;
-  text-align:center;
-  font-size:20px;
-  font-weight:bold;
+html, body{
+  height:100%;
 }
 
-/* ===== Container ===== */
+body{
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  font-family:Arial, sans-serif;
+  direction:rtl;
+  background:var(--bg);
+}
+
+/* ===== عام ===== */
 .container{
   width:90%;
   max-width:900px;
@@ -46,62 +38,70 @@ body {
   box-shadow:0 8px 20px rgba(0,0,0,.08);
 }
 
+.header{
+  background:linear-gradient(135deg, var(--dark), var(--mid));
+  color:#fff;
+  padding:18px;
+  text-align:center;
+  font-size:20px;
+  font-weight:bold;
+}
+
 /* ===== Dropdown ===== */
-.custom-select {
-  width: 100%;
-  background: #fafafa;
-  border: 2px solid #ddd;
-  border-radius: 10px;
-  padding: 12px;
-  font-size: 15px;
-  font-family: "Tajawal", sans-serif;
-  cursor: pointer;
-  position: relative;
-  transition: 0.25s ease;
+.custom-select{
+  width:100%;
+  background:#fafafa;
+  border:2px solid #ddd;
+  border-radius:10px;
+  padding:12px;
+  font-size:15px;
+  cursor:pointer;
+  position:relative;
+  transition:.25s ease;
 }
 
-.custom-select:hover {
-  border-color: var(--mid);
+.custom-select:hover{
+  border-color:var(--mid);
 }
 
-.custom-select::after {
-  content: "▼";
-  position: absolute;
-  left: 15px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--mid);
-  font-size: 14px;
+.custom-select::after{
+  content:"▼";
+  position:absolute;
+  left:15px;
+  top:50%;
+  transform:translateY(-50%);
+  color:var(--mid);
+  font-size:14px;
 }
 
-.options {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  background: white;
-  border: 2px solid #ddd;
-  border-radius: 10px;
-  position: absolute;
-  width: 100%;
-  top: 55px;
-  left: 0;
-  display: none;
-  box-shadow: 0 8px 20px rgba(0,0,0,.08);
-  z-index: 10;
+.options{
+  list-style:none;
+  margin:0;
+  padding:0;
+  background:#fff;
+  border:2px solid #ddd;
+  border-radius:10px;
+  position:absolute;
+  width:100%;
+  top:55px;
+  left:0;
+  display:none;
+  box-shadow:0 8px 20px rgba(0,0,0,.08);
+  z-index:10;
 }
 
-.options li {
-  padding: 12px;
-  cursor: pointer;
-  transition: 0.2s;
+.options li{
+  padding:12px;
+  cursor:pointer;
+  transition:.2s;
 }
 
-.options li:hover {
-  background: var(--mid);
-  color: white;
+.options li:hover{
+  background:var(--mid);
+  color:#fff;
 }
 
-/* ===== Buttons ===== */
+/* ===== أزرار عامة ===== */
 button{
   padding:12px;
   border:none;
@@ -112,7 +112,7 @@ button{
 
 .primary{
   width:100%;
-  background: linear-gradient(135deg, var(--dark), var(--mid));
+  background:linear-gradient(135deg, var(--dark), var(--mid));
   color:#fff;
   margin-top:15px;
 }
@@ -123,59 +123,42 @@ button{
 }
 
 /* ===== Footer ===== */
-.main-footer {
-    background-color: #2c3e50;
-    color: #ffffff;
-    padding: 20px 0;
-    text-align: center;
+.main-footer{
+  background-color:#2c3e50;
+  color:#fff;
+  padding:20px 0;
+  text-align:center;
 }
 
-.footer-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
+.footer-content{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:10px;
 }
 
-.footer-links {
-    list-style: none;
-    padding: 0;
-    display: flex;
-    gap: 15px;
+.footer-links{
+  list-style:none;
+  padding:0;
+  display:flex;
+  gap:15px;
 }
 
-.footer-links a {
-    color: #ecf0f1;
-    text-decoration: none;
-    transition: color 0.3s;
+.footer-links a{
+  color:#ecf0f1;
+  text-decoration:none;
+  transition:color .3s;
 }
 
-.footer-links a:hover {
-    color: #3498db;
+.footer-links a:hover{
+  color:#3498db;
 }
 
-@media (max-width: 600px) {
-    .footer-links {
-        flex-direction: column;
-        gap: 8px;
-    }
-}
-
-
-
-*{margin:0;padding:0;box-sizing:border-box}
-
+/* ===== صفحة الأدمن ===== */
 body.admin-body{
-  font-family: Arial, sans-serif;
-  direction: rtl;
   background:#F3F1EC;
-  margin:0;
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
 }
 
-/* ===== Header ===== */
 .admin-header{
   background:linear-gradient(to left, #0F2F4A, #5E7B93);
   color:#fff;
@@ -217,19 +200,22 @@ body.admin-body{
   font-weight:900;
   transition:.2s;
 }
-.logout:hover{background:#e0e0e0}
 
-/* ===== Main ===== */
-.admin-main{
-	
-	flex: 1;
-  padding:30px 40px;
+.logout:hover{
+  background:#e0e0e0;
 }
 
-/* ===== Stats Cards ===== */
+.admin-main{
+  flex:1;
+  padding:30px 40px;
+  position:relative;
+  z-index:1;
+}
+
+/* ===== الإحصائيات ===== */
 .admin-cards{
   display:flex;
-  gap:12px;              /* لاصقه أكثر */
+  gap:12px;
   margin-bottom:18px;
   flex-wrap:wrap;
 }
@@ -240,12 +226,9 @@ body.admin-body{
   background:#fff;
   padding:20px 18px;
   border-radius:12px;
-  box-shadow:0 6px 20px rgba(0,0,0,0.05);
+  box-shadow:0 6px 20px rgba(0,0,0,.05);
   border-top:4px solid #0F2F4A;
   text-align:center;
-  cursor:pointer;
-  border-left:0;
-  border-right:0;
 }
 
 .stat-card h3{
@@ -262,308 +245,128 @@ body.admin-body{
   margin:0;
 }
 
-/* إزالة خط underline لو صار زر */
-.stat-card, .stat-card *{
-  text-decoration:none !important;
-}
-
-.stat-click.active{
-  outline:3px solid rgba(94,123,147,0.35);
-}
-
-/* ===== Section Title ===== */
+/* ===== العناوين ===== */
 .reports-section{
   margin-top:16px;
 }
 
 .section-title{
-  margin: 6px 0 12px;
+  margin:6px 0 12px;
   color:#0F2F4A;
   font-weight:900;
 }
 
-/* ===== Box + Inner Scroll (عشان ما تنزل الصفحة كلها) ===== */
+/* ===== الفلاتر فوق ===== */
+.admin-filters{
+  display:flex;
+  gap:14px;
+  justify-content:center;
+  flex-wrap:wrap;
+  margin:10px 0 18px;
+  position:relative;
+  z-index:9999;
+}
+
+.filter-btn{
+  min-width:180px;
+  border:none;
+  border-radius:14px;
+  padding:16px 22px;
+  background:#fff;
+  color:#0F2F4A;
+  font-weight:900;
+  font-size:18px;
+  cursor:pointer;
+  box-shadow:0 6px 20px rgba(0,0,0,.06);
+  transition:.2s;
+  pointer-events:auto !important;
+}
+
+.filter-btn:hover{
+  transform:translateY(-1px);
+}
+
+.filter-btn.active{
+  background:linear-gradient(135deg, #2457ff, #173ccf);
+  color:#fff;
+}
+
+/* ===== صناديق البلاغات ===== */
 .reports-box{
   background:#fff;
   border-radius:14px;
   padding:12px;
-  box-shadow:0 6px 20px rgba(0,0,0,0.05);
+  box-shadow:0 6px 20px rgba(0,0,0,.05);
   border-right:6px solid #5E7B93;
+  position:relative;
+  z-index:1;
 }
 
 .reports-scroll{
-  max-height:320px;     
+  max-height:220px;
   overflow:auto;
-  padding-left:6px;     /* مساحة بسيطة للسكرول */
+  padding-left:4px;
+  position:relative;
+  z-index:1;
 }
 
-/* ===== Report Card ===== */
-.report-card{
-  display:flex;
-  gap:12px;
+/* ===== الصفوف المختصرة ===== */
+.legacy-report-row{
   background:#fff;
-  border:1px solid #e7eef7;
+  border:1px solid #e5ebf2;
   border-radius:14px;
-  padding:12px;
-  margin-bottom:12px;
-}
-
-.report-card:last-child{margin-bottom:0}
-
-/* Right tags (يمين) */
-.right-tags{
-  min-width:90px;
-  display:flex;
-  flex-direction:column;
-  gap:8px;
-  align-items:flex-start;
-}
-
-.tag{
-  display:inline-block;
-  padding:6px 10px;
-  border-radius:999px;
-  font-weight:900;
-  font-size:12px;
-  border:1px solid transparent;
-}
-
-.tag.id{
-  background:#eef6ff;
-  color:#0b5cab;
-  border-color:#cfe6ff;
-}
-
-.tag.type{
-  background:#f1f1f1;
-  color:#334;
-  border-color:#e2e2e2;
-}
-
-/* Body */
-.report-body{
-  flex:1;
-  display:flex;
-  flex-direction:column;
-  gap:8px;
-}
-
-.report-meta{
-  color:#546373;
-  font-size:13px;
-  line-height:1.9;
-}
-
-.dot{
-  margin: 0 6px;
-  opacity:.7;
-}
-
-.badges{
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
-}
-
-.badge{
-  padding:6px 12px;
-  border-radius:999px;
-  font-weight:900;
-  font-size:12px;
-  border:1px solid transparent;
-}
-
-.badge.priority{
-  background:#ffe8cc;
-  color:#a85b00;
-  border-color:#ffd3a1;
-}
-
-.badge.sev{
-  background:#f6f3ea;
-  border:1px solid #eadfcd;
-  color:#7a5b22;
-}
-
-.report-text{
-  color:#1c2a38;
-  line-height:1.9;
-}
-
-/* Actions */
-.actions{
-  display:flex;
-  gap:8px;
-  justify-content:flex-end;
-  flex-wrap:wrap;
-  margin-top:6px;
-}
-
-.btn-process,
-.btn-done{
-  border:none;
-  padding:8px 12px;
-  border-radius:10px;
-  cursor:pointer;
-  font-weight:900;
-  font-size:12px;
-  transition:.2s;
-}
-
-/* بدء المعالجة (قبل الضغط) */
-.btn-process{
-  background:#5E7B93;
-  color:#fff;
-}
-.btn-process:hover{background:#0F2F4A}
-
-/* قيد المعالجة (بعد الضغط فقط) */
-.btn-process[disabled]{
-  background:#5E7B93;
-  color:#fff;
-  opacity:1;          /* مهم: ما يصير خفيف */
-  cursor:default;
-}
-
-/* تم التنفيذ */
-.btn-done{
-  background:#0F2F4A;
-  color:#fff;
-}
-.btn-done:hover{background:#5E7B93}
-
-.btn-done.solid{
-  background:#0F2F4A;
-  opacity:1;
-  cursor:default;
-}
-
-/* ===== Mobile ===== */
-@media (max-width:768px){
-  .admin-header{padding:14px 16px}
-  .admin-main{padding:18px 16px}
-  .admin-title h1{font-size:18px}
-  .reports-scroll{max-height:360px}
-  .report-card{flex-direction:column}
-  .right-tags{flex-direction:row;min-width:auto}
-  .actions{justify-content:flex-start}
-}
-
-/* ===== Filters ===== */
-.admin-filters{
-  display:flex;
-  gap:14px;
-  justify-content:center;
-  flex-wrap:wrap;
-  margin:10px 0 18px;
-}
-
-.filter-btn{
-  min-width:180px;
-  border:none;
-  border-radius:14px;
-  padding:16px 22px;
-  background:#fff;
-  color:#0F2F4A;
-  font-weight:900;
-  font-size:18px;
-  cursor:pointer;
-  box-shadow:0 6px 20px rgba(0,0,0,0.06);
-  transition:.2s;
-}
-
-.filter-btn:hover{
-  transform:translateY(-1px);
-}
-
-.filter-btn.active{
-  background:linear-gradient(135deg, #2457ff, #173ccf);
-  color:#fff;
-}
-
-/* ===== Old compact rows ===== */
-.simple-report-row{
-  background:#fff;
-  border:1px solid #e8edf3;
-  border-radius:12px;
   padding:12px 14px;
   margin-bottom:12px;
   display:flex;
   align-items:center;
   justify-content:space-between;
-  gap:12px;
-  position:relative;
-  z-index:1;
+  gap:14px;
 }
 
-.simple-report-main{
+.legacy-report-content{
+  flex:1;
   display:flex;
   align-items:center;
   gap:10px;
   flex-wrap:wrap;
-  color:#1d2d3d;
+  color:#213547;
   font-size:14px;
   line-height:1.8;
-  flex:1;
-  min-width:0;
 }
 
-.simple-id{
-  font-weight:900;
+.legacy-id{
   color:#0F2F4A;
+  font-weight:900;
 }
 
-.simple-type{
+.legacy-type{
   background:#eef3f8;
   color:#334;
   border-radius:999px;
   padding:4px 10px;
-  font-weight:900;
   font-size:12px;
+  font-weight:900;
 }
 
-.simple-desc,
-.simple-location,
-.simple-status{
-  white-space:normal;
-}
-
-.simple-report-actions{
+.legacy-report-btns{
   display:flex;
   align-items:center;
   gap:8px;
-  flex-wrap:wrap;
-  position:relative;
-  z-index:5;
+  flex-shrink:0;
 }
 
-.mini-btn{
+.legacy-view-btn{
   border:none;
   border-radius:10px;
   padding:8px 12px;
+  background:#5E7B93;
+  color:#fff;
   font-size:12px;
   font-weight:900;
   cursor:pointer;
-  transition:.2s;
-  pointer-events:auto;
 }
 
-.mini-btn.secondary{
-  background:#5E7B93;
-  color:#fff;
-}
-
-.mini-btn.process{
-  background:#7d99b0;
-  color:#fff;
-}
-
-.mini-btn.done{
-  background:#0F2F4A;
-  color:#fff;
-}
-
-.mini-btn:hover{
+.legacy-view-btn:hover{
   opacity:.92;
 }
 
@@ -576,388 +379,40 @@ body.admin-body{
   border:1px solid #e8edf3;
 }
 
-.reports-scroll{
-  max-height:220px;
-  overflow:auto;
-  padding-left:4px;
-}
-
-/* مهم عشان الأزرار تشتغل */
-.reports-box,
-.reports-scroll,
-.simple-report-row,
-.simple-report-actions{
-  pointer-events:auto;
-}
-
+/* ===== الجوال ===== */
 @media (max-width:768px){
+  .admin-header{
+    padding:14px 16px;
+  }
+
+  .admin-main{
+    padding:18px 16px;
+  }
+
+  .admin-title h1{
+    font-size:18px;
+  }
+
   .filter-btn{
     min-width:140px;
     font-size:15px;
     padding:12px 16px;
   }
 
-  .simple-report-row{
+  .legacy-report-row{
     flex-direction:column;
     align-items:flex-start;
   }
 
-  .simple-report-actions{
+  .legacy-report-btns{
     width:100%;
     justify-content:flex-start;
   }
 }
-/* خلي الأزرار فوق كل شي */
-.admin-filters{
-  position: relative;
-  z-index: 999;
-}
 
-/* تأكيد أن الأزرار تستقبل الضغط */
-.filter-btn{
-  pointer-events: auto;
-  position: relative;
-  z-index: 1000;
-}
-
-/* تأكد ما فيه عنصر يغطي عليهم */
-.reports-box,
-.reports-scroll{
-  position: relative;
-  z-index: 1;
-}
-
-/* أهم سطر 🔥 */
-.admin-main{
-  position: relative;
-  z-index: 1;
-}
-/* ===== Filters ===== */
-.admin-filters{
-  display:flex;
-  gap:14px;
-  justify-content:center;
-  flex-wrap:wrap;
-  margin:10px 0 18px;
-  position: relative;
-  z-index: 99999;
-  isolation: isolate;
-}
-
-.filter-btn{
-  min-width:180px;
-  border:none;
-  border-radius:14px;
-  padding:16px 22px;
-  background:#fff;
-  color:#0F2F4A;
-  font-weight:900;
-  font-size:18px;
-  cursor:pointer;
-  box-shadow:0 6px 20px rgba(0,0,0,0.06);
-  transition:.2s;
-  position: relative;
-  z-index: 99999;
-  pointer-events:auto !important;
-}
-
-.filter-btn:hover{
-  transform:translateY(-1px);
-}
-
-.filter-btn.active{
-  background:linear-gradient(135deg, #2457ff, #173ccf);
-  color:#fff;
-}
-
-/* ===== Old simple rows ===== */
-.simple-report-row{
-  background:#fff;
-  border:1px solid #e8edf3;
-  border-radius:12px;
-  padding:12px 14px;
-  margin-bottom:12px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:12px;
-  position:relative;
-  z-index:1;
-}
-
-.simple-report-main{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  flex-wrap:wrap;
-  color:#1d2d3d;
-  font-size:14px;
-  line-height:1.8;
-  flex:1;
-  min-width:0;
-}
-
-.simple-id{
-  font-weight:900;
-  color:#0F2F4A;
-}
-
-.simple-type{
-  background:#eef3f8;
-  color:#334;
-  border-radius:999px;
-  padding:4px 10px;
-  font-weight:900;
-  font-size:12px;
-}
-
-.simple-desc,
-.simple-location,
-.simple-status{
-  white-space:normal;
-}
-
-.simple-report-actions{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  flex-wrap:wrap;
-  position:relative;
-  z-index:5;
-  pointer-events:auto !important;
-}
-
-.mini-btn{
-  border:none;
-  border-radius:10px;
-  padding:8px 12px;
-  font-size:12px;
-  font-weight:900;
-  cursor:pointer;
-  transition:.2s;
-  pointer-events:auto !important;
-}
-
-.mini-btn.secondary{
-  background:#5E7B93;
-  color:#fff;
-}
-
-.mini-btn.process{
-  background:#7d99b0;
-  color:#fff;
-}
-
-.mini-btn.done{
-  background:#0F2F4A;
-  color:#fff;
-}
-
-.mini-btn:hover{
-  opacity:.92;
-}
-
-.empty-row{
-  background:#fff;
-  border-radius:12px;
-  padding:16px;
-  color:#666;
-  text-align:center;
-  border:1px solid #e8edf3;
-}
-
-.reports-scroll{
-  max-height:220px;
-  overflow:auto;
-  padding-left:4px;
-  position:relative;
-  z-index:1 !important;
-}
-
-.reports-box{
-  position:relative;
-  z-index:1 !important;
-}
-
-/* مهم للأزرار */
-.admin-main{
-  position:relative;
-  z-index:1;
-}
-
-@media (max-width:768px){
-  .filter-btn{
-    min-width:140px;
-    font-size:15px;
-    padding:12px 16px;
-  }
-
-  .simple-report-row{
+@media (max-width:600px){
+  .footer-links{
     flex-direction:column;
-    align-items:flex-start;
-  }
-
-  .simple-report-actions{
-    width:100%;
-    justify-content:flex-start;
-  }
-}
-/* ===== Filters ===== */
-.admin-filters{
-  display:flex;
-  gap:14px;
-  justify-content:center;
-  flex-wrap:wrap;
-  margin:10px 0 18px;
-  position: relative;
-  z-index: 99999;
-  isolation: isolate;
-}
-
-.filter-btn{
-  min-width:180px;
-  border:none;
-  border-radius:14px;
-  padding:16px 22px;
-  background:#fff;
-  color:#0F2F4A;
-  font-weight:900;
-  font-size:18px;
-  cursor:pointer;
-  box-shadow:0 6px 20px rgba(0,0,0,0.06);
-  transition:.2s;
-  position: relative;
-  z-index: 99999;
-  pointer-events:auto !important;
-}
-
-.filter-btn:hover{
-  transform:translateY(-1px);
-}
-
-.filter-btn.active{
-  background:linear-gradient(135deg, #2457ff, #173ccf);
-  color:#fff;
-}
-
-/* ===== Simple rows ===== */
-.simple-report-row{
-  background:#fff;
-  border:1px solid #e8edf3;
-  border-radius:12px;
-  padding:12px 14px;
-  margin-bottom:12px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:12px;
-  position:relative;
-  z-index:1;
-}
-
-.simple-report-main{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  flex-wrap:wrap;
-  color:#1d2d3d;
-  font-size:14px;
-  line-height:1.8;
-  flex:1;
-  min-width:0;
-}
-
-.simple-id{
-  font-weight:900;
-  color:#0F2F4A;
-}
-
-.simple-type{
-  background:#eef3f8;
-  color:#334;
-  border-radius:999px;
-  padding:4px 10px;
-  font-weight:900;
-  font-size:12px;
-}
-
-.simple-desc,
-.simple-location,
-.simple-status{
-  white-space:normal;
-}
-
-.simple-report-actions{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  flex-wrap:wrap;
-  position:relative;
-  z-index:5;
-  pointer-events:auto !important;
-}
-
-.mini-btn{
-  border:none;
-  border-radius:10px;
-  padding:8px 12px;
-  font-size:12px;
-  font-weight:900;
-  cursor:pointer;
-  transition:.2s;
-  pointer-events:auto !important;
-}
-
-.mini-btn.secondary{
-  background:#5E7B93;
-  color:#fff;
-}
-
-.mini-btn:hover{
-  opacity:.92;
-}
-
-.empty-row{
-  background:#fff;
-  border-radius:12px;
-  padding:16px;
-  color:#666;
-  text-align:center;
-  border:1px solid #e8edf3;
-}
-
-.reports-scroll{
-  max-height:220px;
-  overflow:auto;
-  padding-left:4px;
-  position:relative;
-  z-index:1 !important;
-}
-
-.reports-box{
-  position:relative;
-  z-index:1 !important;
-}
-
-.admin-main{
-  position:relative;
-  z-index:1;
-}
-
-@media (max-width:768px){
-  .filter-btn{
-    min-width:140px;
-    font-size:15px;
-    padding:12px 16px;
-  }
-
-  .simple-report-row{
-    flex-direction:column;
-    align-items:flex-start;
-  }
-
-  .simple-report-actions{
-    width:100%;
-    justify-content:flex-start;
+    gap:8px;
   }
 }
