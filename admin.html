@@ -41,6 +41,16 @@
       </div>
     </section>
 
+    <!-- الفلاتر -->
+    <section class="reports-section">
+      <div class="admin-filters" id="adminFilters">
+        <button type="button" class="filter-btn active" id="filterAll">كل البلاغات</button>
+        <button type="button" class="filter-btn" id="filterNew">جديدة</button>
+        <button type="button" class="filter-btn" id="filterProcessing">قيد المعالجة</button>
+        <button type="button" class="filter-btn" id="filterDone">تم التنفيذ</button>
+      </div>
+    </section>
+
     <!-- بلاغات المدربين -->
     <section class="reports-section">
       <h2 class="section-title">بلاغات المدربين</h2>
@@ -67,6 +77,45 @@ function getClient() {
   );
 }
 
+let currentFilter = "all";
+
+function mapStatusToFilter(status) {
+  if (status === "قيد المعالجة") return "processing";
+  if (status === "تم التنفيذ") return "done";
+  return "new";
+}
+
+function setFilter(filter, clickedBtn) {
+  currentFilter = filter;
+
+  document.querySelectorAll(".filter-btn").forEach(btn => {
+    btn.classList.remove("active");
+  });
+
+  clickedBtn.classList.add("active");
+  loadReports();
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("filterAll").addEventListener("click", function () {
+    setFilter("all", this);
+  });
+
+  document.getElementById("filterNew").addEventListener("click", function () {
+    setFilter("new", this);
+  });
+
+  document.getElementById("filterProcessing").addEventListener("click", function () {
+    setFilter("processing", this);
+  });
+
+  document.getElementById("filterDone").addEventListener("click", function () {
+    setFilter("done", this);
+  });
+
+  loadReports();
+});
+
 async function updateStatus(id, newStatus) {
   const supabase = getClient();
 
@@ -83,48 +132,33 @@ async function updateStatus(id, newStatus) {
   loadReports();
 }
 
-function makeReportCard(r) {
-  const statusText = r.status || "قيد المراجعة";
+function openReport(id) {
+  localStorage.setItem("adminSelectedReport", id);
+  window.location.href = "admin_report.html";
+}
 
-  const processDisabled = statusText === "قيد المعالجة" ? "disabled" : "";
-  const doneClass = statusText === "تم التنفيذ" ? "btn-done solid" : "btn-done";
+function makeReportRow(r) {
+  const statusText = r.status || "قيد المراجعة";
+  const statusFilter = mapStatusToFilter(statusText);
+
+  if (currentFilter !== "all" && currentFilter !== statusFilter) {
+    return "";
+  }
 
   return `
-    <div class="report-card">
-      <div class="right-tags">
-        <span class="tag id">#${r.id}</span>
-        <span class="tag type">${r.type || "-"}</span>
+    <div class="simple-report-row">
+      <div class="simple-report-main">
+        <span class="simple-id">#${r.id}</span>
+        <span class="simple-type">${r.type || "-"}</span>
+        <span class="simple-desc"><strong>الوصف:</strong> ${r.description || "-"}</span>
+        <span class="simple-location"><strong>الموقع:</strong> ${r.location || "-"}</span>
+        <span class="simple-status"><strong>الحالة:</strong> ${statusText}</span>
       </div>
 
-      <div class="report-body">
-        <div class="report-meta">
-          <strong>الموقع:</strong> ${r.location || "-"}
-          <span class="dot">•</span>
-          <strong>الحالة:</strong> ${statusText}
-        </div>
-
-        <div class="badges">
-          <span class="badge sev">شدة البلاغ: ${r.rate ?? "-"}</span>
-          <span class="badge priority">الدور: ${r.sender_role || "-"}</span>
-        </div>
-
-        <div class="report-text">
-          <strong>الوصف:</strong> ${r.description || "-"}<br>
-          <strong>مقدم البلاغ:</strong> ${r.sender_name || "-"}<br>
-          <strong>الإيميل:</strong> ${r.sender_email || "-"}
-        </div>
-
-        <div class="actions">
-          <button class="btn-process" ${processDisabled}
-            onclick="updateStatus(${r.id}, 'قيد المعالجة')">
-            قيد المعالجة
-          </button>
-
-          <button class="${doneClass}"
-            onclick="updateStatus(${r.id}, 'تم التنفيذ')">
-            تم التنفيذ
-          </button>
-        </div>
+      <div class="simple-report-actions">
+        <button type="button" class="mini-btn secondary" onclick="openReport(${r.id})">عرض بلاغ</button>
+        <button type="button" class="mini-btn process" onclick="updateStatus(${r.id}, 'قيد المعالجة')">قيد المعالجة</button>
+        <button type="button" class="mini-btn done" onclick="updateStatus(${r.id}, 'تم التنفيذ')">تم التنفيذ</button>
       </div>
     </div>
   `;
@@ -138,9 +172,12 @@ async function loadReports() {
     .select("*")
     .order("id", { ascending: false });
 
+  const trainerBox = document.getElementById("trainerReports");
+  const traineeBox = document.getElementById("traineeReports");
+
   if (error) {
-    document.getElementById("trainerReports").innerHTML = "حدث خطأ في تحميل البلاغات";
-    document.getElementById("traineeReports").innerHTML = "حدث خطأ في تحميل البلاغات";
+    trainerBox.innerHTML = "حدث خطأ في تحميل البلاغات";
+    traineeBox.innerHTML = "حدث خطأ في تحميل البلاغات";
     return;
   }
 
@@ -157,23 +194,12 @@ async function loadReports() {
   document.getElementById("processingCount").innerText = processingCount;
   document.getElementById("doneCount").innerText = doneCount;
 
-  const trainerBox = document.getElementById("trainerReports");
-  const traineeBox = document.getElementById("traineeReports");
+  const trainerHtml = trainerData.map(makeReportRow).join("");
+  const traineeHtml = traineeData.map(makeReportRow).join("");
 
-  if (trainerData.length === 0) {
-    trainerBox.innerHTML = `<div class="report-card"><div class="report-body"><div class="report-text">لا توجد بلاغات</div></div></div>`;
-  } else {
-    trainerBox.innerHTML = trainerData.map(makeReportCard).join("");
-  }
-
-  if (traineeData.length === 0) {
-    traineeBox.innerHTML = `<div class="report-card"><div class="report-body"><div class="report-text">لا توجد بلاغات</div></div></div>`;
-  } else {
-    traineeBox.innerHTML = traineeData.map(makeReportCard).join("");
-  }
+  trainerBox.innerHTML = trainerHtml || `<div class="empty-row">لا توجد بلاغات</div>`;
+  traineeBox.innerHTML = traineeHtml || `<div class="empty-row">لا توجد بلاغات</div>`;
 }
-
-loadReports();
 </script>
 
 </body>
