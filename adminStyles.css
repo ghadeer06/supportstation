@@ -70,50 +70,61 @@ body{
   background:#e0e0e0;
 }
 
-/* ===== Main ===== */
 .admin-main{
   flex:1;
-  padding:30px 40px;
+  padding:8px 40px 20px;
 }
 
 /* ===== Stats Cards ===== */
 .admin-cards{
-  display:flex;
-  gap:12px;
+  display:grid;
+  grid-template-columns:repeat(3, 1fr);
+  gap:14px;
   margin-bottom:18px;
-  flex-wrap:wrap;
 }
 
 .stat-card{
-  flex:1;
-  min-width:220px;
   background:#fff;
-  padding:20px 18px;
   border-radius:12px;
-  border:1px solid #e2e8f0;
-  box-shadow:none;
+  padding:12px 14px; /* أصغر = أنحف */
+  box-shadow:0 2px 8px rgba(0,0,0,0.05);
+  border-right:4px solid #5E7B93; /* خط أخف */
   text-align:center;
-  cursor:pointer;
+  height:75px; /* صغرناها */
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  transition:.2s;
+}
+
+.stat-card:hover{
+  transform:translateY(-2px);
+  box-shadow:0 6px 14px rgba(0,0,0,0.08);
 }
 
 .stat-card h3{
-  font-size:13px;
-  color:#5E7B93;
-  margin-bottom:10px;
-  font-weight:900;
+  font-size:11px; /* أصغر */
+  color:#7b8a99;
+  margin-bottom:4px;
+  font-weight:700;
 }
 
 .stat-card p{
-  font-size:30px;
+  font-size:22px; /* أصغر */
   font-weight:900;
   color:#0F2F4A;
   margin:0;
 }
 
 .stat-click.active{
-  outline:2px solid rgba(94,123,147,0.25);
+  outline:2px solid rgba(94,123,147,0.2);
 }
 
+@media (max-width:768px){
+  .admin-cards{
+    grid-template-columns:1fr;
+  }
+}
 /* ===== Section Title ===== */
 .reports-section{
   margin-top:16px;
