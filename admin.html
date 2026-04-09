@@ -6,6 +6,15 @@
   <title>لوحة المسؤول</title>
   <link rel="stylesheet" href="adminStyles.css" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    /* ترتيب الأقسام من اليمين لليسار */
+    .reports-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 25px;
+    }
+  </style>
 </head>
 
 <body class="admin-body">
@@ -42,29 +51,31 @@
     </div>
   </section>
 
-  <!-- كل البلاغات -->
-  <section class="reports-section">
-    <h2 class="section-title">كل البلاغات</h2>
-    <div class="reports-box">
-      <div class="reports-scroll" id="allReports"></div>
-    </div>
-  </section>
+  <!-- الأقسام -->
+  <div class="reports-wrapper">
 
-  <!-- قيد المعالجة -->
-  <section class="reports-section">
-    <h2 class="section-title">قيد المعالجة</h2>
-    <div class="reports-box">
-      <div class="reports-scroll" id="processingReports"></div>
-    </div>
-  </section>
+    <section class="reports-section">
+      <h2 class="section-title">كل البلاغات</h2>
+      <div class="reports-box">
+        <div class="reports-scroll" id="allReports"></div>
+      </div>
+    </section>
 
-  <!-- تم الحل -->
-  <section class="reports-section">
-    <h2 class="section-title">تم الحل</h2>
-    <div class="reports-box">
-      <div class="reports-scroll" id="doneReports"></div>
-    </div>
-  </section>
+    <section class="reports-section">
+      <h2 class="section-title">قيد المعالجة</h2>
+      <div class="reports-box">
+        <div class="reports-scroll" id="processingReports"></div>
+      </div>
+    </section>
+
+    <section class="reports-section">
+      <h2 class="section-title">تم الحل</h2>
+      <div class="reports-box">
+        <div class="reports-scroll" id="doneReports"></div>
+      </div>
+    </section>
+
+  </div>
 
 </main>
 
@@ -96,9 +107,6 @@ async function updateStatus(id, newStatus) {
 function makeReportCard(r) {
   const statusText = r.status || "قيد المراجعة";
 
-  const processDisabled = statusText === "قيد المعالجة" ? "disabled" : "";
-  const doneClass = statusText === "تم التنفيذ" ? "btn-done solid" : "btn-done";
-
   return `
     <div class="report-card">
       <div class="right-tags">
@@ -125,12 +133,12 @@ function makeReportCard(r) {
         </div>
 
         <div class="actions">
-          <button class="btn-process" ${processDisabled}
+          <button class="btn-process"
             onclick="updateStatus(${r.id}, 'قيد المعالجة')">
             قيد المعالجة
           </button>
 
-          <button class="${doneClass}"
+          <button class="btn-done"
             onclick="updateStatus(${r.id}, 'تم التنفيذ')">
             تم التنفيذ
           </button>
@@ -149,15 +157,12 @@ async function loadReports() {
     .order("id", { ascending: false });
 
   if (error) {
-    document.getElementById("allReports").innerHTML = "حدث خطأ في تحميل البلاغات";
-    document.getElementById("processingReports").innerHTML = "حدث خطأ في تحميل البلاغات";
-    document.getElementById("doneReports").innerHTML = "حدث خطأ في تحميل البلاغات";
     return;
   }
 
   const reports = data || [];
 
-  // تقسيم البلاغات حسب الحالة
+  // تقسيم الحالات
   const allReports = reports;
   const processingReports = reports.filter(r => r.status === "قيد المعالجة");
   const doneReports = reports.filter(r => r.status === "تم التنفيذ");
@@ -167,21 +172,15 @@ async function loadReports() {
   document.getElementById("processingCount").innerText = processingReports.length;
   document.getElementById("doneCount").innerText = doneReports.length;
 
-  // تعبئة التبويبات
+  // عرض كل تبويب
   document.getElementById("allReports").innerHTML =
-    allReports.length === 0
-      ? `<div class="report-card"><div class="report-body"><div class="report-text">لا توجد بلاغات</div></div></div>`
-      : allReports.map(makeReportCard).join("");
+    allReports.length ? allReports.map(makeReportCard).join("") : "لا توجد بلاغات";
 
   document.getElementById("processingReports").innerHTML =
-    processingReports.length === 0
-      ? `<div class="report-card"><div class="report-body"><div class="report-text">لا توجد بلاغات</div></div></div>`
-      : processingReports.map(makeReportCard).join("");
+    processingReports.length ? processingReports.map(makeReportCard).join("") : "لا توجد بلاغات";
 
   document.getElementById("doneReports").innerHTML =
-    doneReports.length === 0
-      ? `<div class="report-card"><div class="report-body"><div class="report-text">لا توجد بلاغات</div></div></div>`
-      : doneReports.map(makeReportCard).join("");
+    doneReports.length ? doneReports.map(makeReportCard).join("") : "لا توجد بلاغات";
 }
 
 loadReports();
