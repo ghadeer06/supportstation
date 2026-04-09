@@ -145,20 +145,17 @@ body{
 
 /* ===== Report Card ===== */
 .report-card{
+  background:#fff;
+  border:1px solid #e2e8f0;
+  border-radius:12px;
+  padding:16px;
+  margin-bottom:10px;
   display:flex;
+  align-items:center;
   justify-content:space-between;
   gap:12px;
-  background:#fff;
-  border:1px solid #e7eef7;
-  border-radius:14px;
-  padding:12px;
-  margin-bottom:12px;
-  align-items:flex-start;
 }
 
-.report-card:last-child{
-  margin-bottom:0;
-}
 
 .report-main{
   flex:1;
