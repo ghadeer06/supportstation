@@ -23,142 +23,7 @@ body{
   background:var(--bg);
 }
 
-/* ===== عناصر عامة ===== */
-.header{
-  background:linear-gradient(135deg, var(--dark), var(--mid));
-  color:#fff;
-  padding:18px;
-  text-align:center;
-  font-size:20px;
-  font-weight:bold;
-}
-
-.container{
-  width:90%;
-  max-width:900px;
-  margin:25px auto;
-  flex:1;
-}
-
-.card{
-  background:#fff;
-  padding:20px;
-  border-radius:15px;
-  box-shadow:0 8px 20px rgba(0,0,0,.08);
-}
-
-/* ===== Dropdown ===== */
-.custom-select{
-  width:100%;
-  background:#fafafa;
-  border:2px solid #ddd;
-  border-radius:10px;
-  padding:12px;
-  font-size:15px;
-  cursor:pointer;
-  position:relative;
-  transition:.25s ease;
-}
-
-.custom-select:hover{
-  border-color:var(--mid);
-}
-
-.custom-select::after{
-  content:"▼";
-  position:absolute;
-  left:15px;
-  top:50%;
-  transform:translateY(-50%);
-  color:var(--mid);
-  font-size:14px;
-}
-
-.options{
-  list-style:none;
-  margin:0;
-  padding:0;
-  background:#fff;
-  border:2px solid #ddd;
-  border-radius:10px;
-  position:absolute;
-  width:100%;
-  top:55px;
-  left:0;
-  display:none;
-  box-shadow:0 8px 20px rgba(0,0,0,.08);
-  z-index:10;
-}
-
-.options li{
-  padding:12px;
-  cursor:pointer;
-  transition:.2s;
-}
-
-.options li:hover{
-  background:var(--mid);
-  color:#fff;
-}
-
-/* ===== Buttons عامة ===== */
-button{
-  padding:12px;
-  border:none;
-  border-radius:10px;
-  cursor:pointer;
-  font-size:14px;
-}
-
-.primary{
-  width:100%;
-  background:linear-gradient(135deg, var(--dark), var(--mid));
-  color:#fff;
-  margin-top:15px;
-}
-
-.light{
-  background:#eee;
-  margin-top:10px;
-}
-
-/* ===== Footer ===== */
-.main-footer{
-  background-color:#2c3e50;
-  color:#fff;
-  padding:20px 0;
-  text-align:center;
-}
-
-.footer-content{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:10px;
-}
-
-.footer-links{
-  list-style:none;
-  padding:0;
-  display:flex;
-  gap:15px;
-}
-
-.footer-links a{
-  color:#ecf0f1;
-  text-decoration:none;
-  transition:color .3s;
-}
-
-.footer-links a:hover{
-  color:#3498db;
-}
-
-/* ===== صفحة الأدمن ===== */
-body.admin-body{
-  background:#F3F1EC;
-}
-
+/* ===== Header ===== */
 .admin-header{
   background:linear-gradient(to left, #0F2F4A, #5E7B93);
   color:#fff;
@@ -205,12 +70,13 @@ body.admin-body{
   background:#e0e0e0;
 }
 
+/* ===== Main ===== */
 .admin-main{
   flex:1;
   padding:30px 40px;
 }
 
-/* ===== المربعات العلوية ===== */
+/* ===== Stats Cards ===== */
 .admin-cards{
   display:flex;
   gap:12px;
@@ -224,9 +90,10 @@ body.admin-body{
   background:#fff;
   padding:20px 18px;
   border-radius:12px;
-  box-shadow:0 6px 20px rgba(0,0,0,.05);
-  border-top:4px solid #0F2F4A;
+  border:1px solid #e2e8f0;
+  box-shadow:none;
   text-align:center;
+  cursor:pointer;
 }
 
 .stat-card h3{
@@ -243,27 +110,11 @@ body.admin-body{
   margin:0;
 }
 
-/* المربعات تصير فلترة */
-.stat-filter{
-  border:none;
-  cursor:pointer;
-  transition:.2s;
+.stat-click.active{
+  outline:2px solid rgba(94,123,147,0.25);
 }
 
-.stat-filter:hover{
-  transform:translateY(-2px);
-}
-
-.stat-filter.active{
-  background:linear-gradient(135deg, #2457ff, #173ccf);
-}
-
-.stat-filter.active h3,
-.stat-filter.active p{
-  color:#fff;
-}
-
-/* ===== العناوين ===== */
+/* ===== Section Title ===== */
 .reports-section{
   margin-top:16px;
 }
@@ -274,91 +125,118 @@ body.admin-body{
   font-weight:900;
 }
 
-/* ===== صناديق البلاغات ===== */
+/* ===== Reports Box ===== */
 .reports-box{
   background:#fff;
   border-radius:14px;
   padding:12px;
-  box-shadow:0 6px 20px rgba(0,0,0,.05);
+  box-shadow:0 4px 14px rgba(0,0,0,0.05);
   border-right:6px solid #5E7B93;
 }
 
+/* هذا أهم جزء: اللي يتحرك داخل الصندوق فقط */
 .reports-scroll{
-  max-height:220px;
-  overflow:auto;
-  padding-left:4px;
+  max-height:320px;
+  overflow-y:auto;
+  overflow-x:hidden;
+  padding-left:6px;
+  scrollbar-width:thin;
 }
 
-/* ===== صفوف البلاغات ===== */
-.legacy-report-row{
-  background:#fff;
-  border:1px solid #e5ebf2;
-  border-radius:14px;
-  padding:12px 14px;
-  margin-bottom:12px;
+/* ===== Report Card ===== */
+.report-card{
   display:flex;
-  align-items:center;
   justify-content:space-between;
-  gap:14px;
+  gap:12px;
+  background:#fff;
+  border:1px solid #e7eef7;
+  border-radius:14px;
+  padding:12px;
+  margin-bottom:12px;
+  align-items:flex-start;
 }
 
-.legacy-report-content{
+.report-card:last-child{
+  margin-bottom:0;
+}
+
+.report-main{
   flex:1;
+}
+
+.report-head{
   display:flex;
-  align-items:center;
-  gap:10px;
-  flex-wrap:wrap;
-  color:#213547;
-  font-size:14px;
-  line-height:1.8;
-}
-
-.legacy-id{
-  color:#0F2F4A;
-  font-weight:900;
-}
-
-.legacy-type{
-  background:#eef3f8;
-  color:#334;
-  border-radius:999px;
-  padding:4px 10px;
-  font-size:12px;
-  font-weight:900;
-}
-
-.legacy-report-btns{
-  display:flex;
+  justify-content:space-between;
   align-items:center;
   gap:8px;
-  flex-shrink:0;
+  margin-bottom:8px;
 }
 
-.legacy-view-btn{
+.report-head h3{
+  font-size:14px;
+  color:#0F2F4A;
+  font-weight:900;
+  margin:0;
+}
+
+.report-main p{
+  color:#1c2a38;
+  line-height:1.9;
+  font-size:13px;
+  margin:0;
+}
+
+.status-tag{
+  display:inline-block;
+  padding:6px 10px;
+  border-radius:999px;
+  font-weight:900;
+  font-size:12px;
+  background:#f6f3ea;
+  border:1px solid #eadfcd;
+  color:#7a5b22;
+  white-space:nowrap;
+}
+
+.btn-process{
   border:none;
-  border-radius:10px;
   padding:8px 12px;
+  border-radius:10px;
+  cursor:pointer;
+  font-weight:900;
+  font-size:12px;
   background:#5E7B93;
   color:#fff;
-  font-size:12px;
-  font-weight:900;
-  cursor:pointer;
+  transition:.2s;
+  white-space:nowrap;
 }
 
-.legacy-view-btn:hover{
-  opacity:.92;
+.btn-process:hover{
+  background:#0F2F4A;
 }
 
-.empty-row{
-  background:#fff;
-  border-radius:12px;
-  padding:16px;
-  color:#666;
+.empty-text{
   text-align:center;
-  border:1px solid #e8edf3;
+  padding:20px;
+  color:#777;
 }
 
-/* ===== Responsive ===== */
+/* ===== Footer ===== */
+.main-footer{
+  background-color:#2c3e50;
+  color:#ffffff;
+  padding:20px 0;
+  text-align:center;
+}
+
+.footer-content{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:10px;
+}
+
+/* ===== Mobile ===== */
 @media (max-width:768px){
   .admin-header{
     padding:14px 16px;
@@ -372,20 +250,20 @@ body.admin-body{
     font-size:18px;
   }
 
-  .legacy-report-row{
+  .report-card{
+    flex-direction:column;
+  }
+
+  .report-head{
     flex-direction:column;
     align-items:flex-start;
   }
 
-  .legacy-report-btns{
-    width:100%;
-    justify-content:flex-start;
+  .btn-process{
+    align-self:flex-start;
   }
-}
 
-@media (max-width:600px){
-  .footer-links{
-    flex-direction:column;
-    gap:8px;
+  .reports-scroll{
+    max-height:360px;
   }
 }
