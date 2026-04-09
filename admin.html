@@ -3,62 +3,68 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>لوحة المسؤول</title>
+  <title>لوحة تحكم المسؤول</title>
   <link rel="stylesheet" href="adminStyles.css" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
+
 <body class="admin-body">
 
-  <header class="admin-header">
-    <a href="login.html" class="logout">تسجيل الخروج</a>
-
-    <div class="admin-right">
-      <div class="admin-title">
-        <h1>لوحة تحكم المسؤول</h1>
-        <span>متابعة البلاغات</span>
-      </div>
-      <img src="img/logo.png" class="admin-logo" alt="الشعار">
+<header class="admin-header">
+  <div class="admin-left">
+    <img src="img/logo.png" class="admin-logo" alt="Logo">
+    <div class="admin-title">
+      <h1>لوحة تحكم المسؤول</h1>
+      <span>محطة الدعم</span>
     </div>
-  </header>
+  </div>
 
-  <main class="admin-main">
+  <a href="index.html" class="logout">تسجيل الخروج</a>
+</header>
 
-    <section class="admin-cards">
-      <div class="stat-card" onclick="setFilter('done')">
-        <h3>تم التنفيذ</h3>
-        <p id="doneCount">0</p>
-      </div>
+<main class="admin-main">
 
-      <div class="stat-card" onclick="setFilter('review')">
-        <h3>قيد المراجعة</h3>
-        <p id="reviewCount">0</p>
-      </div>
+  <!-- ===== Stats ===== -->
+  <div class="admin-cards">
+    <button class="stat-card stat-click active" data-filter="all" onclick="setFilter('all')">
+      <h3>إجمالي البلاغات</h3>
+      <p id="countAll">0</p>
+    </button>
 
-      <div class="stat-card" onclick="setFilter('all')">
-        <h3>إجمالي البلاغات</h3>
-        <p id="totalCount">0</p>
-      </div>
-    </section>
+    <button class="stat-card stat-click" data-filter="review" onclick="setFilter('review')">
+      <h3>قيد المراجعة</h3>
+      <p id="countReview">0</p>
+    </button>
 
-    <section class="reports-section">
-      <h2 class="section-title">بلاغات المدربين</h2>
-      <div class="reports-box">
-        <div class="reports-scroll" id="trainerReports"></div>
-      </div>
-    </section>
+    <button class="stat-card stat-click" data-filter="done" onclick="setFilter('done')">
+      <h3>تم التنفيذ</h3>
+      <p id="countDone">0</p>
+    </button>
+  </div>
 
-    <section class="reports-section">
-      <h2 class="section-title">بلاغات المتدربين</h2>
-      <div class="reports-box">
-        <div class="reports-scroll" id="traineeReports"></div>
-      </div>
-    </section>
+  <!-- Trainers -->
+  <section class="reports-section">
+    <h2 class="section-title">بلاغات المدربين</h2>
+    <div class="reports-box">
+      <div class="reports-scroll" id="trainerList"></div>
+    </div>
+  </section>
 
-  </main>
+  <!-- Trainees -->
+  <section class="reports-section">
+    <h2 class="section-title">بلاغات المتدربين</h2>
+    <div class="reports-box">
+      <div class="reports-scroll" id="traineeList"></div>
+    </div>
+  </section>
 
-  <footer class="main-footer">
-    <p>© 2026 جميع الحقوق محفوظة | محطة الدعم</p>
-  </footer>
+</main>
+
+<footer class="main-footer">
+  <div class="footer-content">
+    <p>&copy; 2026 حقوق محفوظة | محطة الدعم</p>
+  </div>
+</footer>
 
 <script>
 function getClient() {
@@ -72,13 +78,56 @@ let currentFilter = "all";
 
 function normalizeStatus(status) {
   if (status === "تم الحل") return "تم التنفيذ";
+  if (status === "قيد التنفيذ") return "قيد المراجعة";
   if (status === "قيد المعالجة") return "قيد المراجعة";
   return status || "قيد المراجعة";
 }
 
 function setFilter(filter) {
   currentFilter = filter;
-  loadReports();
+
+  document.querySelectorAll(".stat-click").forEach(btn => {
+    btn.classList.toggle("active", btn.dataset.filter === filter);
+  });
+
+  applyFilter();
+}
+
+function applyFilter() {
+  const cards = document.querySelectorAll(".report-card");
+
+  cards.forEach(card => {
+    const status = card.dataset.status;
+
+    if (currentFilter === "all") {
+      card.style.display = "";
+    } else if (currentFilter === "review") {
+      card.style.display = (status === "قيد المراجعة") ? "" : "none";
+    } else if (currentFilter === "done") {
+      card.style.display = (status === "تم التنفيذ") ? "" : "none";
+    }
+  });
+
+  updateCounts();
+}
+
+function updateCounts() {
+  const allReports = document.querySelectorAll(".report-card");
+
+  let total = 0;
+  let review = 0;
+  let done = 0;
+
+  allReports.forEach(card => {
+    const status = card.dataset.status;
+    total++;
+    if (status === "قيد المراجعة") review++;
+    if (status === "تم التنفيذ") done++;
+  });
+
+  document.getElementById("countAll").textContent = total;
+  document.getElementById("countReview").textContent = review;
+  document.getElementById("countDone").textContent = done;
 }
 
 function openReport(id) {
@@ -86,22 +135,25 @@ function openReport(id) {
   window.location.href = "admin_report.html";
 }
 
-function makeReportRow(r) {
-  const status = normalizeStatus(r.status);
-
-  if (currentFilter === "done" && status !== "تم التنفيذ") return "";
-  if (currentFilter === "review" && status !== "قيد المراجعة") return "";
+function createReportCard(r) {
+  const statusText = normalizeStatus(r.status);
 
   return `
-    <div class="report-row">
-      <button class="view-btn" onclick="openReport(${r.id})">عرض بلاغ</button>
+    <div class="report-card" data-status="${statusText}">
+      <div class="report-main">
+        <div class="report-head">
+          <h3>بلاغ #${r.id} - ${r.type || "-"}</h3>
+          <span class="status-tag">${statusText}</span>
+        </div>
 
-      <div class="report-text">
-        <span class="report-id">#${r.id}</span>
-        <span> - ${r.description || "-"}</span>
-        <span> - ${r.location || "-"}</span>
-        <span> - ${status}</span>
+        <p><b>الوصف:</b> ${r.description || "-"}</p>
+        <p><b>الموقع:</b> ${r.location || "-"}</p>
+        <p><b>مقدم البلاغ:</b> ${r.sender_name || "-"}</p>
+        <p><b>الإيميل:</b> ${r.sender_email || "-"}</p>
+        <p><b>الدور:</b> ${r.sender_role || "-"}</p>
       </div>
+
+      <button class="btn-process" onclick="openReport('${r.id}')">عرض البلاغ</button>
     </div>
   `;
 }
@@ -114,33 +166,40 @@ async function loadReports() {
     .select("*")
     .order("id", { ascending: false });
 
-  const trainerBox = document.getElementById("trainerReports");
-  const traineeBox = document.getElementById("traineeReports");
+  const trainerBox = document.getElementById("trainerList");
+  const traineeBox = document.getElementById("traineeList");
 
   if (error) {
-    trainerBox.innerHTML = `<div class="empty-row">حدث خطأ في تحميل البلاغات</div>`;
-    traineeBox.innerHTML = `<div class="empty-row">حدث خطأ في تحميل البلاغات</div>`;
+    trainerBox.innerHTML = `<p class="empty-text">حدث خطأ في تحميل البلاغات</p>`;
+    traineeBox.innerHTML = `<p class="empty-text">حدث خطأ في تحميل البلاغات</p>`;
     return;
   }
 
   const reports = data || [];
 
-  const trainerData = reports.filter(r => r.sender_role === "trainer");
-  const traineeData = reports.filter(r => r.sender_role === "trainee");
+  const trainerReports = reports.filter(r => r.sender_role === "trainer");
+  const traineeReports = reports.filter(r => r.sender_role === "trainee");
 
-  const totalCount = reports.length;
-  const reviewCount = reports.filter(r => normalizeStatus(r.status) === "قيد المراجعة").length;
-  const doneCount = reports.filter(r => normalizeStatus(r.status) === "تم التنفيذ").length;
+  trainerBox.innerHTML = "";
+  traineeBox.innerHTML = "";
 
-  document.getElementById("totalCount").innerText = totalCount;
-  document.getElementById("reviewCount").innerText = reviewCount;
-  document.getElementById("doneCount").innerText = doneCount;
+  if (trainerReports.length === 0) {
+    trainerBox.innerHTML = `<p class="empty-text">لا توجد بلاغات</p>`;
+  } else {
+    trainerReports.forEach(r => {
+      trainerBox.innerHTML += createReportCard(r);
+    });
+  }
 
-  const trainerHtml = trainerData.map(makeReportRow).join("");
-  const traineeHtml = traineeData.map(makeReportRow).join("");
+  if (traineeReports.length === 0) {
+    traineeBox.innerHTML = `<p class="empty-text">لا توجد بلاغات</p>`;
+  } else {
+    traineeReports.forEach(r => {
+      traineeBox.innerHTML += createReportCard(r);
+    });
+  }
 
-  trainerBox.innerHTML = trainerHtml || `<div class="empty-row">لا توجد بلاغات</div>`;
-  traineeBox.innerHTML = traineeHtml || `<div class="empty-row">لا توجد بلاغات</div>`;
+  applyFilter();
 }
 
 loadReports();
