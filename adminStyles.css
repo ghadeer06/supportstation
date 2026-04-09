@@ -607,3 +607,28 @@ body.admin-body{
     justify-content:flex-start;
   }
 }
+/* خلي الأزرار فوق كل شي */
+.admin-filters{
+  position: relative;
+  z-index: 999;
+}
+
+/* تأكيد أن الأزرار تستقبل الضغط */
+.filter-btn{
+  pointer-events: auto;
+  position: relative;
+  z-index: 1000;
+}
+
+/* تأكد ما فيه عنصر يغطي عليهم */
+.reports-box,
+.reports-scroll{
+  position: relative;
+  z-index: 1;
+}
+
+/* أهم سطر 🔥 */
+.admin-main{
+  position: relative;
+  z-index: 1;
+}
