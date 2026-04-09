@@ -43,7 +43,7 @@
 
     <!-- الفلاتر -->
     <section class="reports-section">
-      <div class="admin-filters" id="adminFilters">
+      <div class="admin-filters">
         <button type="button" class="filter-btn active" id="filterAll">كل البلاغات</button>
         <button type="button" class="filter-btn" id="filterNew">جديدة</button>
         <button type="button" class="filter-btn" id="filterProcessing">قيد المعالجة</button>
@@ -130,17 +130,17 @@ function makeReportRow(r) {
   }
 
   return `
-    <div class="simple-report-row">
-      <div class="simple-report-main">
-        <span class="simple-id">#${r.id}</span>
-        <span class="simple-type">${r.type || "-"}</span>
-        <span class="simple-desc"><strong>الوصف:</strong> ${r.description || "-"}</span>
-        <span class="simple-location"><strong>الموقع:</strong> ${r.location || "-"}</span>
-        <span class="simple-status"><strong>الحالة:</strong> ${statusText}</span>
+    <div class="legacy-report-row">
+      <div class="legacy-report-content">
+        <span class="legacy-id">#${r.id}</span>
+        <span class="legacy-type">${r.type || "-"}</span>
+        <span><strong>الوصف:</strong> ${r.description || "-"}</span>
+        <span><strong>الموقع:</strong> ${r.location || "-"}</span>
+        <span><strong>الحالة:</strong> ${statusText}</span>
       </div>
 
-      <div class="simple-report-actions">
-        <button type="button" class="mini-btn secondary" onclick="openReport(${r.id})">عرض بلاغ</button>
+      <div class="legacy-report-btns">
+        <button type="button" class="legacy-view-btn" onclick="openReport(${r.id})">عرض بلاغ</button>
       </div>
     </div>
   `;
@@ -158,8 +158,8 @@ async function loadReports() {
   const traineeBox = document.getElementById("traineeReports");
 
   if (error) {
-    trainerBox.innerHTML = "حدث خطأ في تحميل البلاغات";
-    traineeBox.innerHTML = "حدث خطأ في تحميل البلاغات";
+    trainerBox.innerHTML = `<div class="empty-row">حدث خطأ في تحميل البلاغات</div>`;
+    traineeBox.innerHTML = `<div class="empty-row">حدث خطأ في تحميل البلاغات</div>`;
     return;
   }
 
