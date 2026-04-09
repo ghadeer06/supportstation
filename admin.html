@@ -26,8 +26,8 @@
     <!-- الإحصائيات -->
     <section class="admin-cards">
       <div class="stat-card">
-        <h3>تم الحل</h3>
-        <p id="doneCount">0</p>
+        <h3>إجمالي البلاغات</h3>
+        <p id="totalCount">0</p>
       </div>
 
       <div class="stat-card">
@@ -36,8 +36,8 @@
       </div>
 
       <div class="stat-card">
-        <h3>إجمالي البلاغات</h3>
-        <p id="totalCount">0</p>
+        <h3>تم الحل</h3>
+        <p id="doneCount">0</p>
       </div>
     </section>
 
@@ -81,7 +81,7 @@ let currentFilter = "all";
 
 function mapStatusToFilter(status) {
   if (status === "قيد المعالجة") return "processing";
-  if (status === "تم التنفيذ") return "done";
+  if (status === "تم التنفيذ" || status === "تم الحل") return "done";
   return "new";
 }
 
@@ -116,22 +116,6 @@ document.addEventListener("DOMContentLoaded", () => {
   loadReports();
 });
 
-async function updateStatus(id, newStatus) {
-  const supabase = getClient();
-
-  const { error } = await supabase
-    .from("reports")
-    .update({ status: newStatus })
-    .eq("id", id);
-
-  if (error) {
-    alert("خطأ في تحديث الحالة");
-    return;
-  }
-
-  loadReports();
-}
-
 function openReport(id) {
   localStorage.setItem("adminSelectedReport", id);
   window.location.href = "admin_report.html";
@@ -157,8 +141,6 @@ function makeReportRow(r) {
 
       <div class="simple-report-actions">
         <button type="button" class="mini-btn secondary" onclick="openReport(${r.id})">عرض بلاغ</button>
-        <button type="button" class="mini-btn process" onclick="updateStatus(${r.id}, 'قيد المعالجة')">قيد المعالجة</button>
-        <button type="button" class="mini-btn done" onclick="updateStatus(${r.id}, 'تم التنفيذ')">تم التنفيذ</button>
       </div>
     </div>
   `;
@@ -188,7 +170,7 @@ async function loadReports() {
 
   const totalCount = reports.length;
   const processingCount = reports.filter(r => r.status === "قيد المعالجة").length;
-  const doneCount = reports.filter(r => r.status === "تم التنفيذ").length;
+  const doneCount = reports.filter(r => r.status === "تم التنفيذ" || r.status === "تم الحل").length;
 
   document.getElementById("totalCount").innerText = totalCount;
   document.getElementById("processingCount").innerText = processingCount;
