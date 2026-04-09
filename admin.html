@@ -23,32 +23,25 @@
 
   <main class="admin-main">
 
+    <!-- المربعات نفسها فلترة -->
     <section class="admin-cards">
-      <div class="stat-card">
+      <button type="button" class="stat-card stat-filter active" id="filterAll">
         <h3>إجمالي البلاغات</h3>
         <p id="totalCount">0</p>
-      </div>
+      </button>
 
-      <div class="stat-card">
+      <button type="button" class="stat-card stat-filter" id="filterProcessing">
         <h3>قيد المعالجة</h3>
         <p id="processingCount">0</p>
-      </div>
+      </button>
 
-      <div class="stat-card">
+      <button type="button" class="stat-card stat-filter" id="filterDone">
         <h3>تم الحل</h3>
         <p id="doneCount">0</p>
-      </div>
+      </button>
     </section>
 
-    <section class="reports-section">
-      <div class="admin-filters">
-        <button type="button" class="filter-btn active" id="filterAll">كل البلاغات</button>
-        <button type="button" class="filter-btn" id="filterNew">جديدة</button>
-        <button type="button" class="filter-btn" id="filterProcessing">قيد المعالجة</button>
-        <button type="button" class="filter-btn" id="filterDone">تم التنفيذ</button>
-      </div>
-    </section>
-
+    <!-- بلاغات المدربين -->
     <section class="reports-section">
       <h2 class="section-title">بلاغات المدربين</h2>
       <div class="reports-box">
@@ -56,6 +49,7 @@
       </div>
     </section>
 
+    <!-- بلاغات المتدربين -->
     <section class="reports-section">
       <h2 class="section-title">بلاغات المتدربين</h2>
       <div class="reports-box">
@@ -78,27 +72,23 @@ let currentFilter = "all";
 function mapStatusToFilter(status) {
   if (status === "قيد المعالجة") return "processing";
   if (status === "تم التنفيذ" || status === "تم الحل") return "done";
-  return "new";
+  return "all";
 }
 
-function setFilter(filter, clickedBtn) {
+function setFilter(filter, clickedCard) {
   currentFilter = filter;
 
-  document.querySelectorAll(".filter-btn").forEach(btn => {
-    btn.classList.remove("active");
+  document.querySelectorAll(".stat-filter").forEach(card => {
+    card.classList.remove("active");
   });
 
-  clickedBtn.classList.add("active");
+  clickedCard.classList.add("active");
   loadReports();
 }
 
 document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("filterAll").addEventListener("click", function () {
     setFilter("all", this);
-  });
-
-  document.getElementById("filterNew").addEventListener("click", function () {
-    setFilter("new", this);
   });
 
   document.getElementById("filterProcessing").addEventListener("click", function () {
