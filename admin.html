@@ -3,32 +3,77 @@
 <head>
   <meta charset="UTF-8">
   <title>لوحة المسؤول</title>
+
   <link rel="stylesheet" href="adminStyles.css">
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    /* ===== تبويبات ===== */
+    .tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .tab {
+      padding: 10px 18px;
+      border: none;
+      background: #eee;
+      cursor: pointer;
+      border-radius: 6px;
+      font-size: 15px;
+      transition: 0.2s;
+    }
+
+    .tab:hover {
+      background: #ddd;
+    }
+
+    .tab.active {
+      background: #4a90e2;
+      color: white;
+    }
+  </style>
 </head>
+
 <body class="admin-body">
 
+<!-- ===== Header ===== -->
 <header class="admin-header">
   <div class="admin-left">
     <div class="admin-title">
       <h1>لوحة المسؤول</h1>
       <span>إدارة البلاغات</span>
     </div>
-    <img src="img/logo.png" class="admin-logo" alt="">
+    <img src="img/logo.png" class="admin-logo">
   </div>
+
   <a href="login.html" class="logout">تسجيل الخروج</a>
 </header>
 
+<!-- ===== Main ===== -->
 <main class="admin-main">
+
   <section class="reports-section">
     <h2 class="section-title">جميع البلاغات</h2>
+
+    <!-- ===== التبويبات ===== -->
+    <div class="tabs">
+      <button class="tab active" onclick="filterReports('all', event)">الكل</button>
+      <button class="tab" onclick="filterReports('جديدة', event)">جديدة</button>
+      <button class="tab" onclick="filterReports('قيد المعالجة', event)">قيد المعالجة</button>
+      <button class="tab" onclick="filterReports('تم التنفيذ', event)">تم التنفيذ</button>
+    </div>
 
     <div class="reports-box">
       <div class="reports-scroll" id="reportsList"></div>
     </div>
   </section>
+
 </main>
 
+<!-- ===== Script ===== -->
 <script>
 function getClient(){
   return window.supabase.createClient(
@@ -37,21 +82,27 @@ function getClient(){
   );
 }
 
-async function updateStatus(id, status){
-  const supabase = getClient();
+// حماية الصفحة (فقط مسؤول)
+const role = localStorage.getItem("user_role");
+if(role !== "admin"){
+  window.location.href = "login.html";
+}
 
-  const { error } = await supabase
-    .from("reports")
-    .update({ status: status })
-    .eq("id", id);
+// ===== التصفية =====
+let currentFilter = "all";
 
-  if(error){
-    alert("خطأ في تحديث الحالة");
-    return;
-  }
+function filterReports(status, event){
+  currentFilter = status;
+
+  // تغيير مظهر التبويبات
+  document.querySelectorAll(".tab").forEach(btn => btn.classList.remove("active"));
+  event.target.classList.add("active");
 
   loadReports();
 }
+
+// ===== تحميل البلاغات =====
+loadReports();
 
 async function loadReports(){
   const container = document.getElementById("reportsList");
@@ -76,15 +127,28 @@ async function loadReports(){
 
   container.innerHTML = "";
 
-  data.forEach(r => {
+  // تطبيق التصفية
+  const filtered = data.filter(r => currentFilter === "all" || r.status === currentFilter);
+
+  if(filtered.length === 0){
+    container.innerHTML = "لا يوجد بلاغات في هذا التبويب";
+    return;
+  }
+
+  filtered.forEach(r => {
+
     container.innerHTML += `
       <div class="report-card">
+
+        <!-- يمين -->
         <div class="right-tags">
           <span class="tag id">#${r.id}</span>
           <span class="tag type">${r.type || "-"}</span>
         </div>
 
+        <!-- المحتوى -->
         <div class="report-body">
+
           <div class="report-meta">
             <strong>الموقع:</strong> ${r.location || "-"}
             <span class="dot">•</span>
@@ -92,7 +156,7 @@ async function loadReports(){
           </div>
 
           <div class="badges">
-            <span class="badge sev">شدة البلاغ: ${r.rate || "-"}</span>
+            <span class="badge sev">شدة البلاغ: ${r.severity || "-"}</span>
             <span class="badge priority">الدور: ${r.sender_role || "-"}</span>
           </div>
 
@@ -103,16 +167,40 @@ async function loadReports(){
           </div>
 
           <div class="actions">
-            <button class="btn-process" onclick="updateStatus(${r.id}, 'قيد المعالجة')">قيد المعالجة</button>
-            <button class="btn-done" onclick="updateStatus(${r.id}, 'تم التنفيذ')">تم التنفيذ</button>
+            <button class="btn-process"
+              onclick="updateStatus(${r.id}, 'قيد المعالجة')">
+              قيد المعالجة
+            </button>
+
+            <button class="btn-done"
+              onclick="updateStatus(${r.id}, 'تم التنفيذ')">
+              تم التنفيذ
+            </button>
           </div>
+
         </div>
+
       </div>
     `;
   });
 }
 
-loadReports();
+// ===== تحديث الحالة =====
+async function updateStatus(id, status){
+  const supabase = getClient();
+
+  const { error } = await supabase
+    .from("reports")
+    .update({ status: status })
+    .eq("id", id);
+
+  if(error){
+    alert("خطأ في التحديث");
+    return;
+  }
+
+  loadReports();
+}
 </script>
 
 </body>
