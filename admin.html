@@ -3,30 +3,23 @@
 <head>
   <meta charset="UTF-8">
   <title>لوحة المسؤول</title>
-
   <link rel="stylesheet" href="adminStyles.css">
-
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
-
 <body class="admin-body">
 
-<!-- ===== Header ===== -->
 <header class="admin-header">
   <div class="admin-left">
     <div class="admin-title">
       <h1>لوحة المسؤول</h1>
       <span>إدارة البلاغات</span>
     </div>
-    <img src="img/logo.png" class="admin-logo">
+    <img src="img/logo.png" class="admin-logo" alt="">
   </div>
-
   <a href="login.html" class="logout">تسجيل الخروج</a>
 </header>
 
-<!-- ===== Main ===== -->
 <main class="admin-main">
-
   <section class="reports-section">
     <h2 class="section-title">جميع البلاغات</h2>
 
@@ -34,26 +27,31 @@
       <div class="reports-scroll" id="reportsList"></div>
     </div>
   </section>
-
 </main>
 
-<!-- ===== Script ===== -->
 <script>
 function getClient(){
   return window.supabase.createClient(
     'https://mcxdjisoyqdnyieboqpy.supabase.co',
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1jeGRqaXNveXFkbnlpZWJvcXB5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0MDI3NDAsImV4cCI6MjA5MDk3ODc0MH0.kIwJ1pc-GLX1lTvstLSDZ5Li1rd9vwutI4-Wz_HR6nE'
+    'حطي_هنا_anon_key'
   );
 }
 
-// حماية الصفحة (فقط مسؤول)
-const role = localStorage.getItem("user_role");
-if(role !== "admin"){
-  window.location.href = "login.html";
-}
+async function updateStatus(id, status){
+  const supabase = getClient();
 
-// تحميل البلاغات
-loadReports();
+  const { error } = await supabase
+    .from("reports")
+    .update({ status: status })
+    .eq("id", id);
+
+  if(error){
+    alert("خطأ في تحديث الحالة");
+    return;
+  }
+
+  loadReports();
+}
 
 async function loadReports(){
   const container = document.getElementById("reportsList");
@@ -79,19 +77,14 @@ async function loadReports(){
   container.innerHTML = "";
 
   data.forEach(r => {
-
     container.innerHTML += `
       <div class="report-card">
-
-        <!-- يمين -->
         <div class="right-tags">
           <span class="tag id">#${r.id}</span>
           <span class="tag type">${r.type || "-"}</span>
         </div>
 
-        <!-- المحتوى -->
         <div class="report-body">
-
           <div class="report-meta">
             <strong>الموقع:</strong> ${r.location || "-"}
             <span class="dot">•</span>
@@ -99,7 +92,7 @@ async function loadReports(){
           </div>
 
           <div class="badges">
-            <span class="badge sev">شدة البلاغ: ${r.severity || "-"}</span>
+            <span class="badge sev">شدة البلاغ: ${r.rate || "-"}</span>
             <span class="badge priority">الدور: ${r.sender_role || "-"}</span>
           </div>
 
@@ -110,40 +103,16 @@ async function loadReports(){
           </div>
 
           <div class="actions">
-            <button class="btn-process"
-              onclick="updateStatus(${r.id}, 'قيد المعالجة')">
-              قيد المعالجة
-            </button>
-
-            <button class="btn-done"
-              onclick="updateStatus(${r.id}, 'تم التنفيذ')">
-              تم التنفيذ
-            </button>
+            <button class="btn-process" onclick="updateStatus(${r.id}, 'قيد المعالجة')">قيد المعالجة</button>
+            <button class="btn-done" onclick="updateStatus(${r.id}, 'تم التنفيذ')">تم التنفيذ</button>
           </div>
-
         </div>
-
       </div>
     `;
   });
 }
 
-// تحديث الحالة
-async function updateStatus(id, status){
-  const supabase = getClient();
-
-  const { error } = await supabase
-    .from("reports")
-    .update({ status: status })
-    .eq("id", id);
-
-  if(error){
-    alert("خطأ في التحديث");
-    return;
-  }
-
-  loadReports();
-}
+loadReports();
 </script>
 
 </body>
