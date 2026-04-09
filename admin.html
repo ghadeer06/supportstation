@@ -1,113 +1,136 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>لوحة المسؤول</title>
-
-  <link rel="stylesheet" href="adminStyles.css">
-
+  <link rel="stylesheet" href="adminStyles.css" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-  <style>
-    /* ===== تبويبات ===== */
-    .tabs {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 20px;
-    }
-
-    .tab {
-      padding: 10px 18px;
-      border: none;
-      background: #eee;
-      cursor: pointer;
-      border-radius: 6px;
-      font-size: 15px;
-      transition: 0.2s;
-    }
-
-    .tab:hover {
-      background: #ddd;
-    }
-
-    .tab.active {
-      background: #4a90e2;
-      color: white;
-    }
-  </style>
 </head>
-
 <body class="admin-body">
 
-<!-- ===== Header ===== -->
-<header class="admin-header">
-  <div class="admin-left">
-    <div class="admin-title">
-      <h1>لوحة المسؤول</h1>
-      <span>إدارة البلاغات</span>
+  <header class="admin-header">
+    <a href="login.html" class="logout">تسجيل الخروج</a>
+
+    <div class="admin-left">
+      <div class="admin-title">
+        <h1>لوحة تحكم المسؤول</h1>
+        <span>متابعة البلاغات</span>
+      </div>
+      <img src="img/logo.png" class="admin-logo" alt="الشعار">
     </div>
-    <img src="img/logo.png" class="admin-logo">
-  </div>
+  </header>
 
-  <a href="login.html" class="logout">تسجيل الخروج</a>
-</header>
+  <main class="admin-main">
 
-<!-- ===== Main ===== -->
-<main class="admin-main">
+    <!-- الإحصائيات -->
+    <section class="admin-cards">
+      <div class="stat-card">
+        <h3>تم الحل</h3>
+        <p id="doneCount">0</p>
+      </div>
 
-  <section class="reports-section">
-    <h2 class="section-title">جميع البلاغات</h2>
+      <div class="stat-card">
+        <h3>قيد المعالجة</h3>
+        <p id="processingCount">0</p>
+      </div>
 
-    <!-- ===== التبويبات ===== -->
-    <div class="tabs">
-      <button class="tab active" onclick="filterReports('all', event)">الكل</button>
-      <button class="tab" onclick="filterReports('جديدة', event)">جديدة</button>
-      <button class="tab" onclick="filterReports('قيد المعالجة', event)">قيد المعالجة</button>
-      <button class="tab" onclick="filterReports('تم التنفيذ', event)">تم التنفيذ</button>
-    </div>
+      <div class="stat-card">
+        <h3>إجمالي البلاغات</h3>
+        <p id="totalCount">0</p>
+      </div>
+    </section>
 
-    <div class="reports-box">
-      <div class="reports-scroll" id="reportsList"></div>
-    </div>
-  </section>
+    <!-- بلاغات المدربين -->
+    <section class="reports-section">
+      <h2 class="section-title">بلاغات المدربين</h2>
+      <div class="reports-box">
+        <div class="reports-scroll" id="trainerReports"></div>
+      </div>
+    </section>
 
-</main>
+    <!-- بلاغات المتدربين -->
+    <section class="reports-section">
+      <h2 class="section-title">بلاغات المتدربين</h2>
+      <div class="reports-box">
+        <div class="reports-scroll" id="traineeReports"></div>
+      </div>
+    </section>
 
-<!-- ===== Script ===== -->
+  </main>
+
 <script>
-function getClient(){
+function getClient() {
   return window.supabase.createClient(
     'https://mcxdjisoyqdnyieboqpy.supabase.co',
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1jeGRqaXNveXFkbnlpZWJvcXB5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0MDI3NDAsImV4cCI6MjA5MDk3ODc0MH0.kIwJ1pc-GLX1lTvstLSDZ5Li1rd9vwutI4-Wz_HR6nE'
   );
 }
 
-// حماية الصفحة (فقط مسؤول)
-const role = localStorage.getItem("user_role");
-if(role !== "admin"){
-  window.location.href = "login.html";
-}
+async function updateStatus(id, newStatus) {
+  const supabase = getClient();
 
-// ===== التصفية =====
-let currentFilter = "all";
+  const { error } = await supabase
+    .from("reports")
+    .update({ status: newStatus })
+    .eq("id", id);
 
-function filterReports(status, event){
-  currentFilter = status;
-
-  // تغيير مظهر التبويبات
-  document.querySelectorAll(".tab").forEach(btn => btn.classList.remove("active"));
-  event.target.classList.add("active");
+  if (error) {
+    alert("خطأ في تحديث الحالة");
+    return;
+  }
 
   loadReports();
 }
 
-// ===== تحميل البلاغات =====
-loadReports();
+function makeReportCard(r) {
+  const statusText = r.status || "قيد المراجعة";
 
-async function loadReports(){
-  const container = document.getElementById("reportsList");
-  container.innerHTML = "جاري التحميل...";
+  const processDisabled = statusText === "قيد المعالجة" ? "disabled" : "";
+  const doneClass = statusText === "تم التنفيذ" ? "btn-done solid" : "btn-done";
 
+  return `
+    <div class="report-card">
+      <div class="right-tags">
+        <span class="tag id">#${r.id}</span>
+        <span class="tag type">${r.type || "-"}</span>
+      </div>
+
+      <div class="report-body">
+        <div class="report-meta">
+          <strong>الموقع:</strong> ${r.location || "-"}
+          <span class="dot">•</span>
+          <strong>الحالة:</strong> ${statusText}
+        </div>
+
+        <div class="badges">
+          <span class="badge sev">شدة البلاغ: ${r.rate ?? "-"}</span>
+          <span class="badge priority">الدور: ${r.sender_role || "-"}</span>
+        </div>
+
+        <div class="report-text">
+          <strong>الوصف:</strong> ${r.description || "-"}<br>
+          <strong>مقدم البلاغ:</strong> ${r.sender_name || "-"}<br>
+          <strong>الإيميل:</strong> ${r.sender_email || "-"}
+        </div>
+
+        <div class="actions">
+          <button class="btn-process" ${processDisabled}
+            onclick="updateStatus(${r.id}, 'قيد المعالجة')">
+            قيد المعالجة
+          </button>
+
+          <button class="${doneClass}"
+            onclick="updateStatus(${r.id}, 'تم التنفيذ')">
+            تم التنفيذ
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+async function loadReports() {
   const supabase = getClient();
 
   const { data, error } = await supabase
@@ -115,92 +138,42 @@ async function loadReports(){
     .select("*")
     .order("id", { ascending: false });
 
-  if(error){
-    container.innerHTML = "خطأ في تحميل البيانات";
+  if (error) {
+    document.getElementById("trainerReports").innerHTML = "حدث خطأ في تحميل البلاغات";
+    document.getElementById("traineeReports").innerHTML = "حدث خطأ في تحميل البلاغات";
     return;
   }
 
-  if(!data || data.length === 0){
-    container.innerHTML = "لا يوجد بلاغات";
-    return;
+  const reports = data || [];
+
+  const trainerData = reports.filter(r => r.sender_role === "trainer");
+  const traineeData = reports.filter(r => r.sender_role === "trainee");
+
+  const totalCount = reports.length;
+  const processingCount = reports.filter(r => r.status === "قيد المعالجة").length;
+  const doneCount = reports.filter(r => r.status === "تم التنفيذ").length;
+
+  document.getElementById("totalCount").innerText = totalCount;
+  document.getElementById("processingCount").innerText = processingCount;
+  document.getElementById("doneCount").innerText = doneCount;
+
+  const trainerBox = document.getElementById("trainerReports");
+  const traineeBox = document.getElementById("traineeReports");
+
+  if (trainerData.length === 0) {
+    trainerBox.innerHTML = `<div class="report-card"><div class="report-body"><div class="report-text">لا توجد بلاغات</div></div></div>`;
+  } else {
+    trainerBox.innerHTML = trainerData.map(makeReportCard).join("");
   }
 
-  container.innerHTML = "";
-
-  // تطبيق التصفية
-  const filtered = data.filter(r => currentFilter === "all" || r.status === currentFilter);
-
-  if(filtered.length === 0){
-    container.innerHTML = "لا يوجد بلاغات في هذا التبويب";
-    return;
+  if (traineeData.length === 0) {
+    traineeBox.innerHTML = `<div class="report-card"><div class="report-body"><div class="report-text">لا توجد بلاغات</div></div></div>`;
+  } else {
+    traineeBox.innerHTML = traineeData.map(makeReportCard).join("");
   }
-
-  filtered.forEach(r => {
-
-    container.innerHTML += `
-      <div class="report-card">
-
-        <!-- يمين -->
-        <div class="right-tags">
-          <span class="tag id">#${r.id}</span>
-          <span class="tag type">${r.type || "-"}</span>
-        </div>
-
-        <!-- المحتوى -->
-        <div class="report-body">
-
-          <div class="report-meta">
-            <strong>الموقع:</strong> ${r.location || "-"}
-            <span class="dot">•</span>
-            <strong>الحالة:</strong> ${r.status || "-"}
-          </div>
-
-          <div class="badges">
-            <span class="badge sev">شدة البلاغ: ${r.severity || "-"}</span>
-            <span class="badge priority">الدور: ${r.sender_role || "-"}</span>
-          </div>
-
-          <div class="report-text">
-            <strong>الوصف:</strong> ${r.description || "-"}<br>
-            <strong>مقدم البلاغ:</strong> ${r.sender_name || "-"}<br>
-            <strong>الإيميل:</strong> ${r.sender_email || "-"}
-          </div>
-
-          <div class="actions">
-            <button class="btn-process"
-              onclick="updateStatus(${r.id}, 'قيد المعالجة')">
-              قيد المعالجة
-            </button>
-
-            <button class="btn-done"
-              onclick="updateStatus(${r.id}, 'تم التنفيذ')">
-              تم التنفيذ
-            </button>
-          </div>
-
-        </div>
-
-      </div>
-    `;
-  });
 }
 
-// ===== تحديث الحالة =====
-async function updateStatus(id, status){
-  const supabase = getClient();
-
-  const { error } = await supabase
-    .from("reports")
-    .update({ status: status })
-    .eq("id", id);
-
-  if(error){
-    alert("خطأ في التحديث");
-    return;
-  }
-
-  loadReports();
-}
+loadReports();
 </script>
 
 </body>
