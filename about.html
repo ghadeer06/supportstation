@@ -2,83 +2,65 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <link rel="stylesheet" href="styles.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>عن الموقع</title>
-
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: "Tajawal", sans-serif;
-      background: #f4f6f9;
-      color: #333;
-    }
-
-    header {
-      background: #00008B;
-      padding: 20px;
-      text-align: center;
-      color: white;
-      font-size: 24px;
-      font-weight: bold;
-    }
-
-    .container {
-      max-width: 800px;
-      margin: 40px auto;
-      background: white;
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-      line-height: 1.9;
-    }
-
-    h2 {
-      color: #021631;
-      margin-bottom: 15px;
-    }
-
-    p {
-      font-size: 18px;
-    }
-
-    footer {
-      margin-top: 40px;
-      text-align: center;
-      padding: 15px;
-      background: #eee;
-      font-size: 14px;
-      color: #666;
-    }
-  </style>
+  <link rel="stylesheet" href="adminStyles.css">
 </head>
 
-<body>
+<body class="admin-body" style="display:flex; flex-direction:column; min-height:100vh;">
 
-  <header>
-    عن الموقع
-  </header>
-
-  <div class="container">
-    <h2>من نحن؟</h2>
-    <p>
-      هذا الموقع هو نظام إلكتروني لإدارة التذاكر والدعم الفني، يهدف إلى تسهيل التواصل بين المتدربين والمدربين والإدارة داخل المؤسسة العامة للتدريب التقني والمهني.
-    </p>
-
-    <h2>هدف المشروع</h2>
-    <p>
-      تم تطوير هذا النظام كجزء من مشروع تخرج، مع التركيز على تحسين تجربة المستخدم، تسريع عملية حل المشكلات، وتوفير منصة موحدة لإدارة الطلبات.
-    </p>
-
-    <h2>مميزات النظام</h2>
-    <p>
-      • واجهة سهلة الاستخدام  
-      • نظام تذاكر متكامل  
-      • ربط مباشر مع قاعدة بيانات Supabase  
-      • دعم للأدوار (متدرب – مدرب – مسؤول)
-    </p>
+<!-- ===== Header ===== -->
+<header class="admin-header">
+  <div class="admin-left">
+    <img src="img/logo.png" class="admin-logo" alt="Logo">
+    <div class="admin-title">
+      <h1>عن الموقع</h1>
+      <span>محطة الدعم</span>
+    </div>
   </div>
 
+  <a href="index.html" class="logout">الرجوع للرئيسية</a>
+</header>
+
+<!-- ===== Main ===== -->
+<main class="admin-main" style="flex:1; padding-top:50px;">
+
+  <section class="reports-section" style="max-width:900px; margin:auto; margin-top:40px;">
+    <h2 class="section-title">نبذة عن مشروع محطة الدعم</h2>
+
+    <div class="reports-box" style="padding:25px; line-height:2; font-size:16px;">
+      
+      <p>
+        <b>محطة الدعم</b> هو نظام إلكتروني تم تطويره لتسهيل عملية تقديم البلاغات والشكاوى 
+        داخل بيئة التدريب، سواء للمتدربين أو المدربين، بطريقة منظمة وسهلة الاستخدام.
+      </p>
+
+      <p style="margin-top:15px;">
+        يهدف المشروع إلى تحسين جودة التواصل داخل المؤسسة من خلال توفير منصة موحدة تتيح:
+      </p>
+
+      <ul style="padding-right:20px; margin-top:10px;">
+        <li>تقديم بلاغ جديد بسهولة وسرعة.</li>
+        <li>متابعة حالة البلاغ ومعرفة آخر التحديثات.</li>
+        <li>تقديم شكوى خاصة بحقوق المتدرب أو المدرب.</li>
+        <li>عرض جميع البلاغات السابقة في صفحة واحدة.</li>
+      </ul>
+
+      <p style="margin-top:20px;">
+        يعتمد النظام على تقنيات حديثة مثل <b>Supabase</b> لإدارة البيانات،  
+        ونظام <b>Magic Link</b> لتسجيل الدخول بدون كلمة مرور، مما يوفر أمانًا وسهولة للمستخدم.
+      </p>
+
+      <p style="margin-top:20px;">
+        تم تصميم الواجهات بعناية لتكون بسيطة، واضحة، ومتوافقة مع مختلف الأجهزة لضمان أفضل تجربة للمستخدم.
+      </p>
+
+    </div>
+  </section>
+
+</main>
+
+<!-- ===== Footer ===== -->
 <footer class="main-footer">
     <div class="footer-content">
         <p>&copy; 2026 حقوق محفوظة | محطة الدعم </p>
