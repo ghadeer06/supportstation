@@ -3,18 +3,28 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>الصفحة الرئيسية</title>
+  <title>لوحة تحكم المسؤول</title>
   <link rel="stylesheet" href="adminStyles.css" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 
 <body class="admin-body">
+<script>
+const ADMIN_EMAIL = "admin@tvtc.edu.sa"; // غيريه بإيميلك
+
+const email = localStorage.getItem("user_email");
+
+if(email !== ADMIN_EMAIL){
+  alert("ما عندك صلاحية تدخل");
+  window.location.href = "login.html";
+}
+</script>
 
 <header class="admin-header">
   <div class="admin-left">
     <img src="img/logo.png" class="admin-logo" alt="Logo">
     <div class="admin-title">
-      <h1>الصفحة الرئيسية</h1>
+      <h1>لوحة تحكم المسؤول</h1>
       <span>محطة الدعم</span>
     </div>
   </div>
@@ -65,7 +75,6 @@
     <p>&copy; 2026 حقوق محفوظة | محطة الدعم</p>
   </div>
 </footer>
-
 <script>
 function getClient() {
   return window.supabase.createClient(
