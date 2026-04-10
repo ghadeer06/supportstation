@@ -116,6 +116,13 @@
       line-height:1.7;
     }
 
+    .note{
+      margin-top:10px;
+      font-size:13px;
+      line-height:1.8;
+      color:rgba(255,255,255,0.92);
+    }
+
     .otp-box,
     .name-box{
       display:none;
@@ -139,7 +146,7 @@
 
   <div class="card">
     <h2>تسجيل الدخول</h2>
-    <p class="sub">أدخلي بريدك الإلكتروني وسنرسل لك رمز تحقق على الإيميل.</p>
+    <p class="sub">أدخلي بريدك الإلكتروني وسنرسل لك رمز تحقق على البريد.</p>
 
     <div class="role-group">
       <label class="role">
@@ -163,6 +170,11 @@
       <input type="email" id="email" placeholder="example@tvtc.edu.sa">
     </div>
 
+    <p class="note">
+      المتدرب: يستخدم البريد الجامعي (@tvtc.edu.sa)<br>
+      المدرب: يستخدم البريد الوظيفي (@tvtc.gov.sa)
+    </p>
+
     <button type="button" class="btn" onclick="startOtp()">إرسال الرمز</button>
 
     <div class="otp-box" id="otpBox">
@@ -181,7 +193,7 @@
       <button type="button" class="btn" onclick="saveNameAndContinue()">تأكيد الاسم</button>
     </div>
 
-    <p class="msg" id="msg">يرجى استخدام البريد الإلكتروني الجامعي الخاص بك</p>
+    <p class="msg" id="msg">يرجى اختيار نوع المستخدم ثم إدخال البريد المناسب.</p>
 
     <a class="back-link" href="index.html">العودة للصفحة الرئيسية</a>
   </div>
@@ -204,25 +216,23 @@
       selectedRole = document.querySelector('input[name="role"]:checked')?.value || "trainee";
 
       if (email === "") {
-        msg.innerText = "يرجى إدخال البريد الإلكتروني";
+        msg.innerText = "يرجى إدخال البريد الإلكتروني.";
         return;
       }
-// التحقق من البريد الإلكتروني حسب نوع المستخدم
-if (selectedRole === "trainee") {
-  if (!email.endsWith("@tvtc.edu.sa")) {
-    msg.innerText = "يرجى استخدام البريد الإلكتروني الجامعي (@tvtc.edu.sa) للمتدربين.";
-    return;
-  }
-}
 
-else if (selectedRole === "trainer") {
-  if (!email.endsWith("@tvtc.gov.sa")) {
-    msg.innerText = "يرجى استخدام البريد الإلكتروني الوظيفي (@tvtc.gov.sa) للمدربين.";
-    return;
-  }
-}
+      if (selectedRole === "trainee") {
+        if (!email.endsWith("@tvtc.edu.sa")) {
+          msg.innerText = "يرجى استخدام البريد الإلكتروني الجامعي (@tvtc.edu.sa) للمتدربين.";
+          return;
+        }
+      } else if (selectedRole === "trainer") {
+        if (!email.endsWith("@tvtc.gov.sa")) {
+          msg.innerText = "يرجى استخدام البريد الإلكتروني الوظيفي (@tvtc.gov.sa) للمدربين.";
+          return;
+        }
+      }
 
-      msg.innerText = "جاري إرسال الرمز...";
+      msg.innerText = "جارٍ إرسال الرمز...";
 
       try {
         const supabase = getClient();
@@ -240,9 +250,9 @@ else if (selectedRole === "trainer") {
         }
 
         document.getElementById("otpBox").style.display = "block";
-        msg.innerText = "تم إرسال الرمز إلى بريدك الإلكتروني";
+        msg.innerText = "تم إرسال الرمز إلى بريدك الإلكتروني.";
       } catch (e) {
-        msg.innerText = "صار خطأ: " + e.message;
+        msg.innerText = "حدث خطأ: " + e.message;
       }
     }
 
@@ -252,11 +262,11 @@ else if (selectedRole === "trainer") {
       const otp = document.getElementById("otp").value.trim();
 
       if (otp === "") {
-        msg.innerText = "يرجى إدخال رمز التحقق";
+        msg.innerText = "يرجى إدخال رمز التحقق.";
         return;
       }
 
-      msg.innerText = "جاري التحقق...";
+      msg.innerText = "جارٍ التحقق...";
 
       try {
         const supabase = getClient();
@@ -274,7 +284,6 @@ else if (selectedRole === "trainer") {
 
         currentUser = data.user;
 
-        // نبحث في جدول users بالإيميل
         const { data: existingUser, error: findError } = await supabase
           .from("users")
           .select("*")
@@ -282,28 +291,41 @@ else if (selectedRole === "trainer") {
           .maybeSingle();
 
         if (findError) {
-          msg.innerText = "صار خطأ في جلب بيانات المستخدم: " + findError.message;
+          msg.innerText = "حدث خطأ في جلب بيانات المستخدم: " + findError.message;
           return;
         }
 
-        // إذا المستخدم موجود من قبل
+        if (selectedRole === "admin") {
+          if (!existingUser || existingUser.role !== "admin") {
+            msg.innerText = "هذا الدخول مخصص للمسؤول فقط.";
+            return;
+          }
+
+          localStorage.setItem("user_email", email);
+          localStorage.setItem("user_role", "admin");
+          localStorage.setItem("userName", existingUser.name || "");
+
+          msg.innerText = "تم تسجيل الدخول بنجاح.";
+          goToPage("admin");
+          return;
+        }
+
         if (existingUser) {
-          const finalRole = existingUser.role || "trainee";
+          const finalRole = existingUser.role || selectedRole || "trainee";
 
           localStorage.setItem("user_email", email);
           localStorage.setItem("user_role", finalRole);
           localStorage.setItem("userName", existingUser.name || "");
 
-          msg.innerText = "تم تسجيل الدخول بنجاح";
+          msg.innerText = "تم تسجيل الدخول بنجاح.";
           goToPage(finalRole);
           return;
         }
 
-        // إذا المستخدم جديد
         document.getElementById("nameBox").style.display = "block";
-        msg.innerText = "أدخلي اسمك لإكمال التسجيل أول مرة";
+        msg.innerText = "أدخلي اسمك لإكمال التسجيل لأول مرة.";
       } catch (e) {
-        msg.innerText = "صار خطأ: " + e.message;
+        msg.innerText = "حدث خطأ: " + e.message;
       }
     }
 
@@ -313,7 +335,7 @@ else if (selectedRole === "trainer") {
       const email = document.getElementById("email").value.trim();
 
       if (name === "") {
-        msg.innerText = "يرجى إدخال الاسم";
+        msg.innerText = "يرجى إدخال الاسم.";
         return;
       }
 
@@ -333,7 +355,7 @@ else if (selectedRole === "trainer") {
           ]);
 
         if (error) {
-          msg.innerText = "صار خطأ في حفظ الاسم: " + error.message;
+          msg.innerText = "حدث خطأ في حفظ الاسم: " + error.message;
           return;
         }
 
@@ -341,10 +363,10 @@ else if (selectedRole === "trainer") {
         localStorage.setItem("user_email", email);
         localStorage.setItem("user_role", finalRole);
 
-        msg.innerText = "تم حفظ الاسم وتسجيل الدخول بنجاح";
+        msg.innerText = "تم حفظ الاسم وتسجيل الدخول بنجاح.";
         goToPage(finalRole);
       } catch (e) {
-        msg.innerText = "صار خطأ: " + e.message;
+        msg.innerText = "حدث خطأ: " + e.message;
       }
     }
 
