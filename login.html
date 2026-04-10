@@ -178,10 +178,14 @@ function updateNote() {
   const note = document.getElementById("roleNote");
 
   if (role === "trainee") {
-    note.innerText = "يرجى استخدم البريد الجامعي (@tvtc.edu.sa)";
+    note.innerText = "يرجى ايستخدم البريد الجامعي (@tvtc.edu.sa)";
   } 
   else if (role === "trainer") {
     note.innerText = "يرجى استخدم البريد الوظيفي (@tvtc.gov.sa)";
+  } 
+  else {
+    note.innerText = "المسؤول: يستخدم البريد المعتمد في النظام";
+  }
 }
 
 /* 🔥 إرسال الرمز */
