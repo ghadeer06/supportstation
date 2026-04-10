@@ -207,11 +207,20 @@
         msg.innerText = "يرجى إدخال البريد الإلكتروني";
         return;
       }
+// التحقق من البريد الإلكتروني حسب نوع المستخدم
+if (selectedRole === "trainee") {
+  if (!email.endsWith("@tvtc.edu.sa")) {
+    msg.innerText = "يرجى استخدام البريد الإلكتروني الجامعي (@tvtc.edu.sa) للمتدربين.";
+    return;
+  }
+}
 
-      if (!email.endsWith("@tvtc.edu.sa")) {
-        msg.innerText = "يرجى استخدام البريد الإلكتروني الجامعي فقط";
-        return;
-      }
+else if (selectedRole === "trainer") {
+  if (!email.endsWith("@tvtc.gov.sa")) {
+    msg.innerText = "يرجى استخدام البريد الإلكتروني الوظيفي (@tvtc.gov.sa) للمدربين.";
+    return;
+  }
+}
 
       msg.innerText = "جاري إرسال الرمز...";
 
