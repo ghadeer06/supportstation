@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>تسجيل الدخول</title>
-
   <style>
     * { box-sizing: border-box; }
 
@@ -41,6 +40,7 @@
       font-size:14px;
       line-height:1.8;
       margin:0 0 14px;
+      opacity:.95;
     }
 
     .role-group{
@@ -59,6 +59,7 @@
       border:1px solid rgba(255,255,255,0.28);
       background:rgba(255,255,255,0.10);
       cursor:pointer;
+      user-select:none;
     }
 
     .field{
@@ -78,6 +79,12 @@
       border:1px solid rgba(255,255,255,0.28);
       background:rgba(255,255,255,0.10);
       color:#fff;
+      outline:none;
+      font-size:15px;
+    }
+
+    .field input::placeholder{
+      color:rgba(255,255,255,0.75);
     }
 
     #email{
@@ -92,21 +99,21 @@
       border-radius:12px;
       background:rgba(255,255,255,0.25);
       color:#fff;
+      font-size:15px;
       font-weight:700;
       cursor:pointer;
       margin-top:8px;
     }
 
-    .note{
-      margin-top:10px;
-      font-size:13px;
-      line-height:1.8;
-      color:rgba(255,255,255,0.9);
+    .btn:hover{
+      background:rgba(255,255,255,0.32);
     }
 
     .msg{
       margin-top:10px;
+      min-height:22px;
       font-size:13px;
+      line-height:1.7;
     }
 
     .otp-box,
@@ -114,113 +121,260 @@
       display:none;
       margin-top:12px;
     }
+
+    .back-link{
+      display:inline-block;
+      margin-top:14px;
+      color:rgba(255,255,255,0.9);
+      text-decoration:none;
+      font-size:13px;
+    }
+
+    .back-link:hover{
+      text-decoration:underline;
+    }
   </style>
 </head>
-
 <body>
 
-<div class="card">
-  <h2>تسجيل الدخول</h2>
-  <p class="sub">أدخلي بريدك الإلكتروني وسنرسل لك رمز تحقق.</p>
+  <div class="card">
+    <h2>تسجيل الدخول</h2>
+    <p class="sub">أدخلي بريدك الإلكتروني وسنرسل لك رمز تحقق على الإيميل.</p>
 
-  <!-- اختيار الدور -->
-  <div class="role-group">
-    <label class="role">
-      <input type="radio" name="role" value="trainee" checked onchange="updateNote()">
-      <span>متدرب</span>
-    </label>
+    <div class="role-group">
+      <label class="role">
+        <input type="radio" name="role" value="trainee" checked onchange="updateRoleNote()">
+        <span>متدرب</span>
+      </label>
 
-    <label class="role">
-      <input type="radio" name="role" value="trainer" onchange="updateNote()">
-      <span>مدرب</span>
-    </label>
+      <label class="role">
+        <input type="radio" name="role" value="trainer" onchange="updateRoleNote()">
+        <span>مدرب</span>
+      </label>
 
-    <label class="role">
-      <input type="radio" name="role" value="admin" onchange="updateNote()">
-      <span>مسؤول</span>
-    </label>
+      <label class="role">
+        <input type="radio" name="role" value="admin" onchange="updateRoleNote()">
+        <span>مسؤول</span>
+      </label>
+    </div>
+
+    <div class="field">
+      <span>البريد الإلكتروني</span>
+      <input type="email" id="email" placeholder="example@tvtc.edu.sa">
+    </div>
+
+    <p class="msg" id="roleNote">يرجى استخدام البريد الإلكتروني الجامعي (@tvtc.edu.sa) للمتدربين.</p>
+
+    <button type="button" class="btn" onclick="startOtp()">إرسال الرمز</button>
+
+    <div class="otp-box" id="otpBox">
+      <div class="field">
+        <span>رمز التحقق</span>
+        <input type="text" id="otp" placeholder="أدخلي الرمز">
+      </div>
+      <button type="button" class="btn" onclick="verifyOtpCode()">تحقق</button>
+    </div>
+
+    <div class="name-box" id="nameBox">
+      <div class="field">
+        <span>الاسم</span>
+        <input type="text" id="name" placeholder="أدخلي اسمك">
+      </div>
+      <button type="button" class="btn" onclick="saveNameAndContinue()">تأكيد الاسم</button>
+    </div>
+
+    <p class="msg" id="msg">يرجى استخدام البريد الإلكتروني الجامعي الخاص بك</p>
+
+    <a class="back-link" href="index.html">العودة للصفحة الرئيسية</a>
   </div>
 
-  <!-- الإيميل -->
-  <div class="field">
-    <span>البريد الإلكتروني</span>
-    <input type="email" id="email" placeholder="example@tvtc.edu.sa">
-  </div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    function getClient() {
+      return window.supabase.createClient(
+        'https://mcxdjisoyqdnyieboqpy.supabase.co',
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1jeGRqaXNveXFkbnlpZWJvcXB5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0MDI3NDAsImV4cCI6MjA5MDk3ODc0MH0.kIwJ1pc-GLX1lTvstLSDZ5Li1rd9vwutI4-Wz_HR6nE'
+      );
+    }
 
-  <!-- الملاحظة المتغيرة -->
-  <p class="note" id="roleNote"></p>
+    let currentUser = null;
+    let selectedRole = null;
 
-  <button class="btn" onclick="startOtp()">إرسال الرمز</button>
+    function updateRoleNote() {
+      const role = document.querySelector('input[name="role"]:checked')?.value || "trainee";
+      const note = document.getElementById("roleNote");
 
-  <div class="otp-box" id="otpBox">
-    <input type="text" id="otp" placeholder="رمز التحقق">
-    <button class="btn" onclick="verifyOtpCode()">تحقق</button>
-  </div>
+      if (role === "trainee") {
+        note.innerText = "يرجى استخدام البريد الإلكتروني الجامعي (@tvtc.edu.sa) للمتدربين.";
+      } else if (role === "trainer") {
+        note.innerText = "يرجى استخدام البريد الإلكتروني الوظيفي (@tvtc.gov.sa) للمدربين.";
+      } else {
+        note.innerText = "يرجى استخدام البريد الإلكتروني المعتمد للمسؤول.";
+      }
+    }
 
-  <p class="msg" id="msg"></p>
-</div>
+    async function startOtp() {
+      const msg = document.getElementById("msg");
+      const email = document.getElementById("email").value.trim();
+      selectedRole = document.querySelector('input[name="role"]:checked')?.value || "trainee";
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+      if (email === "") {
+        msg.innerText = "يرجى إدخال البريد الإلكتروني";
+        return;
+      }
 
-<script>
-function getClient() {
-  return window.supabase.createClient(
-    'https://mcxdjisoyqdnyieboqpy.supabase.co',
-    'YOUR_KEY'
-  );
-}
+      // التحقق من البريد الإلكتروني حسب نوع المستخدم
+      if (selectedRole === "trainee") {
+        if (!email.endsWith("@tvtc.edu.sa")) {
+          msg.innerText = "يرجى استخدام البريد الإلكتروني الجامعي (@tvtc.edu.sa).";
+          return;
+        }
+      }
 
-let selectedRole = "trainee";
+      else if (selectedRole === "trainer") {
+        if (!email.endsWith("@tvtc.gov.sa")) {
+          msg.innerText = "يرجى استخدام البريد الإلكتروني الوظيفي (@tvtc.gov.sa).";
+          return;
+        }
+      }
 
-/* 🔥 تغيير الملاحظة */
-function updateNote() {
-  const role = document.querySelector('input[name="role"]:checked').value;
-  const note = document.getElementById("roleNote");
+      msg.innerText = "جاري إرسال الرمز...";
 
-  if (role === "trainee") {
-    note.innerText = "يرجى ايستخدم البريد الجامعي (@tvtc.edu.sa)";
-  } 
-  else if (role === "trainer") {
-    note.innerText = "يرجى استخدم البريد الوظيفي (@tvtc.gov.sa)";
-  } 
-  else {
-    note.innerText = "يرجى استخدم البريد المعتمد في النظام";
-  }
-}
+      try {
+        const supabase = getClient();
 
-/* 🔥 إرسال الرمز */
-async function startOtp() {
-  const msg = document.getElementById("msg");
-  const email = document.getElementById("email").value.trim();
-  selectedRole = document.querySelector('input[name="role"]:checked').value;
+        const { error } = await supabase.auth.signInWithOtp({
+          email: email,
+          options: {
+            shouldCreateUser: true
+          }
+        });
 
-  if (!email) {
-    msg.innerText = "أدخلي البريد الإلكتروني";
-    return;
-  }
+        if (error) {
+          msg.innerText = error.message;
+          return;
+        }
 
-  // التحقق حسب الدور
-  if (selectedRole === "trainee" && !email.endsWith("@tvtc.edu.sa")) {
-    msg.innerText = "البريد غير صحيح للمتدرب";
-    return;
-  }
+        document.getElementById("otpBox").style.display = "block";
+        msg.innerText = "تم إرسال الرمز إلى بريدك الإلكتروني";
+      } catch (e) {
+        msg.innerText = "صار خطأ: " + e.message;
+      }
+    }
 
-  if (selectedRole === "trainer" && !email.endsWith("@tvtc.gov.sa")) {
-    msg.innerText = "البريد غير صحيح للمدرب";
-    return;
-  }
+    async function verifyOtpCode() {
+      const msg = document.getElementById("msg");
+      const email = document.getElementById("email").value.trim();
+      const otp = document.getElementById("otp").value.trim();
 
-  msg.innerText = "جاري إرسال الرمز...";
-}
+      if (otp === "") {
+        msg.innerText = "يرجى إدخال رمز التحقق";
+        return;
+      }
 
-/* تحقق */
-function verifyOtpCode(){
-  document.getElementById("msg").innerText = "تم التحقق (تجريبي)";
-}
+      msg.innerText = "جاري التحقق...";
 
-/* تشغيل أولي */
-updateNote();
-</script>
+      try {
+        const supabase = getClient();
 
+        const { data, error } = await supabase.auth.verifyOtp({
+          email: email,
+          token: otp,
+          type: "email"
+        });
+
+        if (error) {
+          msg.innerText = error.message;
+          return;
+        }
+
+        currentUser = data.user;
+
+        // نبحث في جدول users بالإيميل
+        const { data: existingUser, error: findError } = await supabase
+          .from("users")
+          .select("*")
+          .eq("email", email)
+          .maybeSingle();
+
+        if (findError) {
+          msg.innerText = "صار خطأ في جلب بيانات المستخدم: " + findError.message;
+          return;
+        }
+
+        // إذا المستخدم موجود من قبل
+        if (existingUser) {
+          const finalRole = existingUser.role || "trainee";
+
+          localStorage.setItem("user_email", email);
+          localStorage.setItem("user_role", finalRole);
+          localStorage.setItem("userName", existingUser.name || "");
+
+          msg.innerText = "تم تسجيل الدخول بنجاح";
+          goToPage(finalRole);
+          return;
+        }
+
+        // إذا المستخدم جديد
+        document.getElementById("nameBox").style.display = "block";
+        msg.innerText = "أدخلي اسمك لإكمال التسجيل أول مرة";
+      } catch (e) {
+        msg.innerText = "صار خطأ: " + e.message;
+      }
+    }
+
+    async function saveNameAndContinue() {
+      const msg = document.getElementById("msg");
+      const name = document.getElementById("name").value.trim();
+      const email = document.getElementById("email").value.trim();
+
+      if (name === "") {
+        msg.innerText = "يرجى إدخال الاسم";
+        return;
+      }
+
+      try {
+        const supabase = getClient();
+
+        const finalRole = selectedRole || "trainee";
+
+        const { error } = await supabase
+          .from("users")
+          .insert([
+            {
+              email: email,
+              name: name,
+              role: finalRole
+            }
+          ]);
+
+        if (error) {
+          msg.innerText = "صار خطأ في حفظ الاسم: " + error.message;
+          return;
+        }
+
+        localStorage.setItem("userName", name);
+        localStorage.setItem("user_email", email);
+        localStorage.setItem("user_role", finalRole);
+
+        msg.innerText = "تم حفظ الاسم وتسجيل الدخول بنجاح";
+        goToPage(finalRole);
+      } catch (e) {
+        msg.innerText = "صار خطأ: " + e.message;
+      }
+    }
+
+    function goToPage(role) {
+      if (role === "admin") {
+        window.location.href = "admin.html";
+      } else if (role === "trainer") {
+        window.location.href = "teachers_main_page.html";
+      } else {
+        window.location.href = "student_main_page.html";
+      }
+    }
+
+    updateRoleNote();
+  </script>
 </body>
 </html>
