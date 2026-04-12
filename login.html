@@ -197,6 +197,8 @@
       );
     }
 
+    const ADMIN_EMAIL = "445153613@tvtc.edu.sa";
+
     let currentUser = null;
     let selectedRole = null;
 
@@ -215,7 +217,7 @@
 
     async function startOtp() {
       const msg = document.getElementById("msg");
-      const email = document.getElementById("email").value.trim();
+      const email = document.getElementById("email").value.trim().toLowerCase();
       selectedRole = document.querySelector('input[name="role"]:checked')?.value || "trainee";
 
       if (email === "") {
@@ -223,7 +225,6 @@
         return;
       }
 
-      // التحقق من البريد الإلكتروني حسب نوع المستخدم
       if (selectedRole === "trainee") {
         if (!email.endsWith("@tvtc.edu.sa")) {
           msg.innerText = "يرجى استخدام البريد الإلكتروني الجامعي (@tvtc.edu.sa).";
@@ -234,6 +235,13 @@
       else if (selectedRole === "trainer") {
         if (!email.endsWith("@tvtc.gov.sa")) {
           msg.innerText = "يرجى استخدام البريد الإلكتروني الوظيفي (@tvtc.gov.sa).";
+          return;
+        }
+      }
+
+      else if (selectedRole === "admin") {
+        if (email !== ADMIN_EMAIL.toLowerCase()) {
+          msg.innerText = "هذا البريد غير مصرح له بالدخول كمسؤول.";
           return;
         }
       }
@@ -264,8 +272,9 @@
 
     async function verifyOtpCode() {
       const msg = document.getElementById("msg");
-      const email = document.getElementById("email").value.trim();
+      const email = document.getElementById("email").value.trim().toLowerCase();
       const otp = document.getElementById("otp").value.trim();
+      const chosenRole = document.querySelector('input[name="role"]:checked')?.value || "trainee";
 
       if (otp === "") {
         msg.innerText = "يرجى إدخال رمز التحقق";
@@ -290,7 +299,6 @@
 
         currentUser = data.user;
 
-        // نبحث في جدول users بالإيميل
         const { data: existingUser, error: findError } = await supabase
           .from("users")
           .select("*")
@@ -302,7 +310,21 @@
           return;
         }
 
-        // إذا المستخدم موجود من قبل
+        if (chosenRole === "admin") {
+          if (!existingUser || existingUser.role !== "admin" || email !== ADMIN_EMAIL.toLowerCase()) {
+            msg.innerText = "هذا البريد غير مصرح له بالدخول كمسؤول.";
+            return;
+          }
+
+          localStorage.setItem("user_email", email);
+          localStorage.setItem("user_role", "admin");
+          localStorage.setItem("userName", existingUser.name || "");
+
+          msg.innerText = "تم تسجيل الدخول بنجاح";
+          goToPage("admin");
+          return;
+        }
+
         if (existingUser) {
           const finalRole = existingUser.role || "trainee";
 
@@ -315,7 +337,6 @@
           return;
         }
 
-        // إذا المستخدم جديد
         document.getElementById("nameBox").style.display = "block";
         msg.innerText = "أدخلي اسمك لإكمال التسجيل أول مرة";
       } catch (e) {
@@ -326,7 +347,7 @@
     async function saveNameAndContinue() {
       const msg = document.getElementById("msg");
       const name = document.getElementById("name").value.trim();
-      const email = document.getElementById("email").value.trim();
+      const email = document.getElementById("email").value.trim().toLowerCase();
 
       if (name === "") {
         msg.innerText = "يرجى إدخال الاسم";
