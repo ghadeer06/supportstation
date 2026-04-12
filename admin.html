@@ -10,11 +10,12 @@
 
 <body class="admin-body">
 <script>
-const ADMIN_EMAIL = "445153613@tvtc.edu.sa"; // غيريه بإيميلك
+const ADMIN_EMAIL = "445153613@tvtc.edu.sa";
 
-const email = localStorage.getItem("user_email");
+const email = (localStorage.getItem("user_email") || "").trim().toLowerCase();
+const role = (localStorage.getItem("user_role") || "").trim().toLowerCase();
 
-if(email !== ADMIN_EMAIL){
+if (email !== ADMIN_EMAIL.toLowerCase() || role !== "admin") {
   alert("ليس لديك صلاحية الدخول");
   window.location.href = "login.html";
 }
@@ -34,7 +35,6 @@ if(email !== ADMIN_EMAIL){
 
 <main class="admin-main">
 
-  <!-- ===== Stats ===== -->
   <div class="admin-cards">
     <button class="stat-card stat-click active" data-filter="all" onclick="setFilter('all')">
       <h3>إجمالي البلاغات</h3>
@@ -52,7 +52,6 @@ if(email !== ADMIN_EMAIL){
     </button>
   </div>
 
-  <!-- Trainers -->
   <section class="reports-section">
     <h2 class="section-title">بلاغات المدربين</h2>
     <div class="reports-box">
@@ -60,7 +59,6 @@ if(email !== ADMIN_EMAIL){
     </div>
   </section>
 
-  <!-- Trainees -->
   <section class="reports-section">
     <h2 class="section-title">بلاغات المتدربين</h2>
     <div class="reports-box">
@@ -75,6 +73,7 @@ if(email !== ADMIN_EMAIL){
     <p>&copy; 2026 حقوق محفوظة | محطة الدعم</p>
   </div>
 </footer>
+
 <script>
 function getClient() {
   return window.supabase.createClient(
