@@ -139,6 +139,19 @@ function updateCounts() {
   document.getElementById("countDone").textContent = done;
 }
 
+function deleteOldReports() {
+  const now = Date.now();
+  const fiveMinutes = 5 * 60 * 1000;
+
+  let trainer = JSON.parse(localStorage.getItem("teacherReport")) || [];
+  trainer = trainer.filter(r => !(r.status === "done" && r.solvedAt && (now - r.solvedAt) >= fiveMinutes));
+  localStorage.setItem("teacherReport", JSON.stringify(trainer));
+
+  let trainee = JSON.parse(localStorage.getItem("traineeReports")) || [];
+  trainee = trainee.filter(r => !(r.status === "done" && r.solvedAt && (now - r.solvedAt) >= fiveMinutes));
+  localStorage.setItem("traineeReports", JSON.stringify(trainee));
+}
+  
 function openReport(id) {
   localStorage.setItem("adminSelectedReport", id);
   window.location.href = "admin_report.html";
