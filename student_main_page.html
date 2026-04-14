@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>الصفحة الرئيسية</title>
+  <link rel="stylesheet" href="adminStyles.css">
+
+  <!-- Supabase CDN (مهم جدًا) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+
+<body class="admin-body" style="display:flex; flex-direction:column; min-height:100vh;">
+
+<header class="admin-header">
+  <div class="admin-left">
+    <img src="img/logo.png" class="admin-logo" alt="Logo">
+    <div class="admin-title">
+      <h1>الصفحة الرئيسية</h1>
+      <span>محطة الدعم</span>
+    </div>
+  </div>
+
+  <a href="index.html" class="logout">تسجيل الخروج</a>
+</header>
+
+<main class="admin-main" style="flex:1; padding-top:50px;">
+
+  <div class="add-report-box" style="margin-right:0px;">
+    <button class="stat-card" onclick="window.location.href='add_stu_report.html'">
+      <h2>➕ إضافة بلاغ جديد</h2>
+    </button>
+  </div>
+
+  <section class="reports-section" style="max-width:900px; margin:auto; margin-top:100px;">
+    <h2 class="section-title" style="text-align:center;">بلاغاتك السابقة</h2>
+
+    <div class="reports-box">
+      <div class="reports-scroll" id="reportCards"></div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+  const supabase = window.supabase.createClient(
+    'https://mcxdjisoyqdnyieboqpy.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1jeGRqaXNveXFkbnlpZWJvcXB5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0MDI3NDAsImV4cCI6MjA5MDk3ODc0MH0.kIwJ1pc-GLX1lTvstLSDZ5Li1rd9vwutI4-Wz_HR6nE'
+  );
+
+  const container = document.getElementById("reportCards");
+
+  async function loadReports() {
+    const email = localStorage.getItem("user_email");
+    console.log("📧 Email:", email);
+
+    try {
+      const { data, error } = await supabase
+        .from("reports")
+        .select("*")
+        .eq("sender_email", email)   // رجّعنا الفلترة على الإيميل
+        .order("id", { ascending: false });
+
+      console.log("📦 DATA:", data);
+      console.log("❌ ERROR:", error);
+
+      if (error) {
+        container.innerHTML = `<p>فيه خطأ في تحميل البلاغات</p>`;
+        return;
+      }
+
+      if (!data || data.length === 0) {
+        container.innerHTML = `
+          <div class="report-card" style="
+            background:#fff;
+            padding:20px;
+            border-radius:12px;
+            text-align:center;
+            box-shadow:0 4px 12px rgba(0,0,0,.08);
+          ">
+            لا توجد بلاغات حتى الآن
+          </div>`;
+        return;
+      }
+
+      container.innerHTML = "";
+
+      data.forEach(r => {
+        const statusText = r.status || "غير محدد";
+
+        container.innerHTML += `
+          <div class="report-card" style="
+            background:#fff;
+            padding:18px;
+            border-radius:12px;
+            box-shadow:0 4px 12px rgba(0,0,0,.08);
+            margin-bottom:15px;
+          ">
+            <h3>#${r.id} - ${r.type}</h3>
+            <p><b>الوصف:</b> ${r.description}</p>
+            <p><b>الموقع:</b> ${r.location || "-"}</p>
+            <p><b>الحالة:</b> ${statusText}</p>
+            <button class="btn-process" onclick="openReport(${r.id})">عرض البلاغ</button>
+          </div>
+        `;
+      });
+
+    } catch (e) {
+      console.error(e);
+      container.innerHTML = `<p>صار خطأ غير متوقع</p>`;
+    }
+  }
+
+  function openReport(id) {
+    localStorage.setItem("selectedReportId", id);
+    window.location.href = "student_report.html";
+  }
+
+  loadReports();
+</script>
+
+<footer class="main-footer">
+  <div class="footer-content">
+    <p>&copy; 2026 حقوق محفوظة | محطة الدعم </p>
+    <ul class="footer-links">
+      <li><a href="index.html">الرئيسية</a></li>
+      <li><a href="about.html">عن الموقع</a></li>
+    </ul>
+  </div>
+</footer>
+
+</body>
+</html>
