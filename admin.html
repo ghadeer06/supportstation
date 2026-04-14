@@ -75,6 +75,7 @@ if(email !== ADMIN_EMAIL){
     <p>&copy; 2026 حقوق محفوظة | محطة الدعم</p>
   </div>
 </footer>
+
 <script>
 function getClient() {
   return window.supabase.createClient(
@@ -139,19 +140,6 @@ function updateCounts() {
   document.getElementById("countDone").textContent = done;
 }
 
-function deleteOldReports() {
-  const now = Date.now();
-  const fiveMinutes = 5 * 60 * 1000;
-
-  let trainer = JSON.parse(localStorage.getItem("teacherReport")) || [];
-  trainer = trainer.filter(r => !(r.status === "done" && r.solvedAt && (now - r.solvedAt) >= fiveMinutes));
-  localStorage.setItem("teacherReport", JSON.stringify(trainer));
-
-  let trainee = JSON.parse(localStorage.getItem("traineeReports")) || [];
-  trainee = trainee.filter(r => !(r.status === "done" && r.solvedAt && (now - r.solvedAt) >= fiveMinutes));
-  localStorage.setItem("traineeReports", JSON.stringify(trainee));
-}
-  
 function openReport(id) {
   localStorage.setItem("adminSelectedReport", id);
   window.location.href = "admin_report.html";
@@ -224,6 +212,34 @@ async function loadReports() {
   applyFilter();
 }
 
+/* ============================
+   🔥 حذف البلاغات بعد 5 دقائق
+   ============================ */
+async function deleteOldReports() {
+  const supabase = getClient();
+  const now = Date.now();
+  const fiveMinutes = 5 * 60 * 1000;
+
+  const { data: reports, error } = await supabase
+    .from("reports")
+    .select("*")
+    .eq("status", "تم التنفيذ");
+
+  if (error || !reports) return;
+
+  for (const r of reports) {
+    if (r.solvedAt && (now - r.solvedAt) >= fiveMinutes) {
+      await supabase.from("reports").delete().eq("id", r.id);
+    }
+  }
+
+  loadReports(); // تحديث القائمة بعد الحذف
+}
+
+/* تشغيل الحذف كل دقيقة */
+setInterval(deleteOldReports, 60 * 1000);
+
+/* تحميل البلاغات عند فتح الصفحة */
 loadReports();
 </script>
 
