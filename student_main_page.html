@@ -13,17 +13,36 @@
 
 <body>
 
-    <header class="header">
-        <h2>مرحبًا بك في منصة البلاغات</h2>
-    </header>
+   <header class="admin-header">
+  <div class="admin-left">
+    <img src="img/logo.png" class="admin-logo" alt="Logo">
+    <div class="admin-title">
+      <h1>الصفحة الرئيسية</h1>
+      <span>محطة الدعم</span>
+    </div>
+  </div>
 
-    <main>
-        <h3 style="margin: 20px;">بلاغاتك:</h3>
+  <a href="index.html" class="logout">تسجيل الخروج</a>
+</header>
 
-        <div id="reportCards" style="padding: 20px;">
-           
-        </div>
-    </main>
+    
+<main class="admin-main" style="flex:1; padding-top:50px;">
+
+  <div class="add-report-box" style="margin-right:0px;">
+    <button class="stat-card" onclick="window.location.href='add_stu_report.html'">
+      <h2>➕ إضافة بلاغ جديد</h2>
+    </button>
+  </div>
+
+  <section class="reports-section" style="max-width:900px; margin:auto; margin-top:100px;">
+    <h2 class="section-title" style="text-align:center;">بلاغاتك السابقة</h2>
+
+    <div class="reports-box">
+      <div class="reports-scroll" id="reportCards"></div>
+    </div>
+  </section>
+
+</main>
 
  
     <script type="module">
