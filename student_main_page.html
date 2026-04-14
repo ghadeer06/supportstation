@@ -61,7 +61,7 @@
 
     try {
       const { data, error } = await supabase
-        .from("tickets") // تأكد هل هو tickets أم reports
+        .from("reports") // تأكد هل هو tickets أم reports
         .select("*")
         .eq("sender_email", email) 
         .order("id", { ascending: false });
