@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>الصفحة الرئيسية</title>
   <link rel="stylesheet" href="adminStyles.css">
+
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 
 <body class="admin-body" style="display:flex; flex-direction:column; min-height:100vh;">
@@ -25,7 +28,7 @@
 <!-- ===== Main ===== -->
 <main class="admin-main" style="flex:1; padding-top:50px;">
 
-  <!-- زر إضافة بلاغ بالنص -->
+  <!-- زر إضافة بلاغ -->
   <div class="add-report-box" style="margin-right:0px;">
     <button class="stat-card" onclick="window.location.href='add_stu_report.html'">
       <h2>➕ إضافة بلاغ جديد</h2>
@@ -43,77 +46,87 @@
 
 </main>
 
-
-<script type="module">
-  import { supabase } from "./supabase.js";
-
-  supabase.auth.getSession().then(({ data }) => {
-    if (!data.session) {
-      window.location.href = "send_magic_link.html";
-    }
-  });
-</script>
+<!-- ===== Script ===== -->
 <script>
+/* إنشاء عميل Supabase */
+const supabase = window.supabase.createClient(
+  'https://mcxdjisoyqdnyieboqpy.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1jeGRqaXNveXFkbnlpZWJvcXB5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0MDI3NDAsImV4cCI6MjA5MDk3ODc0MH0.kIwJ1pc-GLX1lTvstLSDZ5Li1rd9vwutI4-Wz_HR6nE'
+);
+
 const container = document.getElementById("reportCards");
 
-// قراءة البلاغات
-let reports = JSON.parse(localStorage.getItem("traineeReports")) || [];
+/* تحميل البلاغات من Supabase */
+async function loadReports() {
+  const email = localStorage.getItem("user_email");
 
-// لو ما فيه بلاغات
-if (reports.length === 0) {
-  container.innerHTML = `
-    <div class="report-card" style="
-      background:#fff;
-      padding:20px;
-      border-radius:12px;
-      text-align:center;
-      box-shadow:0 4px 12px rgba(0,0,0,.08);
-    ">
-      لا توجد بلاغات حتى الآن
-    </div>`;
-}
-
-// عرض البلاغات ككروت
-reports.forEach(r => {
-
-  let statusText =
-    r.status === "processing" ? "قيد المراجعة" :
-    r.status === "running" ? "تحت التنفيذ" :
-    r.status === "done" ? "تم الحل" :
-    r.status || "غير محدد";
-
-  let card = `
-    <div class="report-card" style="
-      background:#fff;
-      padding:18px;
-      border-radius:12px;
-      box-shadow:0 4px 12px rgba(0,0,0,.08);
-      margin-bottom:15px;
-    ">
-      <h3>#${r.id} - ${r.type}</h3>
-
-      <p><b>الوصف:</b> ${r.desc}</p>
-      <p><b>الموقع:</b> ${r.type === "نقل" ? "-" : (r.location || "-")}</p>
-      <p><b>الحالة:</b> ${statusText}</p>
-
-      <button class="btn-process" onclick="openReport(${r.id})">عرض البلاغ</button>
-    </div>
-  `;
-
-  container.innerHTML += card;
-});
-
-function openReport(id) {
-  const selected = reports.find(x => x.id === id);
-
-  if (!selected) {
-    alert("حدث خطأ: البلاغ غير موجود");
+  if (!email) {
+    container.innerHTML = `<p class="empty-text">لم يتم العثور على حساب</p>`;
     return;
   }
 
-  localStorage.setItem("selectedTraineeReport", JSON.stringify(selected));
+  const { data, error } = await supabase
+    .from("reports")
+    .select("*")
+    .eq("sender_email", email)
+    .order("id", { ascending: false });
+
+  if (error) {
+    container.innerHTML = `<p class="empty-text">حدث خطأ في تحميل البلاغات</p>`;
+    return;
+  }
+
+  if (!data || data.length === 0) {
+    container.innerHTML = `
+      <div class="report-card" style="
+        background:#fff;
+        padding:20px;
+        border-radius:12px;
+        text-align:center;
+        box-shadow:0 4px 12px rgba(0,0,0,.08);
+      ">
+        لا توجد بلاغات حتى الآن
+      </div>`;
+    return;
+  }
+
+  container.innerHTML = "";
+
+  data.forEach(r => {
+    let statusText =
+      r.status === "processing" ? "قيد المراجعة" :
+      r.status === "running" ? "تحت التنفيذ" :
+      r.status === "done" ? "تم الحل" :
+      r.status || "غير محدد";
+
+    container.innerHTML += `
+      <div class="report-card" style="
+        background:#fff;
+        padding:18px;
+        border-radius:12px;
+        box-shadow:0 4px 12px rgba(0,0,0,.08);
+        margin-bottom:15px;
+      ">
+        <h3>#${r.id} - ${r.type}</h3>
+
+        <p><b>الوصف:</b> ${r.description}</p>
+        <p><b>الموقع:</b> ${r.location || "-"}</p>
+        <p><b>الحالة:</b> ${statusText}</p>
+
+        <button class="btn-process" onclick="openReport(${r.id})">عرض البلاغ</button>
+      </div>
+    `;
+  });
+}
+
+/* فتح صفحة تفاصيل البلاغ */
+function openReport(id) {
+  localStorage.setItem("selectedReportId", id);
   window.location.href = "student_report.html";
 }
+
+/* تحميل البلاغات عند فتح الصفحة */
+loadReports();
 </script>
 
 <footer class="main-footer">
