@@ -52,13 +52,18 @@
 
   async function loadReports() {
     const email = localStorage.getItem("user_email");
-    console.log("📧 Email:", email);
+    
+    if (!email) {
+        console.error("لم يتم العثور على إيميل المستخدم في localStorage");
+        container.innerHTML = `<p>الرجاء تسجيل الدخول أولاً</p>`;
+        return;
+    }
 
     try {
       const { data, error } = await supabase
-        .from("reports")
+        .from("tickets") // تأكد هل هو tickets أم reports
         .select("*")
-        .eq("sender_email", email)   // رجّعنا الفلترة على الإيميل
+        .eq("sender_email", email) 
         .order("id", { ascending: false });
 
       console.log("📦 DATA:", data);
