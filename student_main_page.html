@@ -48,7 +48,6 @@
 
 <!-- ===== Script ===== -->
 <script>
-/* إنشاء عميل Supabase */
 const supabase = window.supabase.createClient(
   'https://mcxdjisoyqdnyieboqpy.supabase.co',
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1jeGRqaXNveXFkbnlpZWJvcXB5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0MDI3NDAsImV4cCI6MjA5MDk3ODc0MH0.kIwJ1pc-GLX1lTvstLSDZ5Li1rd9vwutI4-Wz_HR6nE'
@@ -56,10 +55,8 @@ const supabase = window.supabase.createClient(
 
 const container = document.getElementById("reportCards");
 
-/* تحميل البلاغات من Supabase */
 async function loadReports() {
   const email = localStorage.getItem("user_email");
-
   console.log("Email used:", email);
 
   if (!email) {
@@ -67,10 +64,11 @@ async function loadReports() {
     return;
   }
 
+  // ✅ نستخدم العمود الصحيح sender_email فقط
   const { data, error } = await supabase
     .from("reports")
     .select("*")
-    .or(`sender_email.eq.${email},email.eq.${email},user_email.eq.${email}`)
+    .eq("sender_email", email)
     .order("id", { ascending: false });
 
   console.log("Reports returned:", data);
@@ -97,11 +95,8 @@ async function loadReports() {
   container.innerHTML = "";
 
   data.forEach(r => {
-    let statusText =
-      r.status === "processing" ? "قيد المراجعة" :
-      r.status === "running" ? "تحت التنفيذ" :
-      r.status === "done" ? "تم الحل" :
-      r.status || "غير محدد";
+    // ✅ نعرض الحالة كما هي من قاعدة البيانات
+    const statusText = r.status || "غير محدد";
 
     container.innerHTML += `
       <div class="report-card" style="
@@ -112,24 +107,20 @@ async function loadReports() {
         margin-bottom:15px;
       ">
         <h3>#${r.id} - ${r.type}</h3>
-
         <p><b>الوصف:</b> ${r.description}</p>
         <p><b>الموقع:</b> ${r.location || "-"}</p>
         <p><b>الحالة:</b> ${statusText}</p>
-
         <button class="btn-process" onclick="openReport(${r.id})">عرض البلاغ</button>
       </div>
     `;
   });
 }
 
-/* فتح صفحة تفاصيل البلاغ */
 function openReport(id) {
   localStorage.setItem("selectedReportId", id);
   window.location.href = "student_report.html";
 }
 
-/* تحميل البلاغات عند فتح الصفحة */
 loadReports();
 </script>
 
