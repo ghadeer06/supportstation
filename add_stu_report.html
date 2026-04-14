@@ -129,35 +129,37 @@ async function saveReport(){
     return;
   }
 
-  const supabase = getClient();
+  try {  // ✅ هنا الحل
 
-  const { error } = await supabase
-    .from("reports")
-    .insert([
-      {
-        type: type,
-        description: desc,
-        location: location,
-        rate: parseInt(rate),
-        status: "قيد المراجعة",
-        sender_name: senderName || "-",
-        sender_email: senderEmail,
-        sender_role: senderRole || "trainee"
-      }
-    ]);
+    const supabase = getClient();
 
-  if (error) {
-    alert("خطأ: " + error.message);
-    return;
-  }
+    const { error } = await supabase
+      .from("reports")
+      .insert([
+        {
+          type: type,
+          description: desc,
+          location: location,
+          rate: parseInt(rate),
+          status: "قيد المراجعة",
+          sender_name: senderName || "-",
+          sender_email: senderEmail,
+          sender_role: senderRole || "trainee"
+        }
+      ]);
 
-  alert("تم إرسال البلاغ بنجاح");
-  window.location.href = "student_main_page.html";
-} catch (e) {
+    if (error) {
+      alert("خطأ: " + error.message);
+      return;
+    }
+
+    alert("تم إرسال البلاغ بنجاح");
+    window.location.href = "student_main_page.html";
+
+  } catch (e) {  // ✅ الآن صح
     alert("صار خطأ: " + e.message);
   }
 }
-
 document.addEventListener("click", function(e) {
   const list = document.getElementById("optionsList");
   const select = document.querySelector(".custom-select");
