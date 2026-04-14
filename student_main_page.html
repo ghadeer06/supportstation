@@ -71,7 +71,7 @@ async function loadReports() {
   console.log("Emails in DB:", data?.map(r => r.sender_email));
 
   if (error) {
-    container.innerHTML = <p class="empty-text">حدث خطأ في تحميل البلاغات</p>;
+    container.innerHTML = `<p class="empty-text">حدث خطأ في تحميل البلاغات</p>`;
     return;
   }
 
