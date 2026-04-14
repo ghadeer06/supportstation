@@ -57,24 +57,21 @@ const container = document.getElementById("reportCards");
 
 async function loadReports() {
   const email = localStorage.getItem("user_email");
+
+  // 🔍 هنا أول console
   console.log("Email used:", email);
 
-  if (!email) {
-    container.innerHTML = `<p class="empty-text">لم يتم العثور على حساب</p>`;
-    return;
-  }
-
-  // ✅ نستخدم العمود الصحيح sender_email فقط
   const { data, error } = await supabase
     .from("reports")
     .select("*")
     .eq("sender_email", email)
     .order("id", { ascending: false });
 
-  console.log("Reports returned:", data);
+  // 🔍 هنا ثاني console
+  console.log("Emails in DB:", data?.map(r => r.sender_email));
 
   if (error) {
-    container.innerHTML = `<p class="empty-text">حدث خطأ في تحميل البلاغات</p>`;
+    container.innerHTML = <p class="empty-text">حدث خطأ في تحميل البلاغات</p>;
     return;
   }
 
