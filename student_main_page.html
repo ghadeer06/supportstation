@@ -57,68 +57,36 @@ const container = document.getElementById("reportCards");
 
 async function loadReports() {
   const email = localStorage.getItem("user_email");
+  console.log("📧 Email:", email);
 
-  console.log("📧 Current email:", email);
+  const { data, error } = await supabase
+    .from("reports")
+    .select("*");
 
-  // ❌ إذا ما فيه إيميل
-  if (!email) {
-    container.innerHTML = `<p style="text-align:center;">سجل دخول أول</p>`;
+  console.log("📦 ALL DATA:", data);
+  console.log("❌ ERROR:", error);
+
+  if (error) {
+    container.innerHTML = `<p>فيه خطأ</p>`;
     return;
   }
 
-  try {
-    const { data, error } = await supabase
-      .from("reports")
-      .select("*")
-      // ✅ استخدمنا ilike عشان نتفادى أي اختلاف بسيط
-      .ilike("sender_email", email)
-      .order("id", { ascending: false });
+  if (!data || data.length === 0) {
+    container.innerHTML = `<p>ما فيه بيانات نهائي</p>`;
+    return;
+  }
 
-    if (error) {
-      console.error(error);
-      container.innerHTML = `<p>حدث خطأ في تحميل البلاغات</p>`;
-      return;
-    }
+  container.innerHTML = "";
 
-    console.log("📦 Data:", data);
-
-    if (!data || data.length === 0) {
-      container.innerHTML = `
-        <div class="report-card" style="
-          background:#fff;
-          padding:20px;
-          border-radius:12px;
-          text-align:center;
-          box-shadow:0 4px 12px rgba(0,0,0,.08);
-        ">
-          لا توجد بلاغات
-        </div>`;
-      return;
-    }
-
-    container.innerHTML = "";
-
-    data.forEach(r => {
-      const statusText = r.status || "غير محدد";
-
-      container.innerHTML += `
-        <div class="report-card" style="
-          background:#fff;
-          padding:18px;
-          border-radius:12px;
-          box-shadow:0 4px 12px rgba(0,0,0,.08);
-          margin-bottom:15px;
-        ">
-          <h3>#${r.id} - ${r.type}</h3>
-          <p><b>الوصف:</b> ${r.description}</p>
-          <p><b>الموقع:</b> ${r.location || "-"}</p>
-          <p><b>الحالة:</b> ${statusText}</p>
-          <button class="btn-process" onclick="openReport(${r.id})">عرض البلاغ</button>
-        </div>
-      `;
-    });
-
-  } catch (e) {
+  data.forEach(r => {
+    container.innerHTML += `
+      <div style="background:#fff; margin:10px; padding:10px;">
+        <p>${r.sender_email}</p>
+        <p>${r.description}</p>
+      </div>
+    `;
+  });
+} catch (e) {
     console.error(e);
     container.innerHTML = `<p>صار خطأ غير متوقع</p>`;
   }
