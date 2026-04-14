@@ -114,12 +114,13 @@ async function saveReport(){
   const senderEmail = localStorage.getItem("user_email");
   const senderRole = localStorage.getItem("user_role");
 
+  if (!senderEmail) {
+    alert("لازم تسجل دخول أول");
+    return;
+  }
+
   if(location === ""){
-    if(type === "حماية الحقوق"){
-      alert("الرجاء تعبئة الجهة المرتبطة بالبلاغ");
-    } else {
-      alert("الرجاء تعبئة الموقع");
-    }
+    alert("الرجاء تعبئة الموقع");
     return;
   }
 
@@ -128,32 +129,31 @@ async function saveReport(){
     return;
   }
 
-  try {
-    const supabase = getClient();
+  const supabase = getClient();
 
-    const { error } = await supabase
-      .from("reports")
-      .insert([
-        {
-          type: type,
-          description: desc,
-          location: location,
-          rate: parseInt(rate),
-          status: "قيد المراجعة",
-          sender_name: senderName || "-",
-          sender_email: senderEmail || "-",
-          sender_role: senderRole || "trainee"
-        }
-      ]);
+  const { error } = await supabase
+    .from("reports")
+    .insert([
+      {
+        type: type,
+        description: desc,
+        location: location,
+        rate: parseInt(rate),
+        status: "قيد المراجعة",
+        sender_name: senderName || "-",
+        sender_email: senderEmail,
+        sender_role: senderRole || "trainee"
+      }
+    ]);
 
-    if (error) {
-      alert("خطأ: " + error.message);
-      return;
-    }
+  if (error) {
+    alert("خطأ: " + error.message);
+    return;
+  }
 
-    alert("تم إرسال البلاغ بنجاح");
-    window.location.href = "student_main_page.html";
-  } catch (e) {
+  alert("تم إرسال البلاغ بنجاح");
+  window.location.href = "student_main_page.html";
+} catch (e) {
     alert("صار خطأ: " + e.message);
   }
 }
