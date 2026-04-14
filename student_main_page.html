@@ -59,34 +59,37 @@ async function loadReports() {
   const email = localStorage.getItem("user_email");
   console.log("📧 Email:", email);
 
-  const { data, error } = await supabase
-    .from("reports")
-    .select("*");
+  try { // ✅ مهم
 
-  console.log("📦 ALL DATA:", data);
-  console.log("❌ ERROR:", error);
+    const { data, error } = await supabase
+      .from("reports")
+      .select("*");
 
-  if (error) {
-    container.innerHTML = `<p>فيه خطأ</p>`;
-    return;
-  }
+    console.log("📦 ALL DATA:", data);
+    console.log("❌ ERROR:", error);
 
-  if (!data || data.length === 0) {
-    container.innerHTML = `<p>ما فيه بيانات نهائي</p>`;
-    return;
-  }
+    if (error) {
+      container.innerHTML = `<p>فيه خطأ</p>`;
+      return;
+    }
 
-  container.innerHTML = "";
+    if (!data || data.length === 0) {
+      container.innerHTML = `<p>ما فيه بيانات نهائي</p>`;
+      return;
+    }
 
-  data.forEach(r => {
-    container.innerHTML += `
-      <div style="background:#fff; margin:10px; padding:10px;">
-        <p>${r.sender_email}</p>
-        <p>${r.description}</p>
-      </div>
-    `;
-  });
-} catch (e) {
+    container.innerHTML = "";
+
+    data.forEach(r => {
+      container.innerHTML += `
+        <div style="background:#fff; margin:10px; padding:10px;">
+          <p>${r.sender_email}</p>
+          <p>${r.description}</p>
+        </div>
+      `;
+    });
+
+  } catch (e) { // ✅ الآن صحيح
     console.error(e);
     container.innerHTML = `<p>صار خطأ غير متوقع</p>`;
   }
