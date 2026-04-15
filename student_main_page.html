@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="adminStyles.css">
 
     <!-- تحميل supabase.js فقط (بدون CDN) -->
-   
+    <script type="module" src="supabase.js"></script>
 
 </head>
 
@@ -64,12 +64,14 @@
                 return;
             }
 
-            /* 🔥 حذف البلاغات التي مر عليها أكثر من 5 دقائق وكانت حالتها done */
+            /* 🔥 حذف البلاغات التي مر عليها أكثر من 5 دقائق وكانت حالتها done أو تم التنفيذ */
             async function deleteOldReports() {
                 const now = new Date();
 
                 for (const r of data) {
-                    if (r.status !== "done") continue; // ← تعديل مهم
+
+                    // الشرط الصحيح
+                    if (r.status !== "done" && r.status !== "تم التنفيذ") continue;
 
                     const createdAt = new Date(r.created_at);
                     const diffMinutes = (now - createdAt) / 1000 / 60;
@@ -109,7 +111,7 @@
                 const statusText =
                     r.status === "processing" ? "قيد المراجعة" :
                     r.status === "running" ? "تحت التنفيذ" :
-                    r.status === "done" ? "تم الحل" :
+                    r.status === "done" || r.status === "تم التنفيذ" ? "تم الحل" :
                     "غير معروف";
 
                 container.innerHTML += `
