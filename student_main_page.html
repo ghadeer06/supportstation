@@ -13,7 +13,7 @@
 
 <body>
 
-   <header class="admin-header">
+<header class="admin-header">
   <div class="admin-left">
     <img src="img/logo.png" class="admin-logo" alt="Logo">
     <div class="admin-title">
@@ -25,7 +25,6 @@
   <a href="index.html" class="logout">تسجيل الخروج</a>
 </header>
 
-    
 <main class="admin-main" style="flex:1; padding-top:50px;">
 
   <div class="add-report-box" style="margin-right:0px;">
@@ -44,101 +43,105 @@
 
 </main>
 
- 
-    <script type="module">
-        import { supabase } from "./supabase.js";
+<script type="module">
+    import { supabase } from "./supabase.js";
 
-        const container = document.getElementById("reportCards");
+    const container = document.getElementById("reportCards");
 
-        async function loadReports() {
-            const email = localStorage.getItem("user_email");
-            console.log("📧 Email:", email);
+    async function loadReports() {
+        const email = localStorage.getItem("user_email");
+        console.log("📧 Email:", email);
 
-            try {
-                const { data, error } = await supabase
-                    .from("reports")
-                    .select("*")
-                    .eq("sender_email", email)
-                    .order("id", { ascending: false });
+        try {
+            const { data, error } = await supabase
+                .from("reports")
+                .select("*")
+                .eq("sender_email", email)
+                .order("id", { ascending: false });
 
-                if (error) {
-                    container.innerHTML = `<p>خطأ في تحميل البلاغات</p>`;
-                    return;
-                }
+            if (error) {
+                container.innerHTML = `<p>خطأ في تحميل البلاغات</p>`;
+                return;
+            }
 
-                /* 🔥 حذف البلاغات التي مر عليها أكثر من 5 دقائق وكانت حالتها "تم التنفيذ" */
-                async function deleteOldReports() {
-                    const now = new Date();
+            /* 🔥 حذف البلاغات التي مر عليها أكثر من 5 دقائق وكانت حالتها done */
+            async function deleteOldReports() {
+                const now = new Date();
 
-                    for (const r of data) {
-                        if (r.status !== "تم التنفيذ") continue; // شرط الحالة
+                for (const r of data) {
+                    if (r.status !== "done") continue; // ← تعديل مهم
 
-                        const createdAt = new Date(r.created_at);
-                        const diffMinutes = (now - createdAt) / 1000 / 60;
+                    const createdAt = new Date(r.created_at);
+                    const diffMinutes = (now - createdAt) / 1000 / 60;
 
-                        if (diffMinutes >= 5) {
-                            console.log(`🗑️ حذف البلاغ رقم ${r.id} لأنه مكتمل ومر عليه أكثر من 5 دقائق`);
+                    if (diffMinutes >= 5) {
+                        console.log(`🗑️ حذف البلاغ رقم ${r.id} لأنه مكتمل ومر عليه أكثر من 5 دقائق`);
 
-                            await supabase
-                                .from("reports")
-                                .delete()
-                                .eq("id", r.id);
-                        }
+                        await supabase
+                            .from("reports")
+                            .delete()
+                            .eq("id", r.id);
                     }
                 }
-                await deleteOldReports();
-                /* 🔥 نهاية كود الحذف */
-
-
-                if (!data || data.length === 0) {
-                    container.innerHTML = `
-                        <div class="report-card" style="
-                            background:#fff;
-                            padding:20px;
-                            border-radius:12px;
-                            text-align:center;
-                            box-shadow:0 4px 12px rgba(0,0,0,.08);
-                        ">
-                            لا توجد بلاغات حتى الآن
-                        </div>`;
-                    return;
-                }
-
-                container.innerHTML = "";
-
-                data.forEach(r => {
-                    const statusText = r.status || "غير محدد";
-
-                    container.innerHTML += `
-                        <div class="report-card" style="
-                            background:#fff;
-                            padding:18px;
-                            border-radius:12px;
-                            box-shadow:0 4px 12px rgba(0,0,0,.08);
-                            margin-bottom:15px;
-                        ">
-                            <h3>#${r.id} - ${r.type}</h3>
-                            <p><b>الوصف:</b> ${r.description}</p>
-                            <p><b>الموقع:</b> ${r.location || "-"}</p>
-                            <p><b>الحالة:</b> ${statusText}</p>
-                            <button class="btn-process" onclick="openReport(${r.id})">عرض البلاغ</button>
-                        </div>
-                    `;
-                });
-
-            } catch (e) {
-                console.error(e);
-                container.innerHTML = `<p>صار خطأ غير متوقع</p>`;
             }
+            await deleteOldReports();
+            /* 🔥 نهاية كود الحذف */
+
+
+            if (!data || data.length === 0) {
+                container.innerHTML = `
+                    <div class="report-card" style="
+                        background:#fff;
+                        padding:20px;
+                        border-radius:12px;
+                        text-align:center;
+                        box-shadow:0 4px 12px rgba(0,0,0,.08);
+                    ">
+                        لا توجد بلاغات حتى الآن
+                    </div>`;
+                return;
+            }
+
+            container.innerHTML = "";
+
+            data.forEach(r => {
+
+                const statusText =
+                    r.status === "processing" ? "قيد المراجعة" :
+                    r.status === "running" ? "تحت التنفيذ" :
+                    r.status === "done" ? "تم الحل" :
+                    "غير معروف";
+
+                container.innerHTML += `
+                    <div class="report-card" style="
+                        background:#fff;
+                        padding:18px;
+                        border-radius:12px;
+                        box-shadow:0 4px 12px rgba(0,0,0,.08);
+                        margin-bottom:15px;
+                    ">
+                        <h3>#${r.id} - ${r.type}</h3>
+                        <p><b>الوصف:</b> ${r.description}</p>
+                        <p><b>الموقع:</b> ${r.location || "-"}</p>
+                        <p><b>الحالة:</b> ${statusText}</p>
+                        <button class="btn-process" onclick="openReport(${r.id})">عرض البلاغ</button>
+                    </div>
+                `;
+            });
+
+        } catch (e) {
+            console.error(e);
+            container.innerHTML = `<p>صار خطأ غير متوقع</p>`;
         }
+    }
 
-        window.openReport = function(id) {
-            localStorage.setItem("selectedReportId", id);
-            window.location.href = "student_report.html";
-        };
+    window.openReport = function(id) {
+        localStorage.setItem("selectedReportId", id);
+        window.location.href = "student_report.html";
+    };
 
-        loadReports();
-    </script>
+    loadReports();
+</script>
 
 <footer class="main-footer">
   <div class="footer-content">
@@ -149,5 +152,6 @@
     </ul>
   </div>
 </footer>
+
 </body>
 </html>
