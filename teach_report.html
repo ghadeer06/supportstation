@@ -21,53 +21,59 @@
 </div>
 
 <script>
-  // قراءة البلاغ المختار الصحيح
   let report = JSON.parse(localStorage.getItem("selectedTeacherReport"));
-
   const details = document.getElementById("details");
+
+  function getStatusText(status) {
+    if (status === "processing" || status === "قيد المراجعة") return "قيد المراجعة";
+    if (status === "running" || status === "قيد التنفيذ" || status === "تحت التنفيذ") return "تحت التنفيذ";
+    if (status === "done" || status === "تم الحل" || status === "تم التنفيذ") return "تم الحل";
+    return status || "-";
+  }
 
   if (!report) {
     details.innerHTML = "<p>❌ لم يتم اختيار بلاغ.</p>";
   } else {
     details.innerHTML = `
       <p><b>رقم البلاغ:</b> #${report.id}</p>
-      <p><b>النوع:</b> ${report.type}</p>
+      <p><b>النوع:</b> ${report.type || "-"}</p>
       <p><b>الموقع:</b> ${report.type === "نقل" ? "-" : (report.location || "-")}</p>
       <p><b>من:</b> ${report.from || "-"}</p>
       <p><b>إلى:</b> ${report.to || "-"}</p>
       <p><b>الوصف:</b> ${report.desc || "-"}</p>
-      <p><b>الحالة:</b> ${report.status || "-"}</p>
+      <p><b>الحالة:</b> ${getStatusText(report.status)}</p>
     `;
   }
 
-  // دالة حذف البلاغ
   function deleteReport() {
+    if (!report) {
+      alert("لا يوجد بلاغ محدد للحذف");
+      return;
+    }
+
     if (!confirm("هل أنتِ متأكدة من حذف البلاغ؟")) return;
 
     let reports = JSON.parse(localStorage.getItem("teacherReport")) || [];
 
-    // حذف البلاغ من القائمة
-    reports = reports.filter(r => r.id !== report.id);
+    reports = reports.filter(r => String(r.id) !== String(report.id));
 
-    // حفظ القائمة الجديدة
     localStorage.setItem("teacherReport", JSON.stringify(reports));
+    localStorage.removeItem("selectedTeacherReport");
 
     alert("تم حذف البلاغ بنجاح");
-
-    // الرجوع للصفحة السابقة
     window.location.href = "teachers_main_page.html";
   }
 </script>
 
 <footer class="main-footer">
-    <div class="footer-content">
-        <p>&copy; 2026 حقوق محفوظة | محطة الدعم </p>
+  <div class="footer-content">
+    <p>&copy; 2026 حقوق محفوظة | محطة الدعم </p>
 
-        <ul class="footer-links">
-            <li><a href="index.html">الرئيسية</a></li>
-            <li><a href="about.html">عن الموقع</a></li>
-        </ul>
-    </div>
+    <ul class="footer-links">
+      <li><a href="index.html">الرئيسية</a></li>
+      <li><a href="about.html">عن الموقع</a></li>
+    </ul>
+  </div>
 </footer>
 
 </body>
