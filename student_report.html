@@ -30,6 +30,7 @@
 
     if (!reportId) {
       details.innerHTML = "<p>❌ لم يتم اختيار بلاغ.</p>";
+      setTimeout(() => window.location.href = "student_main_page.html", 1500);
       return;
     }
 
@@ -50,7 +51,7 @@
         data.status === "processing" ? "قيد المراجعة" :
         data.status === "running" ? "تحت التنفيذ" :
         data.status === "done" ? "تم الحل" :
-        data.status;
+        "غير معروف";
 
       details.innerHTML = `
         <p><b>رقم البلاغ:</b> #${data.id}</p>
@@ -58,13 +59,17 @@
         <p><b>الموقع:</b> ${data.location || "-"}</p>
         <p><b>الوصف:</b> ${data.description}</p>
         <p><b>الحالة:</b> ${statusText}</p>
-        <p><b>التقييم:</b> ${data.rate}/10</p>
+        <p><b>التقييم:</b> ${data.rate ? data.rate + "/10" : "لم يتم التقييم بعد"}</p>
       `;
     }
 
     /* حذف البلاغ */
-    async function deleteReport() {
+    async function deleteReport(event) {
       if (!confirm("هل أنتِ متأكدة من حذف البلاغ؟")) return;
+
+      const btn = event.target;
+      btn.disabled = true;
+      btn.innerText = "جاري الحذف...";
 
       const { error } = await supabase
         .from("reports")
@@ -73,6 +78,8 @@
 
       if (error) {
         alert("حدث خطأ أثناء الحذف");
+        btn.disabled = false;
+        btn.innerText = "حذف البلاغ";
         return;
       }
 
