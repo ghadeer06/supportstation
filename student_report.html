@@ -23,73 +23,68 @@
 
 <script type="module">
     import { supabase } from "./supabase.js";
-    // ضعي هنا كل كود الصفحة
-/* إنشاء عميل Supabase */
-const supabase = window.supabase.createClient(
-  'https://mcxdjisoyqdnyieboqpy.supabase.co',
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1jeGRqaXNveXFkbnlpZWJvcXB5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0MDI3NDAsImV4cCI6MjA5MDk3ODc0MH0.kIwJ1pc-GLX1lTvstLSDZ5Li1rd9vwutI4-Wz_HR6nE'
-);
 
-const details = document.getElementById("details");
+    const details = document.getElementById("details");
 
-/* قراءة ID البلاغ */
-const reportId = localStorage.getItem("selectedReportId");
+    /* قراءة ID البلاغ */
+    const reportId = localStorage.getItem("selectedReportId");
 
-if (!reportId) {
-  details.innerHTML = "<p>❌ لم يتم اختيار بلاغ.</p>";
-  return; // مهم جداً حتى لا يستمر التحميل
-}
+    if (!reportId) {
+      details.innerHTML = "<p>❌ لم يتم اختيار بلاغ.</p>";
+      return;
+    }
 
-/* تحميل بيانات البلاغ */
-async function loadReport() {
-  const { data, error } = await supabase
-    .from("reports")
-    .select("*")
-    .eq("id", reportId)
-    .single();
+    /* تحميل بيانات البلاغ */
+    async function loadReport() {
+      const { data, error } = await supabase
+        .from("reports")
+        .select("*")
+        .eq("id", reportId)
+        .single();
 
-  if (error || !data) {
-    details.innerHTML = "<p>❌ لم يتم العثور على البلاغ.</p>";
-    return;
-  }
+      if (error || !data) {
+        details.innerHTML = "<p>❌ لم يتم العثور على البلاغ.</p>";
+        return;
+      }
 
-  let statusText =
-    data.status === "processing" ? "قيد المراجعة" :
-    data.status === "running" ? "تحت التنفيذ" :
-    data.status === "done" ? "تم الحل" :
-    data.status;
+      let statusText =
+        data.status === "processing" ? "قيد المراجعة" :
+        data.status === "running" ? "تحت التنفيذ" :
+        data.status === "done" ? "تم الحل" :
+        data.status;
 
-  details.innerHTML = `
-    <p><b>رقم البلاغ:</b> #${data.id}</p>
-    <p><b>النوع:</b> ${data.type}</p>
-    <p><b>الموقع:</b> ${data.location || "-"}</p>
-    <p><b>الوصف:</b> ${data.description}</p>
-    <p><b>الحالة:</b> ${statusText}</p>
-    <p><b>التقييم:</b> ${data.rate}/10</p>
-  `;
-}
+      details.innerHTML = `
+        <p><b>رقم البلاغ:</b> #${data.id}</p>
+        <p><b>النوع:</b> ${data.type}</p>
+        <p><b>الموقع:</b> ${data.location || "-"}</p>
+        <p><b>الوصف:</b> ${data.description}</p>
+        <p><b>الحالة:</b> ${statusText}</p>
+        <p><b>التقييم:</b> ${data.rate}/10</p>
+      `;
+    }
 
-/* حذف البلاغ */
-async function deleteReport() {
-  if (!confirm("هل أنتِ متأكدة من حذف البلاغ؟")) return;
+    /* حذف البلاغ */
+    async function deleteReport() {
+      if (!confirm("هل أنتِ متأكدة من حذف البلاغ؟")) return;
 
-  const { error } = await supabase
-    .from("reports")
-    .delete()
-    .eq("id", reportId);
+      const { error } = await supabase
+        .from("reports")
+        .delete()
+        .eq("id", reportId);
 
-  if (error) {
-    alert("حدث خطأ أثناء الحذف");
-    return;
-  }
+      if (error) {
+        alert("حدث خطأ أثناء الحذف");
+        return;
+      }
 
-  alert("تم حذف البلاغ بنجاح");
-  window.location.href = "student_main_page.html";
-}
+      alert("تم حذف البلاغ بنجاح");
+      window.location.href = "student_main_page.html";
+    }
 
-loadReport();
+    window.deleteReport = deleteReport;
+
+    loadReport();
 </script>
-
 <footer class="main-footer">
     <div class="footer-content">
         <p>&copy; 2026 حقوق محفوظة | محطة الدعم </p>
