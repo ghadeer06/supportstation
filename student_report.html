@@ -35,6 +35,7 @@ const reportId = localStorage.getItem("selectedReportId");
 
 if (!reportId) {
   details.innerHTML = "<p>❌ لم يتم اختيار بلاغ.</p>";
+  return; // مهم جداً حتى لا يستمر التحميل
 }
 
 /* تحميل بيانات البلاغ */
@@ -66,7 +67,7 @@ async function loadReport() {
   `;
 }
 
-/* حذف البلاغ من Supabase */
+/* حذف البلاغ */
 async function deleteReport() {
   if (!confirm("هل أنتِ متأكدة من حذف البلاغ؟")) return;
 
