@@ -8,70 +8,67 @@
 </head>
 
 <body>
-  <div class="header">تفاصيل البلاغ</div>
 
-  <div class="container" style="margin-top:200px;">
-    <div class="card">
-      <div id="details">جاري التحميل...</div>
+<div class="header">تفاصيل البلاغ</div>
 
-      <button class="light" onclick="deleteReport()" style="background:#ffdddd; color:#b30000;">حذف البلاغ</button>
-      <button class="light" onclick="window.location.href='teachers_main_page.html'">رجوع</button>
-    </div>
+<div class="container" style="margin-top:200px;">
+  <div class="card">
+    <div id="details"></div>
+
+    <button class="light" onclick="deleteReport()" style="background:#ffdddd; color:#b30000;">حذف البلاغ</button>
+    <button class="light" onclick="window.location.href='teachers_main_page.html'">رجوع</button>
   </div>
+</div>
 
-  <script>
-    // قراءة البلاغ المختار
-    let report = JSON.parse(localStorage.getItem("selectedTeacherReport"));
-    const details = document.getElementById("details");
+<script>
+  // قراءة البلاغ المختار الصحيح
+  let report = JSON.parse(localStorage.getItem("selectedTeacherReport"));
 
-    if (!report) {
-      details.innerHTML = "<p>❌ لم يتم اختيار بلاغ</p>";
-    } else {
-      details.innerHTML = `
-        <p><b>رقم البلاغ:</b> #${report.id}</p>
-        <p><b>النوع:</b> ${report.type || "-"}</p>
-        <p><b>الموقع:</b> ${report.type === "نقل" ? "-" : (report.location || "-")}</p>
-        <p><b>من:</b> ${report.from || "-"}</p>
-        <p><b>إلى:</b> ${report.to || "-"}</p>
-        <p><b>الوصف:</b> ${report.description || "-"}</p>
-        <p><b>الحالة:</b> ${report.status || "-"}</p>
-      `;
-    }
+  const details = document.getElementById("details");
 
-    // دالة حذف البلاغ
-    function deleteReport() {
-      if (!report) {
-        alert("لا يوجد بلاغ لحذفه");
-        return;
-      }
+  if (!report) {
+    details.innerHTML = "<p>❌ لم يتم اختيار بلاغ.</p>";
+  } else {
+    details.innerHTML = `
+      <p><b>رقم البلاغ:</b> #${report.id}</p>
+      <p><b>النوع:</b> ${report.type}</p>
+      <p><b>الموقع:</b> ${report.type === "نقل" ? "-" : (report.location || "-")}</p>
+      <p><b>من:</b> ${report.from || "-"}</p>
+      <p><b>إلى:</b> ${report.to || "-"}</p>
+      <p><b>الوصف:</b> ${report.desc || "-"}</p>
+      <p><b>الحالة:</b> ${report.status || "-"}</p>
+    `;
+  }
 
-      if (!confirm("هل أنتِ متأكدة من حذف البلاغ؟")) return;
+  // دالة حذف البلاغ
+  function deleteReport() {
+    if (!confirm("هل أنتِ متأكدة من حذف البلاغ؟")) return;
 
-      let reports = JSON.parse(localStorage.getItem("teacherReport")) || [];
+    let reports = JSON.parse(localStorage.getItem("teacherReport")) || [];
 
-      // حذف البلاغ من القائمة
-      reports = reports.filter(r => Number(r.id) !== Number(report.id));
+    // حذف البلاغ من القائمة
+    reports = reports.filter(r => r.id !== report.id);
 
-      // حفظ القائمة بعد الحذف
-      localStorage.setItem("teacherReport", JSON.stringify(reports));
+    // حفظ القائمة الجديدة
+    localStorage.setItem("teacherReport", JSON.stringify(reports));
 
-      // حذف البلاغ المختار
-      localStorage.removeItem("selectedTeacherReport");
+    alert("تم حذف البلاغ بنجاح");
 
-      alert("تم حذف البلاغ بنجاح");
-      window.location.href = "teachers_main_page.html";
-    }
-  </script>
+    // الرجوع للصفحة السابقة
+    window.location.href = "teachers_main_page.html";
+  }
+</script>
 
-  <footer class="main-footer">
+<footer class="main-footer">
     <div class="footer-content">
-      <p>&copy; 2026 محطة الدعم | حقوق محفوظة</p>
+        <p>&copy; 2026 حقوق محفوظة | محطة الدعم </p>
 
-      <ul class="footer-links">
-        <li><a href="index.html">الرئيسية</a></li>
-        <li><a href="about.html">عن الموقع</a></li>
-      </ul>
+        <ul class="footer-links">
+            <li><a href="index.html">الرئيسية</a></li>
+            <li><a href="about.html">عن الموقع</a></li>
+        </ul>
     </div>
-  </footer>
+</footer>
+
 </body>
 </html>
