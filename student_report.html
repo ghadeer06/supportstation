@@ -21,7 +21,9 @@
   </div> 
 </div>
 
-<script>
+<script type="module">
+    import { supabase } from "./supabase.js";
+    // ضعي هنا كل كود الصفحة
 /* إنشاء عميل Supabase */
 const supabase = window.supabase.createClient(
   'https://mcxdjisoyqdnyieboqpy.supabase.co',
