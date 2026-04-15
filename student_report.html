@@ -15,27 +15,35 @@
   <div class="card">
     <div id="details">جاري التحميل...</div>
 
-    <button class="light" onclick="deleteReport()" style="background:#ffdddd; color:#b30000;">حذف البلاغ</button>
+    <button class="light" id="deleteBtn" onclick="deleteReport()" style="background:#ffdddd; color:#b30000;">حذف البلاغ</button>
     <button class="light" onclick="window.location.href='student_main_page.html'">رجوع</button>
   </div> 
 </div>
 
 <script type="module">
-    import { supabase } from "./supabase.js";
+  import { supabase } from "./supabase.js";
 
-    const details = document.getElementById("details");
+  const details = document.getElementById("details");
+  const deleteBtn = document.getElementById("deleteBtn");
+  const reportId = localStorage.getItem("selectedReportId");
 
-    /* قراءة ID البلاغ */
-    const reportId = localStorage.getItem("selectedReportId");
+  function getStatusText(status) {
+    if (status === "processing" || status === "قيد المراجعة") return "قيد المراجعة";
+    if (status === "running" || status === "تحت التنفيذ" || status === "قيد التنفيذ" || status === "قيد المعالجة") return "تحت التنفيذ";
+    if (status === "done" || status === "تم الحل" || status === "تم التنفيذ") return "تم الحل";
+    return status || "غير معروف";
+  }
 
+  async function loadReport() {
     if (!reportId) {
       details.innerHTML = "<p>❌ لم يتم اختيار بلاغ.</p>";
-      setTimeout(() => window.location.href = "student_main_page.html", 1500);
+      setTimeout(() => {
+        window.location.href = "student_main_page.html";
+      }, 1500);
       return;
     }
 
-    /* تحميل بيانات البلاغ */
-    async function loadReport() {
+    try {
       const { data, error } = await supabase
         .from("reports")
         .select("*")
@@ -47,30 +55,34 @@
         return;
       }
 
-      let statusText =
-        data.status === "processing" ? "قيد المراجعة" :
-        data.status === "running" ? "تحت التنفيذ" :
-        data.status === "done" ? "تم الحل" :
-        "غير معروف";
+      const statusText = getStatusText(data.status);
 
       details.innerHTML = `
         <p><b>رقم البلاغ:</b> #${data.id}</p>
-        <p><b>النوع:</b> ${data.type}</p>
+        <p><b>النوع:</b> ${data.type || "-"}</p>
         <p><b>الموقع:</b> ${data.location || "-"}</p>
-        <p><b>الوصف:</b> ${data.description}</p>
+        <p><b>الوصف:</b> ${data.description || "-"}</p>
         <p><b>الحالة:</b> ${statusText}</p>
         <p><b>التقييم:</b> ${data.rate ? data.rate + "/10" : "لم يتم التقييم بعد"}</p>
       `;
+    } catch (e) {
+      details.innerHTML = "<p>❌ حدث خطأ أثناء تحميل البلاغ.</p>";
+      console.error(e);
+    }
+  }
+
+  async function deleteReport() {
+    if (!reportId) {
+      alert("لم يتم العثور على رقم البلاغ");
+      return;
     }
 
-    /* حذف البلاغ */
-    async function deleteReport(event) {
-      if (!confirm("هل أنتِ متأكدة من حذف البلاغ؟")) return;
+    if (!confirm("هل أنتِ متأكدة من حذف البلاغ؟")) return;
 
-      const btn = event.target;
-      btn.disabled = true;
-      btn.innerText = "جاري الحذف...";
+    deleteBtn.disabled = true;
+    deleteBtn.innerText = "جاري الحذف...";
 
+    try {
       const { error } = await supabase
         .from("reports")
         .delete()
@@ -78,29 +90,36 @@
 
       if (error) {
         alert("حدث خطأ أثناء الحذف");
-        btn.disabled = false;
-        btn.innerText = "حذف البلاغ";
+        deleteBtn.disabled = false;
+        deleteBtn.innerText = "حذف البلاغ";
         return;
       }
 
+      localStorage.removeItem("selectedReportId");
       alert("تم حذف البلاغ بنجاح");
       window.location.href = "student_main_page.html";
+    } catch (e) {
+      alert("حدث خطأ أثناء الحذف");
+      deleteBtn.disabled = false;
+      deleteBtn.innerText = "حذف البلاغ";
+      console.error(e);
     }
+  }
 
-    window.deleteReport = deleteReport;
+  window.deleteReport = deleteReport;
 
-    loadReport();
+  loadReport();
 </script>
 
 <footer class="main-footer">
-    <div class="footer-content">
-        <p>&copy; 2026 حقوق محفوظة | محطة الدعم </p>
+  <div class="footer-content">
+    <p>&copy; 2026 حقوق محفوظة | محطة الدعم </p>
 
-        <ul class="footer-links">
-            <li><a href="index.html">الرئيسية</a></li>
-            <li><a href="about.html">عن الموقع</a></li>
-        </ul>
-    </div>
+    <ul class="footer-links">
+      <li><a href="index.html">الرئيسية</a></li>
+      <li><a href="about.html">عن الموقع</a></li>
+    </ul>
+  </div>
 </footer>
 
 </body>
