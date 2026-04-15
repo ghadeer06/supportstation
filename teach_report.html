@@ -27,18 +27,18 @@
   const details = document.getElementById("details");
 
   if (!report) {
-  details.innerHTML = "<p>❌ لم يتم اختيار بلاغ</p>";
-} else {
-  details.innerHTML = `
-    <p><b>رقم البلاغ:</b> #${report.id}</p>
-    <p><b>النوع:</b> ${report.type}</p>
-    <p><b>الموقع:</b> ${report.location || "-"}</p>
-    <p><b>من:</b> ${report.from || "-"}</p>
-    <p><b>إلى:</b> ${report.to || "-"}</p>
-    <p><b>الوصف:</b> ${report.description || "-"}</p>
-    <p><b>الحالة:</b> ${report.status || "-"}</p>
-  `;
-}
+    details.innerHTML = "<p>❌ لم يتم اختيار بلاغ.</p>";
+  } else {
+    details.innerHTML = `
+      <p><b>رقم البلاغ:</b> #${report.id}</p>
+      <p><b>النوع:</b> ${report.type}</p>
+      <p><b>الموقع:</b> ${report.type === "نقل" ? "-" : (report.location || "-")}</p>
+      <p><b>من:</b> ${report.from || "-"}</p>
+      <p><b>إلى:</b> ${report.to || "-"}</p>
+      <p><b>الوصف:</b> ${report.desc || "-"}</p>
+      <p><b>الحالة:</b> ${report.status || "-"}</p>
+    `;
+  }
 
   // دالة حذف البلاغ
   function deleteReport() {
