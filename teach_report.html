@@ -21,41 +21,57 @@
 </div>
 
 <script>
-  // قراءة البلاغ المختار الصحيح
-  let report = JSON.parse(localStorage.getItem("selectedTeacherReport"));
+  try {
+    const details = document.getElementById("details");
 
-  const details = document.getElementById("details");
+    if (!details) {
+      alert("خطأ: ما لقى عنصر details");
+    } else {
+      const saved = localStorage.getItem("selectedTeacherReport");
+      console.log("selectedTeacherReport =", saved);
 
-  if (!report) {
-    details.innerHTML = "<p>❌ لم يتم اختيار بلاغ.</p>";
-  } else {
-    details.innerHTML = `
-      <p><b>رقم البلاغ:</b> #${report.id}</p>
-      <p><b>النوع:</b> ${report.type}</p>
-      <p><b>الموقع:</b> ${report.type === "نقل" ? "-" : (report.location || "-")}</p>
-      <p><b>من:</b> ${report.from || "-"}</p>
-      <p><b>إلى:</b> ${report.to || "-"}</p>
-      <p><b>الوصف:</b> ${report.desc || "-"}</p>
-      <p><b>الحالة:</b> ${report.status || "-"}</p>
-    `;
-  }
+      if (!saved) {
+        details.innerHTML = "<p>❌ لا يوجد بلاغ محفوظ للعرض</p>";
+      } else {
+        const report = JSON.parse(saved);
 
-  // دالة حذف البلاغ
-  function deleteReport() {
-    if (!confirm("هل أنتِ متأكدة من حذف البلاغ؟")) return;
+        details.innerHTML = `
+          <p><b>رقم البلاغ:</b> #${report.id ?? "-"}</p>
+          <p><b>النوع:</b> ${report.type ?? "-"}</p>
+          <p><b>الموقع:</b> ${report.location ?? "-"}</p>
+          <p><b>من:</b> ${report.from ?? "-"}</p>
+          <p><b>إلى:</b> ${report.to ?? "-"}</p>
+          <p><b>الوصف:</b> ${report.description ?? "-"}</p>
+          <p><b>الحالة:</b> ${report.status ?? "-"}</p>
+        `;
+      }
+    }
 
-    let reports = JSON.parse(localStorage.getItem("teacherReport")) || [];
+    function deleteReport() {
+      const saved = localStorage.getItem("selectedTeacherReport");
 
-    // حذف البلاغ من القائمة
-    reports = reports.filter(r => r.id !== report.id);
+      if (!saved) {
+        alert("لا يوجد بلاغ لحذفه");
+        return;
+      }
 
-    // حفظ القائمة الجديدة
-    localStorage.setItem("teacherReport", JSON.stringify(reports));
+      const report = JSON.parse(saved);
+      let reports = JSON.parse(localStorage.getItem("teacherReport")) || [];
 
-    alert("تم حذف البلاغ بنجاح");
+      reports = reports.filter(r => Number(r.id) !== Number(report.id));
 
-    // الرجوع للصفحة السابقة
-    window.location.href = "teachers_main_page.html";
+      localStorage.setItem("teacherReport", JSON.stringify(reports));
+      localStorage.removeItem("selectedTeacherReport");
+
+      alert("تم حذف البلاغ بنجاح");
+      window.location.href = "teachers_main_page.html";
+    }
+
+    window.deleteReport = deleteReport;
+
+  } catch (error) {
+    alert("فيه خطأ في السكربت: " + error.message);
+    console.error(error);
   }
 </script>
 
