@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>تفاصيل البلاغ</title>
   <link rel="stylesheet" href="style_report.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 
 <body>
@@ -20,8 +21,13 @@
   </div> 
 </div>
 
-<script type="module">
-  import { supabase } from "./supabase.js";
+<script>
+  function getClient() {
+    return window.supabase.createClient(
+      'https://mcxdjisoyqdnyieboqpy.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1jeGRqaXNveXFkbnlpZWJvcXB5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0MDI3NDAsImV4cCI6MjA5MDk3ODc0MH0.kIwJ1pc-GLX1lTvstLSDZ5Li1rd9vwutI4-Wz_HR6nE'
+    );
+  }
 
   const details = document.getElementById("details");
   const deleteBtn = document.getElementById("deleteBtn");
@@ -35,20 +41,24 @@
   }
 
   async function loadReport() {
+    console.log("selectedReportId:", reportId);
+
     if (!reportId) {
       details.innerHTML = "<p>❌ لم يتم اختيار بلاغ.</p>";
-      setTimeout(() => {
-        window.location.href = "student_main_page.html";
-      }, 1500);
       return;
     }
 
     try {
+      const supabase = getClient();
+
       const { data, error } = await supabase
         .from("reports")
         .select("*")
         .eq("id", reportId)
         .single();
+
+      console.log("report data:", data);
+      console.log("report error:", error);
 
       if (error || !data) {
         details.innerHTML = "<p>❌ لم يتم العثور على البلاغ.</p>";
@@ -58,12 +68,27 @@
       const statusText = getStatusText(data.status);
 
       details.innerHTML = `
-        <p><b>رقم البلاغ:</b> #${data.id}</p>
-        <p><b>النوع:</b> ${data.type || "-"}</p>
+        <h3 style="margin-bottom:20px;">بلاغ #${data.id}</h3>
+
+        <p><b>نوع البلاغ:</b> ${data.type || "-"}</p>
         <p><b>الموقع:</b> ${data.location || "-"}</p>
         <p><b>الوصف:</b> ${data.description || "-"}</p>
         <p><b>الحالة:</b> ${statusText}</p>
-        <p><b>التقييم:</b> ${data.rate ? data.rate + "/10" : "لم يتم التقييم بعد"}</p>
+        <p><b>شدة البلاغ:</b> ${data.rate ? data.rate + "/10" : "لم يتم التقييم بعد"}</p>
+        <p><b>مقدم البلاغ:</b> ${data.sender_name || "-"}</p>
+        <p><b>الإيميل:</b> ${data.sender_email || "-"}</p>
+        <p><b>الدور:</b> ${data.sender_role || "-"}</p>
+
+        ${data.image_url ? `
+          <div style="margin-top:20px;">
+            <p><b>الصورة المرفقة:</b></p>
+            <img 
+              src="${data.image_url}" 
+              alt="صورة البلاغ"
+              style="max-width:100%; width:320px; border-radius:12px; border:1px solid #ddd;"
+            >
+          </div>
+        ` : ""}
       `;
     } catch (e) {
       details.innerHTML = "<p>❌ حدث خطأ أثناء تحميل البلاغ.</p>";
@@ -83,6 +108,8 @@
     deleteBtn.innerText = "جاري الحذف...";
 
     try {
+      const supabase = getClient();
+
       const { error } = await supabase
         .from("reports")
         .delete()
@@ -105,8 +132,6 @@
       console.error(e);
     }
   }
-
-  window.deleteReport = deleteReport;
 
   loadReport();
 </script>
