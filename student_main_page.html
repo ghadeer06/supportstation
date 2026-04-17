@@ -5,10 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>الصفحة الرئيسية</title>
     <link rel="stylesheet" href="adminStyles.css">
-
-    <!-- تحميل supabase.js فقط (بدون CDN) -->
-    <script type="module" src="supabase.js"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 
 <body>
@@ -43,106 +40,106 @@
 
 </main>
 
-<script type="module">
-    import { supabase } from "./supabase.js";
+<script>
+function getClient() {
+  return window.supabase.createClient(
+    'https://mcxdjisoyqdnyieboqpy.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1jeGRqaXNveXFkbnlpZWJvcXB5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0MDI3NDAsImV4cCI6MjA5MDk3ODc0MH0.kIwJ1pc-GLX1lTvstLSDZ5Li1rd9vwutI4-Wz_HR6nE'
+  );
+}
 
-    const container = document.getElementById("reportCards");
+const container = document.getElementById("reportCards");
 
-    async function loadReports() {
-        const email = localStorage.getItem("user_email");
-        console.log("📧 Email:", email);
+function getStatusText(status) {
+  if (status === "processing" || status === "قيد المراجعة") return "قيد المراجعة";
+  if (status === "running" || status === "تحت التنفيذ") return "تحت التنفيذ";
+  if (status === "done" || status === "تم التنفيذ" || status === "تم الحل") return "تم التنفيذ";
+  return status || "غير محدد";
+}
 
-        try {
-            const { data, error } = await supabase
-                .from("reports")
-                .select("*")
-                .eq("sender_email", email)
-                .order("id", { ascending: false });
+async function loadReports() {
+    const email = localStorage.getItem("user_email");
+    console.log("📧 Email:", email);
 
-            if (error) {
-                container.innerHTML = `<p>خطأ في تحميل البلاغات</p>`;
-                return;
-            }
-
-            /* 🔥 حذف البلاغات التي مر عليها أكثر من 5 دقائق وكانت حالتها done أو تم التنفيذ */
-            async function deleteOldReports() {
-                const now = new Date();
-
-                for (const r of data) {
-
-                    // الشرط الصحيح
-                    if (r.status !== "done" && r.status !== "تم التنفيذ") continue;
-
-                    const createdAt = new Date(r.created_at);
-                    const diffMinutes = (now - createdAt) / 1000 / 60;
-
-                    if (diffMinutes >= 10080) {
-                        console.log(`🗑️ حذف البلاغ رقم ${r.id} لأنه مكتمل ومر عليه أكثر من اسبوع`);
-
-                        await supabase
-                            .from("reports")
-                            .delete()
-                            .eq("id", r.id);
-                    }
-                }
-            }
-            await deleteOldReports();
-            /* 🔥 نهاية كود الحذف */
-
-
-            if (!data || data.length === 0) {
-                container.innerHTML = `
-                    <div class="report-card" style="
-                        background:#fff;
-                        padding:20px;
-                        border-radius:12px;
-                        text-align:center;
-                        box-shadow:0 4px 12px rgba(0,0,0,.08);
-                    ">
-                        لا توجد بلاغات حتى الآن
-                    </div>`;
-                return;
-            }
-
-            container.innerHTML = "";
-
-            data.forEach(r => {
-
-                const statusText =
-                    r.status === "processing" ? "قيد المراجعة" :
-                    r.status === "running" ? "تحت التنفيذ" :
-                    r.status === "done" || r.status === "تم التنفيذ" ? "تم الحل" :
-                    "غير معروف";
-
-                container.innerHTML += `
-                    <div class="report-card" style="
-                        background:#fff;
-                        padding:18px;
-                        border-radius:12px;
-                        box-shadow:0 4px 12px rgba(0,0,0,.08);
-                        margin-bottom:15px;
-                    ">
-                        <h3>#${r.id} - ${r.type}</h3>
-                        <p><b>الوصف:</b> ${r.description}</p>
-                        <p><b>الموقع:</b> ${r.location || "-"}</p>
-                        <p><b>الحالة:</b> ${statusText}</p>
-                        <button class="btn-process" onclick="openReport(${r.id})">عرض البلاغ</button>
-                    </div>
-                `;
-            });
-
-        } catch (e) {
-            console.error(e);
-            container.innerHTML = `<p>صار خطأ غير متوقع</p>`;
-        }
+    if (!email) {
+        container.innerHTML = `
+            <div class="report-card" style="
+                background:#fff;
+                padding:20px;
+                border-radius:12px;
+                text-align:center;
+                box-shadow:0 4px 12px rgba(0,0,0,.08);
+            ">
+                لم يتم العثور على بيانات المستخدم
+            </div>`;
+        return;
     }
 
-    window.openReport = function(id) {
-        localStorage.setItem("selectedReportId", id);
-        window.location.href = "student_report.html";
-    };
+    try {
+        const supabase = getClient();
 
-    loadReports();
+        const { data, error } = await supabase
+            .from("reports")
+            .select("*")
+            .eq("sender_email", email)
+            .order("id", { ascending: false });
+
+        console.log("البلاغات:", data);
+        console.log("الخطأ:", error);
+
+        if (error) {
+            container.innerHTML = `<p>خطأ في تحميل البلاغات</p>`;
+            return;
+        }
+
+        if (!data || data.length === 0) {
+            container.innerHTML = `
+                <div class="report-card" style="
+                    background:#fff;
+                    padding:20px;
+                    border-radius:12px;
+                    text-align:center;
+                    box-shadow:0 4px 12px rgba(0,0,0,.08);
+                ">
+                    لا توجد بلاغات حتى الآن
+                </div>`;
+            return;
+        }
+
+        container.innerHTML = "";
+
+        data.forEach(r => {
+            const statusText = getStatusText(r.status);
+
+            container.innerHTML += `
+                <div class="report-card" style="
+                    background:#fff;
+                    padding:18px;
+                    border-radius:12px;
+                    box-shadow:0 4px 12px rgba(0,0,0,.08);
+                    margin-bottom:15px;
+                ">
+                    <h3>#${r.id} - ${r.type || "-"}</h3>
+                    <p><b>الوصف:</b> ${r.description || "-"}</p>
+                    <p><b>الموقع:</b> ${r.location || "-"}</p>
+                    <p><b>الحالة:</b> ${statusText}</p>
+                    <button class="btn-process" onclick="openReport(${r.id})">عرض البلاغ</button>
+                </div>
+            `;
+        });
+
+    } catch (e) {
+        console.error(e);
+        container.innerHTML = `<p>صار خطأ غير متوقع</p>`;
+    }
+}
+
+function openReport(id) {
+    localStorage.setItem("selectedReportId", id);
+    window.location.href = "student_report.html";
+}
+
+loadReports();
 </script>
 
 <footer class="main-footer">
