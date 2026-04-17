@@ -10,7 +10,7 @@
 
 <body class="admin-body">
 <script>
-const ADMIN_EMAIL = "445153613@tvtc.edu.sa"; // غيريه بإيميلك
+const ADMIN_EMAIL = "445153575@tvtc.edu.sa"; // غيريه بإيميلك
 
 const email = localStorage.getItem("user_email");
 
@@ -34,7 +34,6 @@ if(email !== ADMIN_EMAIL){
 
 <main class="admin-main">
 
-  <!-- ===== Stats ===== -->
   <div class="admin-cards">
     <button class="stat-card stat-click active" data-filter="all" onclick="setFilter('all')">
       <h3>إجمالي البلاغات</h3>
@@ -52,7 +51,6 @@ if(email !== ADMIN_EMAIL){
     </button>
   </div>
 
-  <!-- Trainers -->
   <section class="reports-section">
     <h2 class="section-title">بلاغات المدربين</h2>
     <div class="reports-box">
@@ -60,7 +58,6 @@ if(email !== ADMIN_EMAIL){
     </div>
   </section>
 
-  <!-- Trainees -->
   <section class="reports-section">
     <h2 class="section-title">بلاغات المتدربين</h2>
     <div class="reports-box">
@@ -161,6 +158,17 @@ function createReportCard(r) {
         <p><b>مقدم البلاغ:</b> ${r.sender_name || "-"}</p>
         <p><b>الإيميل:</b> ${r.sender_email || "-"}</p>
         <p><b>الدور:</b> ${r.sender_role || "-"}</p>
+
+        ${r.image_url ? `
+          <div style="margin-top:15px;">
+            <p><b>الصورة المرفقة:</b></p>
+            <img 
+              src="${r.image_url}" 
+              alt="صورة البلاغ"
+              style="width:100%; max-width:220px; border-radius:12px; border:1px solid #ddd; display:block;"
+            >
+          </div>
+        ` : ""}
       </div>
 
       <button class="btn-process" onclick="openReport('${r.id}')">عرض البلاغ</button>
@@ -212,9 +220,6 @@ async function loadReports() {
   applyFilter();
 }
 
-/* ============================
-   🔥 حذف البلاغات بعد 5 دقائق
-   ============================ */
 async function deleteOldReports() {
   const supabase = getClient();
   const now = Date.now();
@@ -233,13 +238,10 @@ async function deleteOldReports() {
     }
   }
 
-  loadReports(); // تحديث القائمة بعد الحذف
+  loadReports();
 }
 
-/* تشغيل الحذف كل دقيقة */
 setInterval(deleteOldReports, 60 * 1000);
-
-/* تحميل البلاغات عند فتح الصفحة */
 loadReports();
 </script>
 
