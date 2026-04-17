@@ -45,6 +45,12 @@
       <input type="text" id="location" placeholder="مثال: مبنى A - قاعة 3">
     </div>
 
+    <br><br>
+
+    <label for="reportImage">إرفاق صورة</label>
+    <input type="file" id="reportImage" accept="image/*" capture="environment">
+    <p id="imageName" style="font-size:13px; color:#666;"></p>
+
     <label>الوصف</label>
     <textarea id="desc" placeholder="اكتبي تفاصيل البلاغ"></textarea>
 
@@ -104,6 +110,32 @@ function goToRights() {
   window.location.href = "trainee_rights.html";
 }
 
+/* رفع الصورة إلى Storage */
+async function uploadReportImage(file) {
+  if (!file) return null;
+
+  const supabase = getClient();
+
+  const fileExt = file.name.split('.').pop();
+  const fileName = `${Date.now()}.${fileExt}`;
+  const filePath = `reports/${fileName}`;
+
+  const { error: uploadError } = await supabase.storage
+    .from("report-images")
+    .upload(filePath, file);
+
+  if (uploadError) {
+    alert("خطأ في رفع الصورة: " + uploadError.message);
+    return null;
+  }
+
+  const { data } = supabase.storage
+    .from("report-images")
+    .getPublicUrl(filePath);
+
+  return data.publicUrl;
+}
+
 async function saveReport(){
   const type = document.getElementById("type").value;
   const location = document.getElementById("location").value.trim();
@@ -129,9 +161,16 @@ async function saveReport(){
     return;
   }
 
-  try {  // ✅ هنا الحل
-
+  try {
     const supabase = getClient();
+
+    const imageFile = document.getElementById("reportImage").files[0];
+    let imageUrl = null;
+
+    if (imageFile) {
+      imageUrl = await uploadReportImage(imageFile);
+      if (!imageUrl) return;
+    }
 
     const { error } = await supabase
       .from("reports")
@@ -144,7 +183,8 @@ async function saveReport(){
           status: "قيد المراجعة",
           sender_name: senderName || "-",
           sender_email: senderEmail,
-          sender_role: senderRole || "trainee"
+          sender_role: senderRole || "trainee",
+          image_url: imageUrl
         }
       ]);
 
@@ -156,10 +196,11 @@ async function saveReport(){
     alert("تم إرسال البلاغ بنجاح");
     window.location.href = "student_main_page.html";
 
-  } catch (e) {  // ✅ الآن صح
+  } catch (e) {
     alert("صار خطأ: " + e.message);
   }
 }
+
 document.addEventListener("click", function(e) {
   const list = document.getElementById("optionsList");
   const select = document.querySelector(".custom-select");
@@ -168,6 +209,17 @@ document.addEventListener("click", function(e) {
     list.style.display = "none";
   }
 });
+
+/* إظهار اسم الصورة المختارة */
+const reportImageInput = document.getElementById("reportImage");
+const imageName = document.getElementById("imageName");
+
+if (reportImageInput) {
+  reportImageInput.addEventListener("change", () => {
+    const file = reportImageInput.files[0];
+    imageName.textContent = file ? `تم اختيار الصورة: ${file.name}` : "";
+  });
+}
 
 toggleFields();
 updateRate();
