@@ -25,6 +25,13 @@
     <p><b>الإيميل:</b> <span id="r_email"></span></p>
     <p><b>الدور:</b> <span id="r_role"></span></p>
 
+    <!-- ✅ إضافة الصورة -->
+    <div id="reportImageBox" style="display:none; margin-top:20px;">
+      <p><b>الصورة المرفقة:</b></p>
+      <img id="r_image" src="" alt="صورة البلاغ"
+           style="max-width:100%; width:300px; border-radius:12px; border:1px solid #ddd;">
+    </div>
+
     <br>
 
     <label><b>الحالة الحالية:</b></label>
@@ -102,6 +109,12 @@ async function loadReport(){
 
   document.getElementById("selectedStatus").innerText = status;
   document.getElementById("statusValue").value = status;
+
+  /* ✅ عرض الصورة إذا موجودة */
+  if (data.image_url) {
+    document.getElementById("reportImageBox").style.display = "block";
+    document.getElementById("r_image").src = data.image_url;
+  }
 }
 
 function toggleDropdownStatus() {
