@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>التقارير - محطة الدعم</title>
+    <link rel="stylesheet" href="analytics.css">
+</head>
+
+<body>
+
+<div class="layout">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="logo">محطة الدعم</div>
+        <ul class="menu">
+            <li><a href="home.html">الصفحة الرئيسية</a></li>
+            <li><a href="reports.html">البلاغات</a></li>
+            <li><a href="tasks.html">مهام السلامة</a></li>
+            <li class="active"><a href="analytics.html">التقارير</a></li>
+            <li><a href="notifications.html">الإشعارات</a></li>
+            <li><a href="trainer.html">المدرب</a></li>
+        </ul>
+        <div class="logout">تسجيل الخروج</div>
+    </aside>
+
+    <!-- Main -->
+    <main class="main">
+
+        <!-- Header -->
+        <header class="header">
+            <div>
+                <div class="header-title">التقارير</div>
+                <div class="header-subtitle">عرض تقارير الأداء والإحصائيات الشهرية</div>
+            </div>
+
+            <div class="user-box">
+                <div class="notifications">🔔</div>
+                <div class="user-info">
+                    <div class="user-name">أ. سارة أحمد</div>
+                    <div class="user-role">مسؤولة النظام</div>
+                </div>
+                <div class="avatar">س</div>
+            </div>
+        </header>
+
+        <!-- Stats -->
+        <section class="stats">
+            <div class="card">
+                <div class="card-title">تقارير هذا الشهر</div>
+                <div class="card-value">12</div>
+                <div class="card-note">تم إنشاؤها خلال الشهر</div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">تقارير اليوم</div>
+                <div class="card-value">2</div>
+                <div class="card-note">تم إصدارها اليوم</div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">تقارير مكتملة</div>
+                <div class="card-value">9</div>
+                <div class="card-note">تمت مراجعتها واعتمادها</div>
+            </div>
+        </section>
+
+        <!-- Content -->
+        <section class="content-grid">
+
+            <!-- Table -->
+            <div class="table-wrapper">
+                <div class="table-header">
+                    <div class="table-title">قائمة التقارير</div>
+                    <button class="btn-pdf">تصدير PDF</button>
+                </div>
+
+                <table>
+                    <thead>
+                    <tr>
+                        <th>الإجراء</th>
+                        <th>الحالة</th>
+                        <th>التاريخ</th>
+                        <th>النوع</th>
+                        <th>عنوان التقرير</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    <tr>
+                        <td><button class="btn-link">عرض</button></td>
+                        <td><span class="status done">مكتمل</span></td>
+                        <td>10/4/2026</td>
+                        <td>شهري</td>
+                        <td>تقرير أداء قسم الصيانة</td>
+                    </tr>
+
+                    <tr>
+                        <td><button class="btn-link">عرض</button></td>
+                        <td><span class="status pending">قيد المراجعة</span></td>
+                        <td>15/4/2026</td>
+                        <td>أسبوعي</td>
+                        <td>تقرير متابعة مهام السلامة</td>
+                    </tr>
+
+                    <tr>
+                        <td><button class="btn-link">عرض</button></td>
+                        <td><span class="status new">جديد</span></td>
+                        <td>16/4/2026</td>
+                        <td>يومي</td>
+                        <td>تقرير بلاغات اليوم</td>
+                    </tr>
+
+                    <tr>
+                        <td><button class="btn-link">عرض</button></td>
+                        <td><span class="status pending">قيد المراجعة</span></td>
+                        <td>14/4/2026</td>
+                        <td>شهري</td>
+                        <td>تقرير أداء الأمن والسلامة</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Alerts -->
+            <aside class="alerts">
+                <div class="alerts-title">تنبيهات التقارير</div>
+
+                <div class="alert-item">
+                    <strong>تنبيه:</strong> تقرير "مهام السلامة" لم يتم اعتماده بعد.
+                </div>
+
+                <div class="alert-item">
+                    <strong>ملاحظة:</strong> تقرير "أداء الصيانة" جاهز للطباعة.
+                </div>
+
+                <div class="alert-item">
+                    <strong>تذكير:</strong> تقرير "بلاغات اليوم" يحتاج مراجعة.
+                </div>
+            </aside>
+
+        </section>
+
+    </main>
+</div>
+
+</body>
+</html>

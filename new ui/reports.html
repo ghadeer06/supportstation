@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>البلاغات - محطة الدعم</title>
+    <link rel="stylesheet" href="reports.css">
+</head>
+
+<body>
+
+<div class="layout">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="logo">محطة الدعم</div>
+        <ul class="menu">
+            <li><a href="home.html">الصفحة الرئيسية</a></li>
+            <li class="active"><a href="reports.html">البلاغات</a></li>
+            <li><a href="tasks.html">مهام السلامة</a></li>
+            <li><a href="analytics.html">التقارير</a></li>
+            <li><a href="notifications.html">الإشعارات</a></li>
+            <li><a href="trainer.html">المدرب</a></li>
+        </ul>
+        <div class="logout">تسجيل الخروج</div>
+    </aside>
+
+    <!-- Main -->
+    <main class="main">
+
+        <!-- Header -->
+        <header class="header">
+            <div>
+                <div class="header-title">البلاغات</div>
+                <div class="header-subtitle">عرض وإدارة البلاغات المسجلة داخل الكلية</div>
+            </div>
+
+            <div class="user-box">
+                <div class="notifications">🔔</div>
+                <div class="user-info">
+                    <div class="user-name">أ. سارة أحمد</div>
+                    <div class="user-role">مسؤولة النظام</div>
+                </div>
+                <div class="avatar">س</div>
+            </div>
+        </header>
+
+        <!-- Stats -->
+        <section class="stats">
+            <div class="card">
+                <div class="card-title">إجمالي البلاغات</div>
+                <div class="card-value">18</div>
+                <div class="card-note">منذ بداية الشهر</div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">بلاغات اليوم</div>
+                <div class="card-value">3</div>
+                <div class="card-note">تم تسجيلها اليوم</div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">بلاغات قيد المعالجة</div>
+                <div class="card-value">5</div>
+                <div class="card-note">بانتظار الإجراء</div>
+            </div>
+        </section>
+
+        <!-- Content -->
+        <section class="content-grid">
+
+            <!-- Table -->
+            <div class="table-wrapper">
+                <div class="table-header">
+                    <div class="table-title">قائمة البلاغات</div>
+                    <button class="btn-pdf">تصدير PDF</button>
+                </div>
+
+                <table>
+                    <thead>
+                    <tr>
+                        <th>الإجراء</th>
+                        <th>الحالة</th>
+                        <th>التاريخ</th>
+                        <th>القسم</th>
+                        <th>عنوان البلاغ</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    <tr>
+                        <td><button class="btn-link">عرض</button></td>
+                        <td><span class="status pending">قيد المعالجة</span></td>
+                        <td>15/4/2026</td>
+                        <td>الصيانة</td>
+                        <td>عطل في مكيف القاعة 12</td>
+                    </tr>
+
+                    <tr>
+                        <td><button class="btn-link">عرض</button></td>
+                        <td><span class="status new">جديد</span></td>
+                        <td>16/4/2026</td>
+                        <td>النظافة</td>
+                        <td>تسرب مياه في الممر الشمالي</td>
+                    </tr>
+
+                    <tr>
+                        <td><button class="btn-link">عرض</button></td>
+                        <td><span class="status done">تم الحل</span></td>
+                        <td>10/4/2026</td>
+                        <td>الأمن</td>
+                        <td>باب الطوارئ لا يُغلق جيدًا</td>
+                    </tr>
+
+                    <tr>
+                        <td><button class="btn-link">عرض</button></td>
+                        <td><span class="status pending">قيد المعالجة</span></td>
+                        <td>14/4/2026</td>
+                        <td>التقنية</td>
+                        <td>تعطل شاشة العرض في المختبر</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Alerts -->
+            <aside class="alerts">
+                <div class="alerts-title">تنبيهات البلاغات</div>
+
+                <div class="alert-item">
+                    <strong>تنبيه:</strong> بلاغ "تسرب المياه" لم يتم التعامل معه منذ 24 ساعة.
+                </div>
+
+                <div class="alert-item">
+                    <strong>ملاحظة:</strong> بلاغ "عطل المكيف" يحتاج متابعة.
+                </div>
+
+                <div class="alert-item">
+                    <strong>تذكير:</strong> بلاغ "باب الطوارئ" تم إغلاقه بنجاح.
+                </div>
+            </aside>
+
+        </section>
+
+    </main>
+</div>
+
+</body>
+</html>
