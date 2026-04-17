@@ -14,7 +14,7 @@
     <aside class="sidebar">
         <div class="logo">محطة الدعم</div>
         <ul class="menu">
-             <li><a href="home.html">الصفحة الرئيسية</a></li>
+            <li><a href="home.html">الصفحة الرئيسية</a></li>
             <li><a href="reports.html">البلاغات</a></li>
             <li class="active"><a href="tasks.html">مهام السلامة</a></li>
             <li><a href="analytics.html">التقارير</a></li>
@@ -35,10 +35,9 @@
             </div>
 
             <div class="user-box">
-                <div class="notifications">🔔</div>
                 <div class="user-info">
-                    <div class="user-name">أ. سارة أحمد</div>
-                    <div class="user-role">مسؤولة السلامة</div>
+                    <div class="user-name">مستخدم</div>
+                    <div class="user-role">دور المستخدم</div>
                 </div>
                 <div class="avatar">س</div>
             </div>
@@ -72,10 +71,10 @@
             <div class="table-wrapper">
                 <div class="table-header">
                     <div class="table-title">قائمة مهام السلامة</div>
-                    <button class="btn-pdf">تحميل تصدير PDF</button>
+                    <button class="btn-pdf">تحميل PDF</button>
                 </div>
 
-                <table>
+                <table id="tasksTable">
                     <thead>
                     <tr>
                         <th>الإجراء</th>
@@ -150,5 +149,49 @@
         </section>
     </main>
 </div>
+
+<!-- PDF Libraries -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+
+<!-- Dynamic Profile + PDF Export -->
+<script>
+
+// تحميل بيانات المستخدم من LocalStorage
+document.addEventListener("DOMContentLoaded", () => {
+    document.querySelector(".user-name").textContent =
+        localStorage.getItem("username") || "مستخدم";
+
+    document.querySelector(".user-role").textContent =
+        localStorage.getItem("role") || "دور المستخدم";
+
+    document.querySelector(".avatar").textContent =
+        (localStorage.getItem("username") || "س")[0];
+});
+
+// تصدير PDF
+document.querySelector(".btn-pdf").addEventListener("click", function () {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({
+        orientation: "portrait",
+        unit: "pt",
+        format: "a4"
+    });
+
+    doc.setFontSize(16);
+    doc.text("تقرير مهام السلامة", 300, 40, { align: "center" });
+
+    doc.autoTable({
+        html: "#tasksTable",
+        startY: 60,
+        styles: { fontSize: 10, halign: "right" },
+        headStyles: { fillColor: [37, 99, 235], halign: "right" },
+        margin: { left: 40, right: 40 }
+    });
+
+    doc.save("مهام-السلامة.pdf");
+});
+</script>
+
 </body>
 </html>
