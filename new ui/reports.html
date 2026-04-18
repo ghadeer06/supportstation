@@ -10,6 +10,16 @@
 
 <body class="admin-body">
 
+<script>
+const ADMIN_EMAIL = "445153613@tvtc.edu.sa"; // غيريه بإيميلك
+const email = localStorage.getItem("user_email");
+
+if (email !== ADMIN_EMAIL) {
+  alert("ليس لديك صلاحية الدخول");
+  window.location.href = "login.html";
+}
+</script>
+
 
 <header class="admin-header">
   <div class="admin-left">
