@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>إضافة فعالية</title>
+  <link rel="stylesheet" href="analytics.css" />
+  <link rel="stylesheet" href="add_event.css" />
+</head>
+
+<body>
+
+<header class="admin-header">
+  <div class="admin-left">
+    <img src="img/logo.png" class="admin-logo" alt="Logo">
+    <div class="admin-title">
+      <h1>إضافة فعالية</h1>
+      
+    </div>
+  </div>
+
+  <a href="index.html" class="logout">تسجيل الخروج</a>
+</header>
+
+<div class="dashboard-layout">
+
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <h2>محطة الدعم</h2>
+    </div>
+
+    <ul class="sidebar-menu">
+      <li><a href="admin.html">الصفحة الرئيسية</a></li>
+      <li><a href="reports.html">البلاغات</a></li>
+      <li><a href="tasks.html">مهام السلامة</a></li>
+      <li><a href="analytics.html">التقارير</a></li>
+      <li><a href="events.html">الفعاليات</a></li>
+    </ul>
+  </aside>
+
+  <main class="admin-main">
+    <section class="event-form-box">
+      <h2>إضافة فعالية جديدة</h2>
+
+      <div class="event-field">
+        <label for="eventTitle">عنوان الفعالية</label>
+        <input type="text" id="eventTitle" placeholder="اكتبي عنوان الفعالية">
+      </div>
+
+      <div class="event-field">
+        <label for="eventDesc">وصف الفعالية</label>
+        <textarea id="eventDesc" placeholder="اكتبي وصفًا مختصرًا للفعالية"></textarea>
+      </div>
+
+      <div class="event-field">
+        <label for="eventDate">تاريخ الفعالية</label>
+        <input type="date" id="eventDate">
+      </div>
+
+      <div class="event-field">
+        <label for="eventImage">صورة الفعالية</label>
+        <input type="file" id="eventImage" accept="image/*">
+      </div>
+
+      <div class="preview-box" id="previewBox">
+        <p>معاينة الصورة:</p>
+        <img id="previewImage" src="" alt="معاينة الصورة">
+      </div>
+
+      <div class="event-actions">
+        <button class="event-save-btn" onclick="saveEvent()">حفظ الفعالية</button>
+        <a href="events.html" class="event-cancel-btn">رجوع للفعاليات</a>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script>
+const eventImageInput = document.getElementById("eventImage");
+const previewBox = document.getElementById("previewBox");
+const previewImage = document.getElementById("previewImage");
+
+eventImageInput.addEventListener("change", function () {
+  const file = this.files[0];
+
+  if (!file) {
+    previewBox.style.display = "none";
+    previewImage.src = "";
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = function (e) {
+    previewImage.src = e.target.result;
+    previewBox.style.display = "block";
+  };
+  reader.readAsDataURL(file);
+});
+
+function saveEvent() {
+  const title = document.getElementById("eventTitle").value.trim();
+  const desc = document.getElementById("eventDesc").value.trim();
+  const date = document.getElementById("eventDate").value;
+  const file = document.getElementById("eventImage").files[0];
+
+  if (!title || !desc || !date) {
+    alert("الرجاء تعبئة عنوان الفعالية والوصف والتاريخ");
+    return;
+  }
+
+  let events = JSON.parse(localStorage.getItem("events")) || [];
+
+  function finishSave(imageData) {
+    const now = new Date();
+    const expiryDate = new Date(now);
+    expiryDate.setDate(expiryDate.getDate() + 7);
+
+    const newEvent = {
+      id: Date.now(),
+      title: title,
+      desc: desc,
+      date: date,
+      image: imageData || "",
+      createdAt: now.toISOString(),
+      expiresAt: expiryDate.toISOString()
+    };
+
+    events.push(newEvent);
+    localStorage.setItem("events", JSON.stringify(events));
+    alert("تم حفظ الفعالية بنجاح");
+    window.location.href = "events.html";
+  }
+
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      finishSave(e.target.result);
+    };
+    reader.readAsDataURL(file);
+  } else {
+    finishSave("");
+  }
+}
+</script>
+
+</body>
+</html>
