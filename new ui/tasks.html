@@ -1,197 +1,167 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8" />
-    <title>محطة الدعم - مهام السلامة</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" href="styleAdmin.css" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>مهام السلامة - محطة الدعم</title>
+  <link rel="stylesheet" href="analytics.css" />
 </head>
 
 <body>
-<div class="layout">
 
-    <!-- Sidebar -->
-    <aside class="sidebar">
-        <div class="logo">محطة الدعم</div>
-        <ul class="menu">
-            <li><a href="home.html">الصفحة الرئيسية</a></li>
-            <li><a href="reports.html">البلاغات</a></li>
-            <li class="active"><a href="tasks.html">مهام السلامة</a></li>
-            <li><a href="analytics.html">التقارير</a></li>
-            <li><a href="notifications.html">الإشعارات</a></li>
-            <li><a href="trainer.html">المدرب</a></li>
-        </ul>
-        <div class="logout">تسجيل الخروج</div>
-    </aside>
+<header class="admin-header">
+  <div class="admin-left">
+    <img src="img/logo.png" class="admin-logo" alt="Logo">
+    <div class="admin-title">
+      <h1>مهام السلامة</h1>
+      <span>متابعة المهام الأسبوعية والشهرية الخاصة بالسلامة المهنية</span>
+    </div>
+  </div>
 
-    <!-- Main -->
-    <main class="main">
+  <a href="index.html" class="logout">تسجيل الخروج</a>
+</header>
 
-        <!-- Header -->
-        <header class="header">
-            <div>
-                <div class="header-title">مهام السلامة</div>
-                <div class="header-subtitle">متابعة المهام الأسبوعية والشهرية الخاصة بالسلامة</div>
-            </div>
+<div class="dashboard-layout">
 
-            <div class="user-box">
-                <div class="user-info">
-                    <div class="user-name">مستخدم</div>
-                    <div class="user-role">دور المستخدم</div>
-                </div>
-                <div class="avatar">س</div>
-            </div>
-        </header>
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <h2>محطة الدعم</h2>
+    </div>
 
-        <!-- Stats -->
-        <section class="stats">
-            <div class="card">
-                <div class="card-title">المهام المنفذة</div>
-                <div class="card-value">3</div>
-                <div class="card-note">هذا الشهر</div>
-            </div>
+    <ul class="sidebar-menu">
+      <li><a href="admin.html">الصفحة الرئيسية</a></li>
+      <li><a href="reports.html">البلاغات</a></li>
+      <li class="active"><a href="tasks.html">مهام السلامة</a></li>
+      <li><a href="analytics.html">التقارير</a></li>
+      <li><a href="notifications.html">الإشعارات</a></li>
+      <li><a href="events.html">الفعاليات</a></li>
+    </ul>
+  </aside>
 
-            <div class="card">
-                <div class="card-title">المهام الأسبوعية</div>
-                <div class="card-value">5</div>
-                <div class="card-note">هذا الأسبوع</div>
-            </div>
+  <main class="admin-main">
 
-            <div class="card">
-                <div class="card-title">مهام اليوم</div>
-                <div class="card-value">2</div>
-                <div class="card-note">متبقية اليوم</div>
-            </div>
-        </section>
+    <div class="top-user-bar">
+      <div class="user-box">
+        <div class="avatar">س</div>
+        <div class="user-info">
+          <div class="user-name">أ. سارة أحمد</div>
+          <div class="user-role">مسؤولة السلامة</div>
+        </div>
+        <div class="notifications">
+          <span class="noti-count">3</span>
+          🔔
+        </div>
+      </div>
+    </div>
 
-        <!-- Content -->
-        <section class="content-grid">
+    <div class="admin-cards">
+      <div class="stat-card">
+        <h3>المهام المنفذة</h3>
+        <p>3</p>
+        <span>تم تنفيذها هذا الشهر</span>
+      </div>
 
-            <!-- Table -->
-            <div class="table-wrapper">
-                <div class="table-header">
-                    <div class="table-title">قائمة مهام السلامة</div>
-                    <button class="btn-pdf">تحميل PDF</button>
-                </div>
+      <div class="stat-card">
+        <h3>المهام الأسبوعية</h3>
+        <p>5</p>
+        <span>المهام الحالية لهذا الأسبوع</span>
+      </div>
 
-                <table id="tasksTable">
-                    <thead>
-                    <tr>
-                        <th>الإجراء</th>
-                        <th>الحالة</th>
-                        <th>التاريخ</th>
-                        <th>النوع</th>
-                        <th>المهمة</th>
-                    </tr>
-                    </thead>
+      <div class="stat-card">
+        <h3>المهام المتبقية</h3>
+        <p>2</p>
+        <span>بانتظار التنفيذ</span>
+      </div>
+    </div>
 
-                    <tbody>
-                    <tr>
-                        <td><button class="btn-link">عرض التفاصيل</button></td>
-                        <td><span class="status pending">قيد التنفيذ</span></td>
-                        <td>2/3/2026</td>
-                        <td><span class="type-badge">أسبوعية</span></td>
-                        <td>تفقد طفايات الحريق</td>
-                    </tr>
+    <div class="reports-layout">
 
-                    <tr>
-                        <td><button class="btn-link">عرض التفاصيل</button></td>
-                        <td><span class="status pending">قيد التنفيذ</span></td>
-                        <td>3/3/2026</td>
-                        <td><span class="type-badge">أسبوعية</span></td>
-                        <td>التأكد من مخارج الطوارئ</td>
-                    </tr>
+      <section class="alerts-panel">
+        <h2 class="panel-title">تنبيهات المهام</h2>
 
-                    <tr>
-                        <td><button class="btn-link">عرض التفاصيل</button></td>
-                        <td><span class="status not-started">لم يبدأ</span></td>
-                        <td>4/3/2026</td>
-                        <td><span class="type-badge">أسبوعية</span></td>
-                        <td>مراجعة صناديق الإسعافات الأولية</td>
-                    </tr>
+        <div class="alert-item">
+          <strong>تنبيه:</strong> تبقّى يوم واحد على مهمة تفقد طفايات الحريق.
+        </div>
 
-                    <tr>
-                        <td><button class="btn-link">عرض التفاصيل</button></td>
-                        <td><span class="status not-started">لم يبدأ</span></td>
-                        <td>10/3/2026</td>
-                        <td><span class="type-badge type-monthly">شهرية</span></td>
-                        <td>متابعة لوحات السلامة</td>
-                    </tr>
+        <div class="alert-item">
+          <strong>ملاحظة:</strong> مراجعة صناديق الإسعافات الأولية لم تبدأ بعد.
+        </div>
 
-                    <tr>
-                        <td><button class="btn-link">عرض التفاصيل</button></td>
-                        <td><span class="status not-started">لم يبدأ</span></td>
-                        <td>15/3/2026</td>
-                        <td><span class="type-badge type-monthly">شهرية</span></td>
-                        <td>فحص تمديدات الكهرباء الظاهرة</td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
+        <div class="alert-item">
+          <strong>تذكير:</strong> مهمة متابعة لوحات السلامة تحتاج متابعة هذا الأسبوع.
+        </div>
+      </section>
 
-            <!-- Alerts -->
-            <aside class="alerts">
-                <div class="alerts-title">تنبيهات المهام</div>
+      <section class="table-panel">
+        <div class="table-header">
+          <h2 class="panel-title">قائمة مهام السلامة</h2>
+          <button class="btn-pdf">تصدير PDF</button>
+        </div>
 
-                <div class="alert-item">
-                    <strong>تذكير:</strong> تبقّى يوم واحد لمهمة تفقد طفايات الحريق.
-                </div>
+        <table>
+          <thead>
+            <tr>
+              <th>الإجراء</th>
+              <th>الحالة</th>
+              <th>التاريخ</th>
+              <th>النوع</th>
+              <th>المهمة</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><a href="#" class="action-link">عرض</a></td>
+              <td><span class="status-tag">تم التنفيذ</span></td>
+              <td>2/3/2026</td>
+              <td>أسبوعية</td>
+              <td>تفقد طفايات الحريق</td>
+            </tr>
 
-                <div class="alert-item">
-                    <strong>تنبيه:</strong> لم يتم بدء مراجعة صناديق الإسعافات الأولية.
-                </div>
+            <tr>
+              <td><a href="#" class="action-link">عرض</a></td>
+              <td><span class="status-tag">قيد التنفيذ</span></td>
+              <td>3/3/2026</td>
+              <td>أسبوعية</td>
+              <td>التأكد من مخارج الطوارئ</td>
+            </tr>
 
-                <div class="alert-item">
-                    <strong>ملاحظة:</strong> مهمة متابعة لوحات السلامة تبدأ خلال أسبوع.
-                </div>
-            </aside>
+            <tr>
+              <td><a href="#" class="action-link">عرض</a></td>
+              <td><span class="status-tag">لم يبدأ</span></td>
+              <td>4/3/2026</td>
+              <td>أسبوعية</td>
+              <td>مراجعة صناديق الإسعافات الأولية</td>
+            </tr>
 
-        </section>
-    </main>
+            <tr>
+              <td><a href="#" class="action-link">عرض</a></td>
+              <td><span class="status-tag">قيد التنفيذ</span></td>
+              <td>10/3/2026</td>
+              <td>شهرية</td>
+              <td>متابعة لوحات السلامة</td>
+            </tr>
+
+            <tr>
+              <td><a href="#" class="action-link">عرض</a></td>
+              <td><span class="status-tag">لم يبدأ</span></td>
+              <td>15/3/2026</td>
+              <td>شهرية</td>
+              <td>فحص تمديدات الكهرباء الظاهرة</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+    </div>
+
+  </main>
 </div>
 
-<!-- PDF Libraries -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
-
-<!-- Dynamic Profile + PDF Export -->
-<script>
-
-// تحميل بيانات المستخدم من LocalStorage
-document.addEventListener("DOMContentLoaded", () => {
-    document.querySelector(".user-name").textContent =
-        localStorage.getItem("username") || "مستخدم";
-
-    document.querySelector(".user-role").textContent =
-        localStorage.getItem("role") || "دور المستخدم";
-
-    document.querySelector(".avatar").textContent =
-        (localStorage.getItem("username") || "س")[0];
-});
-
-// تصدير PDF
-document.querySelector(".btn-pdf").addEventListener("click", function () {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF({
-        orientation: "portrait",
-        unit: "pt",
-        format: "a4"
-    });
-
-    doc.setFontSize(16);
-    doc.text("تقرير مهام السلامة", 300, 40, { align: "center" });
-
-    doc.autoTable({
-        html: "#tasksTable",
-        startY: 60,
-        styles: { fontSize: 10, halign: "right" },
-        headStyles: { fillColor: [37, 99, 235], halign: "right" },
-        margin: { left: 40, right: 40 }
-    });
-
-    doc.save("مهام-السلامة.pdf");
-});
-</script>
+<footer class="main-footer">
+  <div class="footer-content">
+    <p>&copy; 2026 حقوق محفوظة | محطة الدعم</p>
+  </div>
+</footer>
 
 </body>
 </html>
