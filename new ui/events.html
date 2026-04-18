@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>الفعاليات - محطة الدعم</title>
+  <link rel="stylesheet" href="analytics.css" />
+  <link rel="stylesheet" href="events.css" />
+</head>
+
+<body>
+
+<header class="admin-header">
+  <div class="admin-left">
+    <img src="img/logo.png" class="admin-logo" alt="Logo">
+    <div class="admin-title">
+      <h1>الفعاليات</h1>
+      <span>إدارة وعرض الفعاليات </span>
+    </div>
+  </div>
+
+  <a href="index.html" class="logout">تسجيل الخروج</a>
+</header>
+
+<div class="dashboard-layout">
+
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <h2>محطة الدعم</h2>
+    </div>
+
+    <ul class="sidebar-menu">
+      <li><a href="admin.html">الصفحة الرئيسية</a></li>
+      <li><a href="reports.html">البلاغات</a></li>
+      <li><a href="tasks.html">مهام السلامة</a></li>
+      <li><a href="analytics.html">التقارير</a></li>
+      <li class="active"><a href="events.html">الفعاليات</a></li>
+    </ul>
+  </aside>
+
+  <main class="admin-main">
+
+    <section class="events-section-box">
+      <div class="top-actions">
+        <div>
+          <h2 class="panel-title no-margin">قائمة الفعاليات</h2>
+         
+        </div>
+
+        <a href="add_event.html" class="add-event-btn">إضافة فعالية</a>
+      </div>
+
+      <div id="currentEventsContainer" class="events-grid"></div>
+    </section>
+
+    <section class="events-section-box">
+      <h2 class="panel-title no-margin">فعاليات سابقة</h2>
+      <div class="section-subtitle">الفعاليات التي انتهت مدتها</div>
+
+      <div id="pastEventsContainer" class="events-grid"></div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+function formatArabicDate(dateString) {
+  const date = new Date(dateString);
+  if (isNaN(date)) return dateString;
+
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const year = date.getFullYear();
+
+  return `${day} / ${month} / ${year}`;
+}
+
+function loadEvents() {
+  const currentContainer = document.getElementById("currentEventsContainer");
+  const pastContainer = document.getElementById("pastEventsContainer");
+  let events = JSON.parse(localStorage.getItem("events")) || [];
+
+  currentContainer.innerHTML = "";
+  pastContainer.innerHTML = "";
+
+  if (events.length === 0) {
+    currentContainer.innerHTML = `<div class="empty-box">لا توجد فعاليات مضافة حتى الآن</div>`;
+    pastContainer.innerHTML = `<div class="empty-box">لا توجد فعاليات سابقة</div>`;
+    return;
+  }
+
+  const now = new Date();
+  const currentEvents = [];
+  const pastEvents = [];
+
+  events.forEach(event => {
+    if (event.expiresAt) {
+      const expiryDate = new Date(event.expiresAt);
+      if (now <= expiryDate) {
+        currentEvents.push(event);
+      } else {
+        pastEvents.push(event);
+      }
+    } else {
+      const createdAt = event.createdAt ? new Date(event.createdAt) : new Date();
+      const expiryDate = new Date(createdAt);
+      expiryDate.setDate(expiryDate.getDate() + 7);
+      event.expiresAt = expiryDate.toISOString();
+
+      if (now <= expiryDate) {
+        currentEvents.push(event);
+      } else {
+        pastEvents.push(event);
+      }
+    }
+  });
+
+  localStorage.setItem("events", JSON.stringify(events));
+
+  if (currentEvents.length === 0) {
+    currentContainer.innerHTML = `<div class="empty-box">لا توجد فعاليات حالية</div>`;
+  } else {
+    currentEvents.sort((a, b) => new Date(b.createdAt || b.date) - new Date(a.createdAt || a.date));
+    currentEvents.forEach(event => {
+      currentContainer.innerHTML += createEventCard(event);
+    });
+  }
+
+  if (pastEvents.length === 0) {
+    pastContainer.innerHTML = `<div class="empty-box">لا توجد فعاليات سابقة</div>`;
+  } else {
+    pastEvents.sort((a, b) => new Date(b.createdAt || b.date) - new Date(a.createdAt || a.date));
+    pastEvents.forEach(event => {
+      pastContainer.innerHTML += createEventCard(event);
+    });
+  }
+}
+
+function createEventCard(event) {
+  return `
+    <div class="event-card">
+      <h3>${event.title}</h3>
+      <p>${event.desc}</p>
+      <div class="event-date"><strong>التاريخ:</strong> ${formatArabicDate(event.date)}</div>
+      ${event.image ? `<img src="${event.image}" alt="صورة الفعالية">` : ""}
+      <div class="event-actions">
+        <button class="delete-btn" onclick="deleteEvent(${event.id})">حذف الفعالية</button>
+      </div>
+    </div>
+  `;
+}
+
+function deleteEvent(id) {
+  if (!confirm("هل أنت متأكد من حذف الفعالية؟")) return;
+
+  let events = JSON.parse(localStorage.getItem("events")) || [];
+  events = events.filter(event => event.id !== id);
+  localStorage.setItem("events", JSON.stringify(events));
+  loadEvents();
+}
+
+loadEvents();
+</script>
+
+</body>
+</html>
