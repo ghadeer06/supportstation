@@ -21,7 +21,7 @@ body {
     display: block;      /* يخلي العنصر قابل للضغط على كامل المساحة */
 }
 
-/* Sidebar */
+/* ===== Sidebar ===== */
 .sidebar {
     width: 230px;
     background: #1E3A8A;
@@ -70,7 +70,11 @@ body {
     font-size: 14px;
 }
 
-/* Main */
+.logout:hover {
+    background: #B91C1C;
+}
+
+/* ===== Main ===== */
 .main {
     flex: 1;
     padding: 20px 25px;
@@ -208,6 +212,10 @@ body {
     cursor: pointer;
 }
 
+.btn-pdf:hover {
+    background: #1D4ED8;
+}
+
 table {
     width: 100%;
     border-collapse: collapse;
@@ -238,14 +246,22 @@ tr:nth-child(even) {
     color: #92400E;
 }
 
-.new {
+.not-started {
+    background: #E5E7EB;
+    color: #374151;
+}
+
+.type-badge {
+    padding: 3px 8px;
+    border-radius: 999px;
+    font-size: 11px;
     background: #DBEAFE;
     color: #1E3A8A;
 }
 
-.done {
-    background: #D1FAE5;
-    color: #065F46;
+.type-monthly {
+    background: #FCE7F3;
+    color: #9D174D;
 }
 
 .btn-link {
@@ -282,4 +298,25 @@ tr:nth-child(even) {
 
 .alert-item strong {
     color: #B45309;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    .layout {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        flex-direction: row;
+        overflow-x: auto;
+    }
+
+    .content-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .stats {
+        grid-template-columns: 1fr;
+    }
 }
