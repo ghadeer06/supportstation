@@ -34,6 +34,12 @@
   padding:16px;
   border-right:5px solid #5E7B93;
   border:1px solid #e7eef7;
+  transition:0.3s;
+}
+
+.event-card:hover{
+  transform:translateY(-6px);
+  box-shadow:0 10px 20px rgba(0,0,0,0.1);
 }
 
 .event-card h3{
@@ -84,6 +90,12 @@
   cursor:pointer;
   font-weight:700;
   font-size:13px;
+  transition:0.3s;
+}
+
+.delete-btn:hover{
+  background:#c9302c;
+  transform:translateY(-2px);
 }
 
 .empty-box{
@@ -117,6 +129,11 @@
   font-size:14px;
   text-decoration:none;
   display:inline-block;
+  transition:0.3s;
+}
+
+.add-event-btn:hover{
+  transform:translateY(-2px);
 }
 
 .section-subtitle{
@@ -127,6 +144,14 @@
 
 .no-margin{
   margin-bottom:0;
+}
+
+.sidebar-menu li a{
+  transition:0.3s;
+}
+
+.sidebar-menu li a:hover{
+  transform:translateX(-6px);
 }
 
 @media (max-width:768px){
