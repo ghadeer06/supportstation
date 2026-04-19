@@ -20,7 +20,7 @@
 
   <a href="index.html" class="logout">تسجيل الخروج</a>
 </header>
-
+ 
 <div class="dashboard-layout">
 
   <aside class="sidebar">
@@ -29,7 +29,7 @@
     </div>
 
     <ul class="sidebar-menu">
-      <li><a href="admin.html">الصفحة الرئيسية</a></li>
+      <li><a href="home.html">الصفحة الرئيسية</a></li>
       <li><a href="reports.html">البلاغات</a></li>
       <li><a href="tasks.html">مهام السلامة</a></li>
       <li class="active"><a href="analytics.html">التقارير</a></li>
@@ -46,10 +46,6 @@
         <div class="user-info">
           <div class="user-name">أ. سارة أحمد</div>
           <div class="user-role">مسؤولة النظام</div>
-        </div>
-        <div class="notifications">
-          <span class="noti-count">3</span>
-          🔔
         </div>
       </div>
     </div>
@@ -95,10 +91,10 @@
       <section class="table-panel">
         <div class="table-header">
           <h2 class="panel-title">قائمة التقارير</h2>
-          <button class="btn-pdf">تصدير PDF</button>
+          <button class="btn-pdf" id="exportExcel">تصدير Excel</button>
         </div>
 
-        <table>
+        <table id="reportsTable">
           <thead>
             <tr>
               <th>الإجراء</th>
@@ -150,10 +146,30 @@
 </div>
 
 <footer class="main-footer">
-  <div class="footer-content">
-    <p>&copy; 2026 حقوق محفوظة | محطة الدعم</p>
-  </div>
+    <div class="footer-content">
+        <p>&copy; 2026 حقوق محفوظة | محطة الدعم </p>
+
+        <ul class="footer-links">
+            <li><a href="index.html">الرئيسية</a></li>
+            <li><a href="about.html">عن الموقع</a></li>
+        </ul>
+    </div>
 </footer>
+
+<!-- مكتبة Excel -->
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+
+<!-- كود التصدير -->
+<script>
+document.getElementById("exportExcel").addEventListener("click", function () {
+
+    const table = document.getElementById("reportsTable");
+
+    const workbook = XLSX.utils.table_to_book(table, { sheet: "التقارير" });
+
+    XLSX.writeFile(workbook, "تقارير-محطة-الدعم.xlsx");
+});
+</script>
 
 </body>
 </html>
