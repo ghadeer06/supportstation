@@ -14,7 +14,7 @@
     <div class="admin-left">
       <img src="img/logo.png" class="admin-logo" alt="Logo">
       <div class="admin-title">
-        <h1>بوابة الفعاليات</h1>
+        <h1>الفعاليات</h1>
         <span>محطة الدعم - السلامة والصحة المهنية</span>
       </div>
     </div>
@@ -44,54 +44,6 @@
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td><span class="status-text status-done">تم</span></td>
-              <td>4/2/2026</td>
-              <td><span class="type-tag type-week">الأسبوع الثالث</span></td>
-              <td><div class="task-info"><span>اليوم العالمي لمرض السرطان</span><span style="font-size: 20px;">🎗️</span></div></td>
-            </tr>
-            <tr>
-              <td><span class="status-text status-done">تم</span></td>
-              <td>9/2/2026</td>
-              <td><span class="type-tag type-week">الأسبوع الرابع</span></td>
-              <td><div class="task-info"><span>اليوم العالمي لمكافحة الصرع</span><span style="font-size: 20px;">🧠</span></div></td>
-            </tr>
-            <tr>
-              <td><span class="status-text status-done">تم</span></td>
-              <td>2/3/2026</td>
-              <td><span class="type-tag type-week">الأسبوع السابع</span></td>
-              <td><div class="task-info"><span>اليوم العالمي للدفاع المدني</span><span style="font-size: 20px;">👨‍🚒</span></div></td>
-            </tr>
-            <tr>
-              <td><span class="status-text status-done">تم</span></td>
-              <td>4/3/2026</td>
-              <td><span class="type-tag type-week">الأسبوع السابع</span></td>
-              <td><div class="task-info"><span>اليوم العالمي لمكافحة السمنة</span><span style="font-size: 20px;">⚖️</span></div></td>
-            </tr>
-            <tr>
-              <td><span class="status-text status-done">تم</span></td>
-              <td>7/4/2026</td>
-              <td><span class="type-tag type-week">الأسبوع العاشر</span></td>
-              <td><div class="task-info"><span>يوم الصحة العالمي</span><span style="font-size: 20px;">🍎</span></div></td>
-            </tr>
-            <tr>
-              <td><span class="status-text status-upcoming">قادم</span></td>
-              <td>28/4/2026</td>
-              <td><span class="type-tag type-week">الأسبوع الثالث عشر</span></td>
-              <td><div class="task-info"><span>اليوم العالمي للصحة والسلامة المهنية</span><span style="font-size: 20px;">👷</span></div></td>
-            </tr>
-            <tr>
-              <td><span class="status-text status-upcoming">قادم</span></td>
-              <td>5/5/2026</td>
-              <td><span class="type-tag type-week">الأسبوع الرابع عشر</span></td>
-              <td><div class="task-info"><span>اليوم العالمي للمرور</span><span style="font-size: 20px;">🚦</span></div></td>
-            </tr>
-            <tr>
-              <td><span class="status-text status-upcoming">قادم</span></td>
-              <td>18/5/2026</td>
-              <td><span class="type-tag type-week">الأسبوع السادس عشر</span></td>
-              <td><div class="task-info"><span>اليوم العالمي لمكافحة ضغط الدم</span><span style="font-size: 20px;">🩸</span></div></td>
-            </tr>
           </tbody>
         </table>
       </div>
@@ -129,6 +81,68 @@
       </ul>
     </div>
   </footer>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+<script>
+document.addEventListener("DOMContentLoaded", async function () {
+
+  const supabase = window.supabase.createClient(
+    "https://mcxdjisoyqdnyieboqpy.supabase.co",
+    "sb_publishable_CoPFxO5-flUjMYi-jOdikw_kwAaUoZr"
+  );
+
+  async function loadEvents() {
+    const { data, error } = await supabase
+      .from("events")
+      .select("*")
+     .order("due_date", { ascending: true });
+
+    if (error) {
+      console.log(error);
+      return;
+    }
+
+    const table = document.querySelector(".tasks-table tbody");
+    table.innerHTML = "";
+
+    data.forEach(event => {
+
+      const statusClass =
+        event.status === "current" ? "status-upcoming" : "status-done";
+
+      const statusText =
+        event.status === "current" ? "قادم" : "تم";
+
+      const row = `
+        <tr>
+          <td>
+            <span class="status-text ${statusClass}">
+              ${statusText}
+            </span>
+          </td>
+
+          <td>${event.due_date || "-"}</td>
+
+          <td>
+            <span class="type-tag type-week">
+              ${event.type || "فعالية"}
+            </span>
+          </td>
+
+          <td>
+            <div class="task-info">
+              <span>${event.title || ""}</span>
+            </div>
+          </td>
+        </tr>
+      `;
+
+      table.innerHTML += row;
+    });
+  }
+
+  loadEvents();
+});
+</script>
 </body>
 </html>
