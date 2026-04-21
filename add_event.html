@@ -4,21 +4,21 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>إضافة فعالية</title>
-  <link rel="stylesheet" href="analytics.css" />
-  <link rel="stylesheet" href="add_event.css" />
+  <link rel="stylesheet" href="./admin.css" />
+  <link rel="stylesheet" href="./add_event.css" />
 </head>
 
 <body>
 
 <header class="admin-header">
   <div class="admin-left">
-    <img src="img/logo.png" class="admin-logo" alt="Logo">
+    <img src="./img/logo.png" class="admin-logo" alt="Logo">
     <div class="admin-title">
       <h1>إضافة فعالية</h1>
     </div>
   </div>
 
-  <a href="index.html" class="logout">تسجيل الخروج</a>
+  <a href="./index.html" class="logout">تسجيل الخروج</a>
 </header>
 
 <div class="dashboard-layout">
@@ -29,11 +29,11 @@
     </div>
 
     <ul class="sidebar-menu">
-      <li><a href="admin.html">الصفحة الرئيسية</a></li>
-      <li><a href="reports.html">البلاغات</a></li>
-      <li><a href="tasks.html">مهام السلامة</a></li>
-      <li><a href="analytics.html">التقارير</a></li>
-      <li><a href="events.html">الفعاليات</a></li>
+      <li><a href="./admin.html">الصفحة الرئيسية</a></li>
+      <li><a href="./reports.html">البلاغات</a></li>
+      <li><a href="./tasks.html">مهام السلامة</a></li>
+      <li><a href="./analytics.html">التقارير</a></li>
+      <li class="active"><a href="./events.html">الفعاليات</a></li>
     </ul>
   </aside>
 
@@ -68,7 +68,7 @@
 
       <div class="event-actions">
         <button type="button" class="event-save-btn" id="saveBtn">حفظ الفعالية</button>
-        <a href="events.html" class="event-cancel-btn">رجوع للفعاليات</a>
+        <a href="./events.html" class="event-cancel-btn">رجوع للفعاليات</a>
       </div>
     </section>
   </main>
@@ -77,6 +77,11 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 document.addEventListener("DOMContentLoaded", function () {
+  if (!window.supabase) {
+    alert("تعذر تحميل المكتبة");
+    return;
+  }
+
   const supabase = window.supabase.createClient(
     "https://mcxdjisoyqdnyieboqpy.supabase.co",
     "sb_publishable_CoPFxO5-flUjMYi-jOdikw_kwAaUoZr"
@@ -169,7 +174,7 @@ document.addEventListener("DOMContentLoaded", function () {
       }
 
       alert("تم حفظ الفعالية بنجاح");
-      window.location.href = "events.html";
+      window.location.href = "./events.html";
     } catch (err) {
       console.log(err);
       alert("صار خطأ غير متوقع");
