@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>الفعاليات - محطة الدعم</title>
+  <link rel="stylesheet" href="analytics.css" />
+  <link rel="stylesheet" href="events.css" />
+</head>
+
+<body>
+
+<header class="admin-header">
+  <div class="admin-left">
+    <img src="img/logo.png" class="admin-logo" alt="Logo">
+    <div class="admin-title">
+      <h1>الفعاليات</h1>
+      <span>إدارة وعرض الفعاليات</span>
+    </div>
+  </div>
+
+  <a href="index.html" class="logout">تسجيل الخروج</a>
+</header>
+
+<div class="dashboard-layout">
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <h2>محطة الدعم</h2>
+    </div>
+
+    <ul class="sidebar-menu">
+      <li><a href="admin.html">الصفحة الرئيسية</a></li>
+      <li><a href="reports.html">البلاغات</a></li>
+      <li><a href="tasks.html">مهام السلامة</a></li>
+      <li><a href="analytics.html">التقارير</a></li>
+      <li class="active"><a href="events.html">الفعاليات والايام العالمية</a></li>
+    </ul>
+  </aside>
+
+  <main class="admin-main">
+
+    <section class="events-section-box">
+      <div class="top-actions">
+        <div>
+          <h2 class="panel-title no-margin">قائمة الفعاليات</h2>
+        </div>
+        <a href="add_event.html" class="add-event-btn">إضافة فعالية</a>
+      </div>
+
+      <div id="currentEventsContainer" class="events-grid">
+        <div class="empty-box">جارِ تحميل الفعاليات...</div>
+      </div>
+    </section>
+
+    <section class="events-section-box">
+      <h2 class="panel-title no-margin">فعاليات سابقة</h2>
+      <div class="section-subtitle">الفعاليات التي مرّ عليها أكثر من أسبوع</div>
+      <div id="pastEventsContainer" class="events-grid">
+        <div class="empty-box">جارِ تحميل الفعاليات...</div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+document.addEventListener("DOMContentLoaded", async function () {
+  const supabase = window.supabase.createClient(
+    "https://mcxdjisoyqdnyieboqpy.supabase.co",
+    "sb_publishable_CoPFxO5-flUjMYi-jOdikw_kwAaUoZr"
+  );
+
+  const currentContainer = document.getElementById("currentEventsContainer");
+  const pastContainer = document.getElementById("pastEventsContainer");
+
+  function formatArabicDate(dateString) {
+    const date = new Date(dateString);
+    if (isNaN(date)) return dateString;
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const year = date.getFullYear();
+    return `${day} / ${month} / ${year}`;
+  }
+
+  function createEventCard(event) {
+    return `
+      <div class="event-card">
+        <h3>${event.title || ""}</h3>
+        <p>${event.description || ""}</p>
+        <div class="event-date"><strong>التاريخ:</strong> ${formatArabicDate(event.due_date)}</div>
+        ${event.image_url ? `<img src="${event.image_url}" alt="صورة الفعالية">` : ""}
+        <div class="event-actions">
+          <button class="delete-btn" onclick="deleteEvent(${event.id})">حذف الفعالية</button>
+        </div>
+      </div>
+    `;
+  }
+
+  window.deleteEvent = async function (id) {
+    if (!confirm("هل أنت متأكد من حذف الفعالية؟")) return;
+
+    const { error } = await supabase.from("events").delete().eq("id", id);
+
+    if (error) {
+      alert("فشل حذف الفعالية");
+      console.log(error);
+      return;
+    }
+
+    location.reload();
+  };
+
+  try {
+    const { data, error } = await supabase
+      .from("events")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    console.log("EVENTS DATA:", data);
+    console.log("EVENTS ERROR:", error);
+
+    if (error) {
+      currentContainer.innerHTML = `<div class="empty-box">خطأ في تحميل الفعاليات</div>`;
+      pastContainer.innerHTML = `<div class="empty-box">خطأ في تحميل الفعاليات</div>`;
+      return;
+    }
+
+    currentContainer.innerHTML = "";
+    pastContainer.innerHTML = "";
+
+    if (!data || data.length === 0) {
+      currentContainer.innerHTML = `<div class="empty-box">لا توجد فعاليات جديدة</div>`;
+      pastContainer.innerHTML = `<div class="empty-box">لا توجد فعاليات سابقة</div>`;
+      return;
+    }
+
+    const now = new Date();
+
+    data.forEach(event => {
+      const created = new Date(event.created_at);
+      const diffDays = (now - created) / (1000 * 60 * 60 * 24);
+      const card = createEventCard(event);
+
+      if (diffDays <= 7) {
+        currentContainer.innerHTML += card;
+      } else {
+        pastContainer.innerHTML += card;
+      }
+    });
+
+    if (currentContainer.innerHTML.trim() === "") {
+      currentContainer.innerHTML = `<div class="empty-box">لا توجد فعاليات جديدة</div>`;
+    }
+
+    if (pastContainer.innerHTML.trim() === "") {
+      pastContainer.innerHTML = `<div class="empty-box">لا توجد فعاليات سابقة</div>`;
+    }
+
+  } catch (err) {
+    console.log("CATCH ERROR:", err);
+    currentContainer.innerHTML = `<div class="empty-box">صار خطأ غير متوقع</div>`;
+    pastContainer.innerHTML = `<div class="empty-box">صار خطأ غير متوقع</div>`;
+  }
+});
+</script>
+
+</body>
+</html>
