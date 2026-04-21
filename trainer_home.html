@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>الصفحة الرئيسية - المدرب</title>
+
+  <!-- ربط التنسيق -->
+  <link rel="stylesheet" href="studentHome.css">
+</head>
+
+<body>
+
+<script>
+const email = localStorage.getItem("user_email");
+
+// استثناء مؤقت لإيميلك
+if (email === "445153760@tvtc.edu.sa") {
+    localStorage.setItem("user_role", "trainer");
+}
+</script>
+
+
+  <!-- الهيدر -->
+  <header class="admin-header">
+    <div class="admin-left">
+      <img src="img/logo.png" class="admin-logo" alt="Logo">
+      <div class="admin-title">
+        <h1>الصفحة الرئيسية</h1>
+        <span>محطة الدعم - المدرب</span>
+      </div>
+    </div>
+    <a href="index.html" class="logout">تسجيل الخروج</a>
+  </header>
+
+  <!-- القائمة الجانبية -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <h2>محطة الدعم</h2>
+    </div>
+
+    <ul class="sidebar-menu">
+      <li class="active"><a href="trainer_home.html">الصفحة الرئيسية</a></li>
+      <li><a href="trainer_reports.html">بلاغاتي</a></li>
+      <li><a href="trainer_events.html">الفعاليات</a></li>
+    </ul>
+  </aside>
+
+  <!-- المحتوى الرئيسي -->
+  <main class="admin-main">
+
+    <div class="events-container">
+
+      <!-- مربع الفعاليات -->
+      <div class="tasks-card">
+        <div class="tasks-header">
+          <h2>أحدث الفعاليات</h2>
+        </div>
+
+        <div id="latestEvents" class="home-box">
+          <p>جاري تحميل الفعاليات...</p>
+        </div>
+      </div>
+
+      <!-- مربع البلاغات -->
+      <div class="tasks-card">
+        <div class="tasks-header">
+          <h2>أحدث البلاغات</h2>
+        </div>
+
+        <div id="latestReports" class="home-box">
+          <p>جاري تحميل البلاغات...</p>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+
+document.addEventListener("DOMContentLoaded", async function () {
+
+  const supabase = window.supabase.createClient(
+    "https://mcxdjisoyqdnyieboqpy.supabase.co",
+    "sb_publishable_CoPFxO5-flUjMYi-jOdikw_kwAaUoZr"
+  );
+
+  /* ================================
+        تحميل آخر الفعاليات
+  ================================= */
+  async function loadLatestEvents() {
+    const { data, error } = await supabase
+      .from("events")
+      .select("*")
+      .order("created_at", { ascending: false })
+      .limit(3);
+
+    const box = document.getElementById("latestEvents");
+    box.innerHTML = "";
+
+    if (!data || data.length === 0) {
+      box.innerHTML = "<p>لا توجد فعاليات حالياً</p>";
+      return;
+    }
+
+    data.forEach(event => {
+      box.innerHTML += `
+        <div class="home-item" 
+             style="display:flex; gap:15px; padding:15px; border-radius:12px; background:#fff; margin-bottom:12px; box-shadow:0 2px 6px rgba(0,0,0,0.1);">
+
+          <img src="${event.image_url || 'img/default.png'}"
+               style="width:80px; height:80px; border-radius:10px; object-fit:cover;">
+
+          <div style="flex:1;">
+            <h3 style="margin:0; font-size:18px;">${event.title}</h3>
+            <p style="margin:5px 0; color:#555;">${event.description || "لا يوجد وصف"}</p>
+            <span style="font-size:14px; color:#888;">📅 ${event.due_date || "بدون تاريخ"}</span>
+          </div>
+
+        </div>
+      `;
+    });
+  }
+
+
+
+  /* ================================
+        تحميل آخر بلاغات المتدربين
+  ================================= */
+  async function loadLatestReports() {
+
+    const { data, error } = await supabase
+      .from("reports")
+      .select("*")
+      .order("created_at", { ascending: false })
+      .limit(3);
+
+    const box = document.getElementById("latestReports");
+    box.innerHTML = "";
+
+    if (error) {
+      box.innerHTML = "<p>خطأ في تحميل البلاغات</p>";
+      return;
+    }
+
+    if (!data || data.length === 0) {
+      box.innerHTML = "<p>لا توجد بلاغات حالياً</p>";
+      return;
+    }
+
+    data.forEach(report => {
+      box.innerHTML += `
+        <div class="home-item"
+             style="padding:15px; border-radius:12px; background:#fff; margin-bottom:12px; box-shadow:0 2px 6px rgba(0,0,0,0.1);">
+
+          <h3 style="margin:0; font-size:18px;">${report.type}</h3>
+
+          <p style="margin:5px 0; color:#555;">
+            ${report.description || "لا يوجد وصف"}
+          </p>
+
+          <p style="margin:0; font-size:14px; color:#888;">
+            📅 ${report.created_at.split("T")[0]}
+          </p>
+
+          <p style="margin:0; font-size:14px; color:#888;">
+            🟢 الحالة: <strong>${report.status || "غير محدد"}</strong>
+          </p>
+
+        </div>
+      `;
+    });
+  }
+
+
+
+  /* ================================
+        تشغيل الدوال
+  ================================= */
+  loadLatestEvents();
+  loadLatestReports();
+
+});
+</script>
+
+<footer class="main-footer">
+  <div class="footer-content">
+    <p>&copy; 2026 حقوق محفوظة | محطة الدعم</p>
+    <ul class="footer-links">
+      <li><a href="index.html">الرئيسية</a></li>
+      <li><a href="about.html">عن الموقع</a></li>
+    </ul>
+  </div>
+</footer>
+
+</body>
+</html>

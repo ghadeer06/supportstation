@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بلاغاتي</title>
+    <link rel="stylesheet" href="reports.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+
+<body>
+
+<!-- الهيدر -->
+<header class="admin-header">
+  <div class="admin-left">
+    <img src="img/logo.png" class="admin-logo" alt="Logo">
+    <div class="admin-title">
+      <h1>بلاغاتي</h1>
+      <span>محطة الدعم - المدرب</span>
+    </div>
+  </div>
+
+  <a href="index.html" class="logout">تسجيل الخروج</a>
+</header>
+
+<!-- القائمة الجانبية -->
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <h2>محطة الدعم</h2>
+  </div>
+
+  <ul class="sidebar-menu">
+    <li><a href="trainer_home.html">الصفحة الرئيسية</a></li>
+    <li class="active"><a href="trainer_reports.html">بلاغاتي</a></li>
+    <li><a href="trainer_events.html">الفعاليات</a></li>
+  </ul>
+</aside>
+
+<!-- المحتوى -->
+<main class="admin-main" style="flex:1; padding-top:50px;">
+
+<!-- زر إضافة بلاغ -->
+<div class="add-report-box" style="max-width:900px; margin:auto; margin-bottom:25px; text-align:center;">
+  <button class="stat-card" onclick="window.location.href='add_report_trainer.html'" 
+    style="width:100%; padding:18px; border-radius:14px; cursor:pointer;">
+      <h2 style="margin:0; font-size:20px; font-weight:900;">➕ إضافة بلاغ جديد</h2>
+  </button>
+</div>
+
+<section class="reports-section" style="max-width:900px; margin:auto; margin-top:40px;">
+  <h2 class="section-title" style="text-align:center;">بلاغاتك السابقة</h2>
+
+  <div class="reports-box">
+    <div class="reports-scroll" id="reportCards"></div>
+  </div>
+</section>
+
+</main>
+
+<script>
+function getClient() {
+  return window.supabase.createClient(
+    'https://mcxdjisoyqdnyieboqpy.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1jeGRqaXNveXFkbnlpZWJvcXB5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0MDI3NDAsImV4cCI6MjA5MDk3ODc0MH0.kIwJ1pc-GLX1lTvstLSDZ5Li1rd9vwutI4-Wz_HR6nE'
+  );
+}
+
+const container = document.getElementById("reportCards");
+
+function getStatusText(status) {
+  if (status === "processing" || status === "قيد المراجعة") return "قيد المراجعة";
+  if (status === "running" || status === "تحت التنفيذ") return "تحت التنفيذ";
+  if (status === "done" || status === "تم التنفيذ" || status === "تم الحل") return "تم التنفيذ";
+  return status || "غير محدد";
+}
+
+async function loadReports() {
+    const email = localStorage.getItem("user_email");
+    const supabase = getClient();
+
+    let query = supabase.from("reports").select("*").order("id", { ascending: false });
+
+    // نفس المتدرب: يعرض بلاغاته فقط
+    if (email) {
+        query = query.eq("sender_email", email);
+    }
+
+    const { data, error } = await query;
+
+    if (error) {
+        container.innerHTML = `<p>خطأ في تحميل البلاغات</p>`;
+        return;
+    }
+
+    if (!data || data.length === 0) {
+        container.innerHTML = `
+            <div class="report-card" style="text-align:center;">
+                لا توجد بلاغات حتى الآن
+            </div>`;
+        return;
+    }
+
+    container.innerHTML = "";
+
+    data.forEach(r => {
+        const statusText = getStatusText(r.status);
+
+        container.innerHTML += `
+            <div class="report-card">
+                <h3>#${r.id} - ${r.type || "-"}</h3>
+                <p><b>الوصف:</b> ${r.description || "-"}</p>
+                <p><b>الموقع:</b> ${r.location || "-"}</p>
+                <p><b>الحالة:</b> ${statusText}</p>
+                <button class="btn-process" onclick="openReport(${r.id})">عرض البلاغ</button>
+            </div>
+        `;
+    });
+}
+
+function openReport(id) {
+    localStorage.setItem("selectedReportId", id);
+    window.location.href = "trainer_report.html";
+}
+
+loadReports();
+</script>
+
+<footer class="main-footer">
+  <div class="footer-content">
+    <p>&copy; 2026 حقوق محفوظة | محطة الدعم</p>
+    <ul class="footer-links">
+      <li><a href="index.html">الرئيسية</a></li>
+      <li><a href="about.html">عن الموقع</a></li>
+    </ul>
+  </div>
+</footer>
+
+</body>
+</html>

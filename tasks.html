@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>مهام السلامة - محطة الدعم</title>
+  <link rel="stylesheet" href="analytics.css" />
+</head>
+
+<body>
+
+<header class="admin-header">
+  <div class="admin-left">
+    <img src="img/logo.png" class="admin-logo" alt="Logo">
+    <div class="admin-title">
+      <h1>مهام السلامة</h1>
+      <span>متابعة المهام الأسبوعية والشهرية الخاصة بالسلامة المهنية</span>
+    </div>
+  </div>
+
+  <a href="index.html" class="logout">تسجيل الخروج</a>
+</header>
+
+<div class="dashboard-layout">
+
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <h2>محطة الدعم</h2>
+    </div>
+
+    <ul class="sidebar-menu">
+      <li><a href="home.html">الصفحة الرئيسية</a></li>
+      <li><a href="reports.html">البلاغات</a></li>
+      <li class="active"><a href="tasks.html">مهام السلامة</a></li>
+      <li><a href="analytics.html">التقارير</a></li>
+      <li><a href="notifications.html">الإشعارات</a></li>
+    </ul>
+  </aside>
+
+  <main class="admin-main">
+
+    <div class="top-user-bar">
+      <div class="user-box">
+        <div class="avatar">س</div>
+        <div class="user-info">
+          <div class="user-name">أ. سارة أحمد</div>
+          <div class="user-role">مسؤولة السلامة</div>
+        </div>
+        <div class="notifications">
+          <span class="noti-count">3</span>
+          🔔
+        </div>
+      </div>
+    </div>
+
+    <div class="admin-cards">
+      <div class="stat-card">
+        <h3>المهام المنفذة</h3>
+        <p>3</p>
+        <span>تم تنفيذها هذا الشهر</span>
+      </div>
+
+      <div class="stat-card">
+        <h3>المهام الأسبوعية</h3>
+        <p>5</p>
+        <span>المهام الحالية لهذا الأسبوع</span>
+      </div>
+
+      <div class="stat-card">
+        <h3>المهام المتبقية</h3>
+        <p>2</p>
+        <span>بانتظار التنفيذ</span>
+      </div>
+    </div>
+
+    <div class="reports-layout">
+
+      <section class="alerts-panel">
+        <h2 class="panel-title">تنبيهات المهام</h2>
+
+        <div class="alert-item">
+          <strong>تنبيه:</strong> تبقّى يوم واحد على مهمة تفقد طفايات الحريق.
+        </div>
+
+        <div class="alert-item">
+          <strong>ملاحظة:</strong> مراجعة صناديق الإسعافات الأولية لم تبدأ بعد.
+        </div>
+
+        <div class="alert-item">
+          <strong>تذكير:</strong> مهمة متابعة لوحات السلامة تحتاج متابعة هذا الأسبوع.
+        </div>
+      </section>
+
+      <section class="table-panel">
+        <div class="table-header">
+          <h2 class="panel-title">قائمة مهام السلامة</h2>
+          <button class="btn-pdf">تصدير PDF</button>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th>الإجراء</th>
+              <th>الحالة</th>
+              <th>التاريخ</th>
+              <th>النوع</th>
+              <th>المهمة</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><a href="#" class="action-link">عرض</a></td>
+              <td><span class="status-tag">تم التنفيذ</span></td>
+              <td>2/3/2026</td>
+              <td>أسبوعية</td>
+              <td>تفقد طفايات الحريق</td>
+            </tr>
+
+            <tr>
+              <td><a href="#" class="action-link">عرض</a></td>
+              <td><span class="status-tag">قيد التنفيذ</span></td>
+              <td>3/3/2026</td>
+              <td>أسبوعية</td>
+              <td>التأكد من مخارج الطوارئ</td>
+            </tr>
+
+            <tr>
+              <td><a href="#" class="action-link">عرض</a></td>
+              <td><span class="status-tag">لم يبدأ</span></td>
+              <td>4/3/2026</td>
+              <td>أسبوعية</td>
+              <td>مراجعة صناديق الإسعافات الأولية</td>
+            </tr>
+
+            <tr>
+              <td><a href="#" class="action-link">عرض</a></td>
+              <td><span class="status-tag">قيد التنفيذ</span></td>
+              <td>10/3/2026</td>
+              <td>شهرية</td>
+              <td>متابعة لوحات السلامة</td>
+            </tr>
+
+            <tr>
+              <td><a href="#" class="action-link">عرض</a></td>
+              <td><span class="status-tag">لم يبدأ</span></td>
+              <td>15/3/2026</td>
+              <td>شهرية</td>
+              <td>فحص تمديدات الكهرباء الظاهرة</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+    </div>
+
+  </main>
+</div>
+
+<footer class="main-footer">
+  <div class="footer-content">
+    <p>&copy; 2026 حقوق محفوظة | محطة الدعم</p>
+  </div>
+</footer>
+
+</body>
+</html>
