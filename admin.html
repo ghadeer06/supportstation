@@ -1,0 +1,164 @@
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>الصفحة الرئيسية - محطة الدعم</title>
+
+  <link rel="stylesheet" href="admin.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+
+<body class="admin-body">
+
+<header class="admin-header">
+  <div class="admin-left">
+    <img src="img/logo.png" class="admin-logo" alt="Logo">
+    <div class="admin-title">
+      <h1>الصفحة الرئيسية</h1>
+      <span>نظرة عامة على النظام</span>
+    </div>
+  </div>
+
+  <a href="index.html" class="logout">تسجيل الخروج</a>
+</header>
+
+<div class="dashboard-layout">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <h2>محطة الدعم</h2>
+    </div>
+
+    <ul class="sidebar-menu">
+      <li class="active"><a href="home.html">الصفحة الرئيسية</a></li>
+      <li><a href="reports.html">البلاغات</a></li>
+      <li><a href="tasks.html">مهام السلامة</a></li>
+      <li><a href="events.html">الفعاليات والايام العالمية</a></li>
+    </ul>
+  </aside>
+
+  <!-- Main -->
+  <main class="admin-main">
+
+    
+    <!-- Latest Reports -->
+   
+
+    <!-- Latest Notifications -->
+    <section class="reports-section">
+      <h2 class="section-title">أحدث الإشعارات</h2>
+      <div class="reports-box" id="latestNotifications"></div>
+    </section>
+
+    <!-- Latest Tasks -->
+    <section class="reports-section">
+      <h2 class="section-title">أحدث المهام</h2>
+      <div class="reports-box" id="latestTasks"></div>
+    </section>
+
+  </main>
+</div>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", async () => {
+
+  // نص تحميل داخل المربعات
+  document.getElementById("latestNotifications").innerHTML =
+    "<div class='loading-box'>جارٍ تحميل الفعاليات...</div>";
+
+  document.getElementById("latestTasks").innerHTML =
+    "<div class='loading-box'>جارٍ تحميل المهام...</div>";
+
+  // تهيئة Supabase
+  const supabaseClient = window.supabase.createClient(
+    "https://mcxdjisoyqdnyieboqpy.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1jeGRqaXNveXFkbnlpZWJvcXB5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0MDI3NDAsImV4cCI6MjA5MDk3ODc0MH0.kIwJ1pc-GLX1lTvstLSDZ5Li1rd9vwutI4-Wz_HR6nE"
+  );
+
+  // ===============================
+  // 1) جلب آخر 5 فعاليات (الإشعارات)
+  // ===============================
+  async function loadLatestEvents() {
+    const box = document.getElementById("latestNotifications");
+
+    const { data, error } = await supabaseClient
+      .from("events")
+      .select("*")
+      .order("created_at", { ascending: false })
+      .limit(5);
+
+    if (error) {
+      box.innerHTML = "<div class='empty-box'>خطأ في تحميل الفعاليات</div>";
+      return;
+    }
+
+    if (!data || data.length === 0) {
+      box.innerHTML = "<div class='empty-box'>لا توجد فعاليات</div>";
+      return;
+    }
+
+    box.innerHTML = "";
+    data.forEach(event => {
+      box.innerHTML += `
+        <div class="report-card">
+          <h3>${event.title || "بدون عنوان"}</h3>
+          <p>${event.description || ""}</p>
+          <span class="date">${event.date || ""}</span>
+        </div>
+      `;
+    });
+  }
+
+  // ===============================
+  // 2) جلب آخر 5 مهام (المهام)
+  // ===============================
+  async function loadLatestTasks() {
+    const box = document.getElementById("latestTasks");
+
+    const { data, error } = await supabaseClient
+      .from("tasks")
+      .select("*")
+      .order("created_at", { ascending: false })
+      .limit(5);
+
+    if (error) {
+      box.innerHTML = "<div class='empty-box'>خطأ في تحميل المهام</div>";
+      return;
+    }
+
+    if (!data || data.length === 0) {
+      box.innerHTML = "<div class='empty-box'>لا توجد مهام</div>";
+      return;
+    }
+
+    box.innerHTML = "";
+    data.forEach(task => {
+      box.innerHTML += `
+        <div class="report-card">
+          <h3>${task.title || "بدون عنوان"}</h3>
+          <p>النوع: ${task.type || "-"}</p>
+          <p>الحالة: ${task.status || "-"}</p>
+          <span class="date">${task.due_date || ""}</span>
+        </div>
+      `;
+    });
+  }
+
+  // تشغيل الدوال
+  loadLatestEvents();  // الإشعارات = الفعاليات
+  loadLatestTasks();   // المهام = المهام
+});
+</script>
+
+
+
+</body>
+
+<footer class="main-footer">
+  <div class="footer-content">
+    <p>&copy; 2026 حقوق محفوظة | محطة الدعم</p>
+  </div>
+</footer>
+</html>
