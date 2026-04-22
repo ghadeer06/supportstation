@@ -187,14 +187,14 @@ document.addEventListener("DOMContentLoaded", function () {
     return formatISO(d);
   }
 
-  function canComplete(task) {
+  function canActToday(task) {
     return daysBetween(task.due_date) <= 0;
   }
 
   function getDueLabel(task) {
-    const diff = daysBetween(task.due_date);
-
     if (task.status === "يتم المعالجة") return "يتم المعالجة";
+
+    const diff = daysBetween(task.due_date);
 
     if (diff === 0) return "اليوم";
     if (diff === 1) return "غدًا";
@@ -248,16 +248,6 @@ document.addEventListener("DOMContentLoaded", function () {
     return tasks.filter(task => daysBetween(task.due_date) <= 3);
   }
 
-  function getFilteredRows() {
-    if (currentFilter === "processing") {
-      return getProcessingTasks(currentTasks);
-    }
-    if (currentFilter === "done") {
-      return getDoneVisible(currentHistory);
-    }
-    return getActiveTasks(currentTasks);
-  }
-
   function renderStats() {
     document.getElementById("allCount").textContent = currentTasks.length;
     document.getElementById("processingCount").textContent = getProcessingTasks(currentTasks).length;
@@ -293,15 +283,10 @@ document.addEventListener("DOMContentLoaded", function () {
       const diff = daysBetween(task.due_date);
       let text = "";
 
-      if (diff < 0) {
-        text = `المهمة "${task.title}" ${getDueLabel(task)}.`;
-      } else if (diff === 0) {
-        text = `المهمة "${task.title}" موعدها اليوم.`;
-      } else if (diff === 1) {
-        text = `المهمة "${task.title}" موعدها غدًا.`;
-      } else {
-        text = `تبقى ${diff} أيام على المهمة "${task.title}".`;
-      }
+      if (diff < 0) text = `المهمة "${task.title}" ${getDueLabel(task)}.`;
+      else if (diff === 0) text = `المهمة "${task.title}" موعدها اليوم.`;
+      else if (diff === 1) text = `المهمة "${task.title}" موعدها غدًا.`;
+      else text = `تبقى ${diff} أيام على المهمة "${task.title}".`;
 
       alertsList.innerHTML += `
         <div class="alert-item">
@@ -326,18 +311,22 @@ document.addEventListener("DOMContentLoaded", function () {
     rows.forEach(task => {
       const status = getStatusInfo(task);
 
-      let actions = `
-        <div class="task-actions">
-          <button class="btn-small btn-process" data-action="processing" data-id="${task.id}">
-            يتم المعالجة
-          </button>
-          ${canComplete(task) ? `
+      let actions = "";
+
+      if (canActToday(task)) {
+        actions = `
+          <div class="task-actions">
+            <button class="btn-small btn-process" data-action="processing" data-id="${task.id}">
+              يتم المعالجة
+            </button>
             <button class="btn-done" data-action="done" data-id="${task.id}">
               تم التنفيذ
             </button>
-          ` : ""}
-        </div>
-      `;
+          </div>
+        `;
+      } else {
+        actions = `<span class="empty-text">—</span>`;
+      }
 
       tasksTableBody.innerHTML += `
         <tr>
@@ -503,7 +492,8 @@ document.addEventListener("DOMContentLoaded", function () {
         ]);
       });
     } else {
-      getFilteredRows().forEach(task => {
+      const sourceRows = currentFilter === "processing" ? getProcessingTasks(currentTasks) : currentTasks;
+      sourceRows.forEach(task => {
         const status = getStatusInfo(task);
         rows.push([
           task.title || "",
