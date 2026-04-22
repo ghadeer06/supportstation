@@ -1,151 +1,533 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<title>المهام</title>
-<link rel="stylesheet" href="tasks.css">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>مهام السلامة - محطة الدعم</title>
+  <link rel="stylesheet" href="tasks.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 </head>
-
-<body>
+<body> 
 
 <header class="admin-header">
   <div class="admin-left">
-    <img src="logo.png" class="admin-logo">
+    <img src="img/logo.png" class="admin-logo" alt="Logo">
     <div class="admin-title">
-      <h1>محطة الدعم</h1>
-      <span>إدارة المهام</span>
+      <h1>مهام السلامة</h1>
+      <span>متابعة المهام اليومية والأسبوعية والشهرية الخاصة بالصحة والسلامة المهنية</span>
     </div>
   </div>
+  <a href="index.html" class="logout">تسجيل الخروج</a>
 </header>
 
-<aside class="sidebar">
-  <div class="sidebar-brand">
-    <h2>لوحة التحكم</h2>
-  </div>
+<div class="dashboard-layout">
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <h2>محطة الدعم</h2>
+    </div>
 
-  <ul class="sidebar-menu">
-    <li><a href="#">الرئيسية</a></li>
-    <li class="active"><a href="#">المهام</a></li>
-  </ul>
-</aside>
+    <ul class="sidebar-menu">
+      <li><a href="admin.html">الصفحة الرئيسية</a></li>
+      <li><a href="reports.html">البلاغات</a></li>
+      <li class="active"><a href="tasks.html">مهام السلامة</a></li>
+      <li><a href="events.html">الفعاليات والأيام العالمية</a></li>
+    </ul>
+  </aside>
 
-<main class="admin-main">
+  <main class="admin-main">
+    <div id="globalReminder" class="reminder-box" style="display:none;"></div>
 
-<h2 class="section-title">قائمة المهام</h2>
+    <div class="admin-cards">
+      <div class="stat-card filter-card active-card" id="allCard" onclick="setFilter('all')">
+        <h3>المهام</h3>
+        <p id="allCount">0</p>
+        <span>كل المهام الحالية</span>
+      </div>
 
-<div class="reports-box">
-<table class="tasks-table">
-<thead>
-<tr>
-<th>المهمة</th>
-<th>النوع</th>
-<th>الموعد</th>
-<th>الحالة</th>
-<th>الإجراء</th>
-</tr>
-</thead>
+      <div class="stat-card filter-card" id="processingCard" onclick="setFilter('processing')">
+        <h3>يتم المعالجة</h3>
+        <p id="processingCount">0</p>
+        <span>قيد العمل الآن</span>
+      </div>
 
-<tbody id="tasksBody"></tbody>
+      <div class="stat-card filter-card" id="doneCard" onclick="setFilter('done')">
+        <h3>المنفذة</h3>
+        <p id="doneCount">0</p>
+        <span>آخر 7 أيام</span>
+      </div>
+    </div>
 
-</table>
+    <div class="reports-layout">
+      <section class="alerts-panel">
+        <h2 class="panel-title">تنبيهات المهام</h2>
+        <div id="alertsList">
+          <div class="alert-item"><strong>جاري التحميل...</strong></div>
+        </div>
+      </section>
+
+      <section class="table-panel">
+        <div class="table-header">
+          <h2 class="panel-title" id="tableTitle">قائمة المهام</h2>
+          <button class="btn-excel" onclick="exportExcel()">تصدير Excel</button>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th>الإجراء</th>
+              <th>الحالة</th>
+              <th>الموعد</th>
+              <th>النوع</th>
+              <th>المهمة</th>
+            </tr>
+          </thead>
+          <tbody id="tasksTableBody">
+            <tr>
+              <td colspan="5" class="empty-text">جاري تحميل البيانات...</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </div>
+  </main>
 </div>
 
-</main>
+<footer class="main-footer">
+  <div class="footer-content">
+    <p>&copy; 2026 حقوق محفوظة | محطة الدعم</p>
+  </div>
+</footer>
 
 <script>
-const supabase = window.supabase.createClient(
-     "https://mcxdjisoyqdnyieboqpy.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1jeGRqaXNveXFkbnlpZWJvcXB5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0MDI3NDAsImV4cCI6MjA5MDk3ODc0MH0.kIwJ1pc-GLX1lTvstLSDZ5Li1rd9vwutI4-Wz_HR6nE"
-);
+document.addEventListener("DOMContentLoaded", function () {
+  const role = localStorage.getItem("user_role");
 
-function daysBetween(date){
-  const d = new Date(date);
-  const now = new Date();
-  d.setHours(0,0,0,0);
-  now.setHours(0,0,0,0);
-  return Math.floor((d - now)/(1000*60*60*24));
-}
+  if (role && role !== "admin") {
+    alert("هذه الصفحة خاصة بالمسؤول فقط");
+    window.location.href = "login.html";
+    return;
+  }
 
-function getDueText(task){
-  const diff = daysBetween(task.due_date);
+  const supabase = window.supabase.createClient(
+    "https://mcxdjisoyqdnyieboqpy.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1jeGRqaXNveXFkbnlpZWJvcXB5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0MDI3NDAsImV4cCI6MjA5MDk3ODc0MH0.kIwJ1pc-GLX1lTvstLSDZ5Li1rd9vwutI4-Wz_HR6nE"
+  );
 
-  if(diff < 0) return "متأخرة";
-  if(diff === 0) return "اليوم";
-  if(diff === 1) return "غدًا";
-  if(diff <=7) return `بعد ${diff} أيام`;
-  if(diff <=30) return `بعد ${Math.ceil(diff/7)} أسبوع`;
-  if(diff <=365) return `بعد ${Math.ceil(diff/30)} شهر`;
-  return `بعد سنة`;
-}
+  let currentTasks = [];
+  let currentFilter = "all";
 
-async function loadTasks(){
-  const {data} = await supabase.from("tasks").select("*").order("id");
+  function parseDateOnly(dateString) {
+    const [y, m, d] = dateString.split("-").map(Number);
+    return new Date(y, m - 1, d);
+  }
 
-  const tbody = document.getElementById("tasksBody");
-  tbody.innerHTML = "";
+  function formatISO(dateObj) {
+    const y = dateObj.getFullYear();
+    const m = String(dateObj.getMonth() + 1).padStart(2, "0");
+    const d = String(dateObj.getDate()).padStart(2, "0");
+    return `${y}-${m}-${d}`;
+  }
 
-  data.forEach(task=>{
-    const tr = document.createElement("tr");
+  function formatDate(dateString) {
+    if (!dateString) return "-";
+    const [y, m, d] = dateString.split("-");
+    return `${d}/${m}/${y}`;
+  }
 
-    tr.innerHTML = `
-      <td>${task.title}</td>
-      <td>${task.type}</td>
-      <td>${task.due_date}</td>
+  function daysBetween(dateString) {
+    if (!dateString) return 9999;
 
-      <td>
-        <span class="status-tag">
-          ${task.status === "تم التنفيذ" ? "تم التنفيذ" : getDueText(task)}
-        </span>
-      </td>
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
 
-      <td>
-        ${
-          task.status === "تم التنفيذ"
-          ? `<span class="done-text">تم التنفيذ</span>`
-          : `<button onclick="completeTask(${task.id}, '${task.type}', '${task.due_date}')" class="btn-done">تم التنفيذ</button>`
-        }
-      </td>
-    `;
+    const target = parseDateOnly(dateString);
+    target.setHours(0, 0, 0, 0);
 
-    tbody.appendChild(tr);
-  });
-}
+    return Math.ceil((target - today) / (1000 * 60 * 60 * 24));
+  }
 
-function nextDate(date,type){
-  const d = new Date(date);
+  function daysSince(dateString) {
+    if (!dateString) return null;
 
-  if(type === "يومي") d.setDate(d.getDate()+1);
-  if(type === "أسبوعي") d.setDate(d.getDate()+7);
-  if(type === "شهري") d.setMonth(d.getMonth()+1);
-  if(type === "سنوي") d.setFullYear(d.getFullYear()+1);
+    const now = new Date();
+    const past = new Date(dateString);
 
-  return d.toISOString().split("T")[0];
-}
+    return Math.floor((now - past) / (1000 * 60 * 60 * 24));
+  }
 
-async function completeTask(id,type,date){
+  function nextDate(dateString, type) {
+    const d = parseDateOnly(dateString);
 
-  await supabase
-  .from("tasks")
-  .update({status:"تم التنفيذ"})
-  .eq("id", id);
+    if (type === "يومي") {
+      d.setDate(d.getDate() + 1);
+      return formatISO(d);
+    }
 
-  // إنشاء نسخة جديدة
-  const newDate = nextDate(date,type);
+    if (type === "أسبوعي") {
+      d.setDate(d.getDate() + 7);
+      return formatISO(d);
+    }
 
-  if(type !== ""){
-    await supabase.from("tasks").insert({
-      title:"نسخة جديدة",
-      type:type,
-      due_date:newDate,
-      status:"قيد التنفيذ"
+    if (type === "شهري") {
+      d.setMonth(d.getMonth() + 1);
+      return formatISO(d);
+    }
+
+    if (type === "سبتمبر/أكتوبر") {
+      const now = new Date();
+      const year = now.getMonth() < 8 ? now.getFullYear() : now.getFullYear() + 1;
+      return `${year}-09-01`;
+    }
+
+    if (type === "الأسبوع الأخير") {
+      const now = new Date();
+      const lastDay = new Date(now.getFullYear(), now.getMonth() + 2, 0);
+      return formatISO(lastDay);
+    }
+
+    return dateString;
+  }
+
+  function getDueText(task) {
+    if (task.status === "تم التنفيذ") {
+      return formatDate(task.due_date);
+    }
+
+    const diff = daysBetween(task.due_date);
+
+    if (task.type === "سبتمبر/أكتوبر") {
+      return "موعدها في سبتمبر";
+    }
+
+    if (task.type === "الأسبوع الأخير") {
+      return formatDate(task.due_date);
+    }
+
+    if (diff < 0) return `متأخرة (${formatDate(task.due_date)})`;
+    if (diff === 0) return "موعدها اليوم";
+    if (diff === 1) return "موعدها غدًا";
+
+    if (task.type === "أسبوعي") {
+      if (diff >= 6 && diff <= 8) return "موعدها الأسبوع القادم";
+      if (diff > 8) return `بعد ${Math.ceil(diff / 7)} أسابيع`;
+    }
+
+    if (task.type === "شهري") {
+      if (diff >= 27 && diff <= 31) return "موعدها الشهر القادم";
+      if (diff > 31) return `بعد ${Math.ceil(diff / 30)} أشهر`;
+    }
+
+    return formatDate(task.due_date);
+  }
+
+  function getStatusInfo(task) {
+    if (task.status === "تم التنفيذ") {
+      return { text: "تم التنفيذ", className: "status-done" };
+    }
+
+    if (task.status === "يتم المعالجة") {
+      return { text: "يتم المعالجة", className: "status-processing" };
+    }
+
+    const diff = daysBetween(task.due_date);
+
+    if (diff < 0) return { text: "متأخرة", className: "status-soon" };
+    if (diff === 0) return { text: "موعدها اليوم", className: "status-soon" };
+    if (diff === 1) return { text: "موعدها غدًا", className: "status-soon" };
+
+    if (task.type === "أسبوعي" && diff >= 6 && diff <= 8) {
+      return { text: "الأسبوع القادم", className: "status-pending" };
+    }
+
+    if (task.type === "شهري" && diff >= 27 && diff <= 31) {
+      return { text: "الشهر القادم", className: "status-pending" };
+    }
+
+    if (task.type === "سبتمبر/أكتوبر") {
+      return { text: "سبتمبر/أكتوبر", className: "status-pending" };
+    }
+
+    return { text: "قيد التنفيذ", className: "status-pending" };
+  }
+
+  function getDoneTasks(tasks) {
+    return tasks.filter(task => {
+      if (task.status !== "تم التنفيذ") return false;
+      const elapsed = daysSince(task.completed_at);
+      return elapsed !== null && elapsed < 7;
     });
   }
 
-  loadTasks();
-}
+  function getProcessingTasks(tasks) {
+    return tasks.filter(task => task.status === "يتم المعالجة");
+  }
 
-loadTasks();
+  function getActiveTasks(tasks) {
+    return tasks.filter(task => task.status !== "تم التنفيذ");
+  }
+
+  function getSoonTasks(tasks) {
+    return tasks.filter(task => {
+      if (task.status === "تم التنفيذ") return false;
+      const diff = daysBetween(task.due_date);
+      return diff <= 3;
+    });
+  }
+
+  function getFilteredTasks(tasks) {
+    if (currentFilter === "done") return getDoneTasks(tasks);
+    if (currentFilter === "processing") return getProcessingTasks(tasks);
+    return getActiveTasks(tasks);
+  }
+
+  function renderStats(tasks) {
+    document.getElementById("allCount").textContent = getActiveTasks(tasks).length;
+    document.getElementById("processingCount").textContent = getProcessingTasks(tasks).length;
+    document.getElementById("doneCount").textContent = getDoneTasks(tasks).length;
+  }
+
+  function renderGlobalReminder(tasks) {
+    const box = document.getElementById("globalReminder");
+    const soonTasks = getSoonTasks(tasks);
+
+    if (soonTasks.length === 0) {
+      box.style.display = "none";
+      return;
+    }
+
+    box.style.display = "block";
+    box.textContent = `يوجد ${soonTasks.length} مهمة تحتاج تذكير أو متابعة قريبة`;
+  }
+
+  function renderAlerts(tasks) {
+    const alertsList = document.getElementById("alertsList");
+    alertsList.innerHTML = "";
+
+    const soonTasks = getSoonTasks(tasks);
+
+    if (soonTasks.length === 0) {
+      alertsList.innerHTML = `
+        <div class="alert-item">
+          <strong>ملاحظة:</strong> لا توجد تنبيهات حالياً.
+        </div>
+      `;
+      return;
+    }
+
+    soonTasks.forEach(task => {
+      const diff = daysBetween(task.due_date);
+      let text = "";
+
+      if (diff < 0) {
+        text = `المهمة "${task.title}" متأخرة عن موعدها.`;
+      } else if (diff === 0) {
+        text = `المهمة "${task.title}" موعدها اليوم.`;
+      } else if (diff === 1) {
+        text = `المهمة "${task.title}" موعدها غدًا.`;
+      } else {
+        text = `تبقى ${diff} أيام على المهمة "${task.title}".`;
+      }
+
+      alertsList.innerHTML += `
+        <div class="alert-item">
+          <strong>تنبيه:</strong> ${text}
+        </div>
+      `;
+    });
+  }
+
+  function renderTable(tasks) {
+    const tbody = document.getElementById("tasksTableBody");
+    const tableTitle = document.getElementById("tableTitle");
+    tbody.innerHTML = "";
+
+    if (currentFilter === "all") tableTitle.textContent = "قائمة المهام";
+    if (currentFilter === "processing") tableTitle.textContent = "المهام التي يتم معالجتها";
+    if (currentFilter === "done") tableTitle.textContent = "المهام المنفذة";
+
+    const filteredTasks = getFilteredTasks(tasks);
+
+    if (!filteredTasks.length) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="5" class="empty-text">لا توجد مهام في هذا التصنيف</td>
+        </tr>
+      `;
+      return;
+    }
+
+    filteredTasks.forEach(task => {
+      const status = getStatusInfo(task);
+
+      let actions = "";
+      if (task.status !== "تم التنفيذ") {
+        actions = `
+          <div class="task-actions">
+            <button class="btn-small btn-process" data-id="${task.id}" onclick="setProcessing(this.dataset.id)">يتم المعالجة</button>
+            <button class="btn-small btn-done"
+              data-id="${task.id}"
+              data-type="${task.type}"
+              data-date="${task.due_date}"
+              data-title="${task.title}"
+              onclick="completeTask(this.dataset.id, this.dataset.type, this.dataset.date, this.dataset.title)">
+              تم التنفيذ
+            </button>
+          </div>
+        `;
+      }
+
+      tbody.innerHTML += `
+        <tr>
+          <td>${actions}</td>
+          <td><span class="status-tag ${status.className}">${status.text}</span></td>
+          <td>${getDueText(task)}</td>
+          <td>${task.type}</td>
+          <td>${task.title}</td>
+        </tr>
+      `;
+    });
+  }
+
+  function updateFilterUI() {
+    document.querySelectorAll(".filter-card").forEach(card => card.classList.remove("active-card"));
+
+    if (currentFilter === "all") document.getElementById("allCard").classList.add("active-card");
+    if (currentFilter === "processing") document.getElementById("processingCard").classList.add("active-card");
+    if (currentFilter === "done") document.getElementById("doneCard").classList.add("active-card");
+  }
+
+  window.setFilter = function(filterName) {
+    currentFilter = filterName;
+    updateFilterUI();
+    renderTable(currentTasks);
+  };
+
+  window.setProcessing = async function(id) {
+    const { error } = await supabase
+      .from("tasks")
+      .update({ status: "يتم المعالجة" })
+      .eq("id", Number(id));
+
+    if (error) {
+      document.getElementById("alertsList").innerHTML = `
+        <div class="alert-item"><strong>خطأ:</strong> ${error.message}</div>
+      `;
+      return;
+    }
+
+    await loadTasks();
+    currentFilter = "processing";
+    updateFilterUI();
+    renderTable(currentTasks);
+  };
+
+  window.completeTask = async function(id, type, dueDate, title) {
+    const numericId = Number(id);
+
+    const { error: updateError } = await supabase
+      .from("tasks")
+      .update({
+        status: "تم التنفيذ",
+        completed_at: new Date().toISOString()
+      })
+      .eq("id", numericId);
+
+    if (updateError) {
+      document.getElementById("alertsList").innerHTML = `
+        <div class="alert-item"><strong>خطأ:</strong> ${updateError.message}</div>
+      `;
+      return;
+    }
+
+    if (type !== "مرة واحدة") {
+      const newDate = nextDate(dueDate, type);
+
+      const { error: insertError } = await supabase
+        .from("tasks")
+        .insert([{
+          title: title,
+          type: type,
+          due_date: newDate,
+          status: "قيد التنفيذ",
+          completed_at: null
+        }]);
+
+      if (insertError) {
+        document.getElementById("alertsList").innerHTML = `
+          <div class="alert-item"><strong>خطأ:</strong> ${insertError.message}</div>
+        `;
+        return;
+      }
+    }
+
+    await loadTasks();
+    currentFilter = "done";
+    updateFilterUI();
+    renderTable(currentTasks);
+  };
+
+  window.exportExcel = function() {
+    const rows = [["المهمة","النوع","الموعد","الحالة"]];
+    const exportTasks = getFilteredTasks(currentTasks);
+
+    exportTasks.forEach(task => {
+      const status = getStatusInfo(task);
+      rows.push([
+        task.title || "",
+        task.type || "",
+        getDueText(task),
+        status.text
+      ]);
+    });
+
+    const csvContent = "\uFEFF" + rows.map(row =>
+      row.map(value => `"${String(value).replace(/"/g, '""')}"`).join(",")
+    ).join("\n");
+
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+
+    link.href = url;
+    link.download = "مهام_السلامة.csv";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
+  async function loadTasks() {
+    const alertsList = document.getElementById("alertsList");
+    const tbody = document.getElementById("tasksTableBody");
+
+    alertsList.innerHTML = `<div class="alert-item"><strong>جاري التحميل...</strong></div>`;
+    tbody.innerHTML = `<tr><td colspan="5" class="empty-text">جاري تحميل البيانات...</td></tr>`;
+
+    const { data, error } = await supabase
+      .from("tasks")
+      .select("*")
+      .order("id", { ascending: false });
+
+    if (error) {
+      alertsList.innerHTML = `
+        <div class="alert-item"><strong>خطأ:</strong> ${error.message}</div>
+      `;
+      tbody.innerHTML = `
+        <tr><td colspan="5" class="empty-text">فشل تحميل البيانات</td></tr>
+      `;
+      return;
+    }
+
+    currentTasks = data || [];
+    renderStats(currentTasks);
+    renderGlobalReminder(currentTasks);
+    renderAlerts(currentTasks);
+    updateFilterUI();
+    renderTable(currentTasks);
+  }
+
+  loadTasks();
+});
 </script>
 
 </body>
