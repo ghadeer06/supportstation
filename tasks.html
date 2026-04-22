@@ -38,19 +38,19 @@
     <div id="globalReminder" class="reminder-box" style="display:none;"></div>
 
     <div class="admin-cards">
-      <div class="stat-card filter-card active-card" id="allCard" onclick="setFilter('all')">
+      <div class="stat-card filter-card active-card" data-filter="all" id="allCard">
         <h3>المهام</h3>
         <p id="allCount">0</p>
-        <span>كل المهام الحالية</span>
+        <span>13 مهمة ثابتة</span>
       </div>
 
-      <div class="stat-card filter-card" id="processingCard" onclick="setFilter('processing')">
+      <div class="stat-card filter-card" data-filter="processing" id="processingCard">
         <h3>يتم المعالجة</h3>
         <p id="processingCount">0</p>
         <span>قيد العمل الآن</span>
       </div>
 
-      <div class="stat-card filter-card" id="doneCard" onclick="setFilter('done')">
+      <div class="stat-card filter-card" data-filter="done" id="doneCard">
         <h3>المنفذة</h3>
         <p id="doneCount">0</p>
         <span>آخر 7 أيام</span>
@@ -61,7 +61,7 @@
       <section class="table-panel">
         <div class="table-header">
           <h2 class="panel-title" id="tableTitle">قائمة المهام</h2>
-          <button class="btn-excel" onclick="exportExcel()">تصدير Excel</button>
+          <button class="btn-excel" id="exportBtn">تصدير Excel</button>
         </div>
 
         <table class="tasks-table">
@@ -113,7 +113,14 @@ document.addEventListener("DOMContentLoaded", function () {
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1jeGRqaXNveXFkbnlpZWJvcXB5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0MDI3NDAsImV4cCI6MjA5MDk3ODc0MH0.kIwJ1pc-GLX1lTvstLSDZ5Li1rd9vwutI4-Wz_HR6nE"
   );
 
+  const tasksTableBody = document.getElementById("tasksTableBody");
+  const alertsList = document.getElementById("alertsList");
+  const tableTitle = document.getElementById("tableTitle");
+  const globalReminder = document.getElementById("globalReminder");
+  const exportBtn = document.getElementById("exportBtn");
+
   let currentTasks = [];
+  let currentHistory = [];
   let currentFilter = "all";
 
   function parseDateOnly(dateString) {
@@ -134,25 +141,24 @@ document.addEventListener("DOMContentLoaded", function () {
     return `${d}/${m}/${y}`;
   }
 
+  function startOfToday() {
+    const d = new Date();
+    d.setHours(0, 0, 0, 0);
+    return d;
+  }
+
   function daysBetween(dateString) {
-    if (!dateString) return 9999;
-
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
+    const today = startOfToday();
     const target = parseDateOnly(dateString);
     target.setHours(0, 0, 0, 0);
-
-    return Math.ceil((target - today) / (1000 * 60 * 60 * 24));
+    return Math.floor((target - today) / 86400000);
   }
 
   function daysSince(dateString) {
     if (!dateString) return null;
-
     const now = new Date();
     const past = new Date(dateString);
-
-    return Math.floor((now - past) / (1000 * 60 * 60 * 24));
+    return Math.floor((now - past) / 86400000);
   }
 
   function nextDate(dateString, type) {
@@ -178,78 +184,54 @@ document.addEventListener("DOMContentLoaded", function () {
       return formatISO(d);
     }
 
-    if (type === "سبتمبر/أكتوبر") {
-      const now = new Date();
-      const year = now.getMonth() < 8 ? now.getFullYear() : now.getFullYear() + 1;
-      return `${year}-09-01`;
-    }
+    return formatISO(d);
+  }
 
-    if (type === "الأسبوع الأخير") {
-      const now = new Date();
-      const lastDay = new Date(now.getFullYear(), now.getMonth() + 2, 0);
-      return formatISO(lastDay);
-    }
-
-    return dateString;
+  function canComplete(task) {
+    return daysBetween(task.due_date) <= 0;
   }
 
   function getDueLabel(task) {
-    if (task.status === "تم التنفيذ") return "تم التنفيذ";
-    if (task.status === "يتم المعالجة") return "يتم المعالجة";
-
     const diff = daysBetween(task.due_date);
 
-    if (task.type === "سبتمبر/أكتوبر") {
-      return "في سبتمبر";
-    }
+    if (task.status === "يتم المعالجة") return "يتم المعالجة";
 
-    if (diff < 0) return "متأخرة";
     if (diff === 0) return "اليوم";
     if (diff === 1) return "غدًا";
 
-    if (task.type === "أسبوعي") {
-      if (diff >= 6 && diff <= 8) return "بعد أسبوع";
+    if (diff > 1) {
+      if (task.type === "أسبوعي" && diff >= 6 && diff <= 8) return "بعد أسبوع";
+      if (task.type === "شهري" && diff >= 27 && diff <= 31) return "بعد شهر";
+      if (task.type === "سنوي" && diff >= 360) return "بعد سنة";
       return `بعد ${diff} يوم`;
     }
 
-    if (task.type === "شهري") {
-      if (diff >= 27 && diff <= 31) return "بعد شهر";
-      if (diff > 31) return `بعد ${Math.ceil(diff / 30)} شهر`;
-    }
-
-    if (task.type === "سنوي") {
-      if (diff >= 360) return "بعد سنة";
-      if (diff > 31) return `بعد ${Math.ceil(diff / 30)} شهر`;
-    }
-
-    if (task.type === "الأسبوع الأخير") {
-      return `بعد ${diff} يوم`;
-    }
-
-    return `بعد ${diff} يوم`;
+    const late = Math.abs(diff);
+    if (late === 1) return "متأخرة يوم";
+    return `متأخرة ${late} أيام`;
   }
 
   function getStatusInfo(task) {
-    if (task.status === "تم التنفيذ") {
-      return { text: "تم التنفيذ", className: "status-done" };
-    }
-
     if (task.status === "يتم المعالجة") {
       return { text: "يتم المعالجة", className: "status-processing" };
     }
 
     const diff = daysBetween(task.due_date);
 
-    if (diff < 0) return { text: "متأخرة", className: "status-soon" };
-    if (diff <= 3) return { text: getDueLabel(task), className: "status-soon" };
+    if (diff < 0) {
+      return { text: getDueLabel(task), className: "status-soon" };
+    }
+
+    if (diff <= 3) {
+      return { text: getDueLabel(task), className: "status-soon" };
+    }
 
     return { text: getDueLabel(task), className: "status-pending" };
   }
 
-  function getDoneTasks(tasks) {
-    return tasks.filter(task => {
-      if (task.status !== "تم التنفيذ") return false;
-      const elapsed = daysSince(task.completed_at);
+  function getDoneVisible(historyRows) {
+    return historyRows.filter(row => {
+      const elapsed = daysSince(row.completed_at);
       return elapsed !== null && elapsed < 7;
     });
   }
@@ -259,48 +241,46 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function getActiveTasks(tasks) {
-    return tasks.filter(task => task.status !== "تم التنفيذ");
+    return tasks;
   }
 
   function getSoonTasks(tasks) {
-    return tasks.filter(task => {
-      if (task.status === "تم التنفيذ") return false;
-      return daysBetween(task.due_date) <= 3;
-    });
+    return tasks.filter(task => daysBetween(task.due_date) <= 3);
   }
 
-  function getFilteredTasks(tasks) {
-    if (currentFilter === "done") return getDoneTasks(tasks);
-    if (currentFilter === "processing") return getProcessingTasks(tasks);
-    return getActiveTasks(tasks);
+  function getFilteredRows() {
+    if (currentFilter === "processing") {
+      return getProcessingTasks(currentTasks);
+    }
+    if (currentFilter === "done") {
+      return getDoneVisible(currentHistory);
+    }
+    return getActiveTasks(currentTasks);
   }
 
-  function renderStats(tasks) {
-    document.getElementById("allCount").textContent = getActiveTasks(tasks).length;
-    document.getElementById("processingCount").textContent = getProcessingTasks(tasks).length;
-    document.getElementById("doneCount").textContent = getDoneTasks(tasks).length;
+  function renderStats() {
+    document.getElementById("allCount").textContent = currentTasks.length;
+    document.getElementById("processingCount").textContent = getProcessingTasks(currentTasks).length;
+    document.getElementById("doneCount").textContent = getDoneVisible(currentHistory).length;
   }
 
-  function renderGlobalReminder(tasks) {
-    const box = document.getElementById("globalReminder");
-    const soonTasks = getSoonTasks(tasks);
+  function renderReminder() {
+    const soonTasks = getSoonTasks(currentTasks);
 
-    if (soonTasks.length === 0) {
-      box.style.display = "none";
+    if (!soonTasks.length) {
+      globalReminder.style.display = "none";
       return;
     }
 
-    box.style.display = "block";
-    box.textContent = `يوجد ${soonTasks.length} مهمة تحتاج تذكير أو متابعة قريبة`;
+    globalReminder.style.display = "block";
+    globalReminder.textContent = `يوجد ${soonTasks.length} مهمة تحتاج متابعة قريبة`;
   }
 
-  function renderAlerts(tasks) {
-    const alertsList = document.getElementById("alertsList");
+  function renderAlerts() {
+    const soonTasks = getSoonTasks(currentTasks);
     alertsList.innerHTML = "";
 
-    const soonTasks = getSoonTasks(tasks);
-
-    if (soonTasks.length === 0) {
+    if (!soonTasks.length) {
       alertsList.innerHTML = `
         <div class="alert-item">
           <strong>ملاحظة:</strong> لا توجد تنبيهات حالياً.
@@ -313,10 +293,15 @@ document.addEventListener("DOMContentLoaded", function () {
       const diff = daysBetween(task.due_date);
       let text = "";
 
-      if (diff < 0) text = `المهمة "${task.title}" متأخرة عن موعدها.`;
-      else if (diff === 0) text = `المهمة "${task.title}" موعدها اليوم.`;
-      else if (diff === 1) text = `المهمة "${task.title}" موعدها غدًا.`;
-      else text = `تبقى ${diff} أيام على المهمة "${task.title}".`;
+      if (diff < 0) {
+        text = `المهمة "${task.title}" ${getDueLabel(task)}.`;
+      } else if (diff === 0) {
+        text = `المهمة "${task.title}" موعدها اليوم.`;
+      } else if (diff === 1) {
+        text = `المهمة "${task.title}" موعدها غدًا.`;
+      } else {
+        text = `تبقى ${diff} أيام على المهمة "${task.title}".`;
+      }
 
       alertsList.innerHTML += `
         <div class="alert-item">
@@ -326,49 +311,35 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  function renderTable(tasks) {
-    const tbody = document.getElementById("tasksTableBody");
-    const tableTitle = document.getElementById("tableTitle");
-    tbody.innerHTML = "";
+  function renderTasksTable(rows) {
+    tasksTableBody.innerHTML = "";
 
-    if (currentFilter === "all") tableTitle.textContent = "قائمة المهام";
-    if (currentFilter === "processing") tableTitle.textContent = "المهام التي يتم معالجتها";
-    if (currentFilter === "done") tableTitle.textContent = "المهام المنفذة";
-
-    const filteredTasks = getFilteredTasks(tasks);
-
-    if (!filteredTasks.length) {
-      tbody.innerHTML = `
+    if (!rows.length) {
+      tasksTableBody.innerHTML = `
         <tr>
-          <td colspan="5" class="empty-text">لا توجد مهام في هذا التصنيف</td>
+          <td colspan="5" class="empty-text">لا توجد بيانات في هذا التصنيف</td>
         </tr>
       `;
       return;
     }
 
-    filteredTasks.forEach(task => {
+    rows.forEach(task => {
       const status = getStatusInfo(task);
 
-      let actions = "";
-      if (task.status !== "تم التنفيذ") {
-        actions = `
-          <div class="task-actions">
-            <button class="btn-small btn-process" data-id="${task.id}" onclick="setProcessing(this.dataset.id)">يتم المعالجة</button>
-            <button class="btn-done"
-              data-id="${task.id}"
-              data-type="${task.type}"
-              data-date="${task.due_date}"
-              data-title="${task.title}"
-              onclick="completeTask(this.dataset.id, this.dataset.type, this.dataset.date, this.dataset.title)">
+      let actions = `
+        <div class="task-actions">
+          <button class="btn-small btn-process" data-action="processing" data-id="${task.id}">
+            يتم المعالجة
+          </button>
+          ${canComplete(task) ? `
+            <button class="btn-done" data-action="done" data-id="${task.id}">
               تم التنفيذ
             </button>
-          </div>
-        `;
-      } else {
-        actions = `<span class="done-text">تم التنفيذ</span>`;
-      }
+          ` : ""}
+        </div>
+      `;
 
-      tbody.innerHTML += `
+      tasksTableBody.innerHTML += `
         <tr>
           <td>${actions}</td>
           <td><span class="status-tag ${status.className}">${status.text}</span></td>
@@ -380,91 +351,168 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
+  function renderHistoryTable(rows) {
+    tasksTableBody.innerHTML = "";
+
+    if (!rows.length) {
+      tasksTableBody.innerHTML = `
+        <tr>
+          <td colspan="5" class="empty-text">لا توجد مهام منفذة خلال آخر 7 أيام</td>
+        </tr>
+      `;
+      return;
+    }
+
+    rows.forEach(row => {
+      tasksTableBody.innerHTML += `
+        <tr>
+          <td><span class="done-text">تم التنفيذ</span></td>
+          <td><span class="status-tag status-done">تم التنفيذ</span></td>
+          <td>${new Date(row.completed_at).toLocaleDateString("en-GB")}</td>
+          <td>${row.type}</td>
+          <td>${row.title}</td>
+        </tr>
+      `;
+    });
+  }
+
+  function renderTable() {
+    if (currentFilter === "all") {
+      tableTitle.textContent = "قائمة المهام";
+      renderTasksTable(getActiveTasks(currentTasks));
+      return;
+    }
+
+    if (currentFilter === "processing") {
+      tableTitle.textContent = "المهام التي يتم معالجتها";
+      renderTasksTable(getProcessingTasks(currentTasks));
+      return;
+    }
+
+    tableTitle.textContent = "المهام المنفذة";
+    renderHistoryTable(getDoneVisible(currentHistory));
+  }
+
   function updateFilterUI() {
     document.querySelectorAll(".filter-card").forEach(card => card.classList.remove("active-card"));
-
     if (currentFilter === "all") document.getElementById("allCard").classList.add("active-card");
     if (currentFilter === "processing") document.getElementById("processingCard").classList.add("active-card");
     if (currentFilter === "done") document.getElementById("doneCard").classList.add("active-card");
   }
 
-  window.setFilter = function(filterName) {
-    currentFilter = filterName;
-    updateFilterUI();
-    renderTable(currentTasks);
-  };
+  async function loadData() {
+    alertsList.innerHTML = `<div class="alert-item"><strong>جاري التحميل...</strong></div>`;
+    tasksTableBody.innerHTML = `<tr><td colspan="5" class="empty-text">جاري تحميل البيانات...</td></tr>`;
 
-  window.setProcessing = async function(id) {
-    const { error } = await supabase
+    const { data: tasksData, error: tasksError } = await supabase
       .from("tasks")
-      .update({ status: "يتم المعالجة" })
-      .eq("id", Number(id));
+      .select("*")
+      .order("id", { ascending: true });
 
-    if (error) {
-      document.getElementById("alertsList").innerHTML = `<div class="alert-item"><strong>خطأ:</strong> ${error.message}</div>`;
+    if (tasksError) {
+      alertsList.innerHTML = `<div class="alert-item"><strong>خطأ:</strong> ${tasksError.message}</div>`;
       return;
     }
 
-    await loadTasks();
-    currentFilter = "processing";
-    updateFilterUI();
-    renderTable(currentTasks);
-  };
+    const { data: historyData, error: historyError } = await supabase
+      .from("task_history")
+      .select("*")
+      .order("id", { ascending: false });
 
-  window.completeTask = async function(id, type, dueDate, title) {
-    const numericId = Number(id);
+    if (historyError) {
+      alertsList.innerHTML = `<div class="alert-item"><strong>خطأ:</strong> ${historyError.message}</div>`;
+      return;
+    }
+
+    currentTasks = tasksData || [];
+    currentHistory = historyData || [];
+
+    renderStats();
+    renderReminder();
+    renderAlerts();
+    updateFilterUI();
+    renderTable();
+  }
+
+  async function setProcessingById(id) {
+    const { error } = await supabase
+      .from("tasks")
+      .update({
+        status: "يتم المعالجة",
+        updated_at: new Date().toISOString()
+      })
+      .eq("id", Number(id));
+
+    if (error) {
+      alertsList.innerHTML = `<div class="alert-item"><strong>خطأ:</strong> ${error.message}</div>`;
+      return;
+    }
+
+    currentFilter = "processing";
+    await loadData();
+  }
+
+  async function completeTaskById(id) {
+    const task = currentTasks.find(t => t.id === Number(id));
+    if (!task) return;
+
+    const { error: historyError } = await supabase
+      .from("task_history")
+      .insert([{
+        task_id: task.id,
+        title: task.title,
+        type: task.type,
+        completed_at: new Date().toISOString()
+      }]);
+
+    if (historyError) {
+      alertsList.innerHTML = `<div class="alert-item"><strong>خطأ:</strong> ${historyError.message}</div>`;
+      return;
+    }
+
+    const nextDue = nextDate(task.due_date, task.type);
 
     const { error: updateError } = await supabase
       .from("tasks")
       .update({
-        status: "تم التنفيذ",
-        completed_at: new Date().toISOString()
+        due_date: nextDue,
+        status: "قيد الانتظار",
+        updated_at: new Date().toISOString()
       })
-      .eq("id", numericId);
+      .eq("id", task.id);
 
     if (updateError) {
-      document.getElementById("alertsList").innerHTML = `<div class="alert-item"><strong>خطأ:</strong> ${updateError.message}</div>`;
+      alertsList.innerHTML = `<div class="alert-item"><strong>خطأ:</strong> ${updateError.message}</div>`;
       return;
     }
 
-    if (["يومي", "أسبوعي", "شهري", "سنوي", "سبتمبر/أكتوبر", "الأسبوع الأخير"].includes(type)) {
-      const newDate = nextDate(dueDate, type);
-
-      const { error: insertError } = await supabase
-        .from("tasks")
-        .insert([{
-          title: title,
-          type: type,
-          due_date: newDate,
-          status: "قيد التنفيذ",
-          completed_at: null
-        }]);
-
-      if (insertError) {
-        document.getElementById("alertsList").innerHTML = `<div class="alert-item"><strong>خطأ:</strong> ${insertError.message}</div>`;
-        return;
-      }
-    }
-
-    await loadTasks();
     currentFilter = "done";
-    updateFilterUI();
-    renderTable(currentTasks);
-  };
+    await loadData();
+  }
 
-  window.exportExcel = function() {
+  function exportExcel() {
     const rows = [["المهمة","النوع","الموعد","الحالة"]];
-    const exportTasks = getFilteredTasks(currentTasks);
 
-    exportTasks.forEach(task => {
-      const status = getStatusInfo(task);
-      rows.push([
-        task.title || "",
-        task.type || "",
-        formatDate(task.due_date),
-        status.text
-      ]);
-    });
+    if (currentFilter === "done") {
+      getDoneVisible(currentHistory).forEach(row => {
+        rows.push([
+          row.title || "",
+          row.type || "",
+          new Date(row.completed_at).toLocaleDateString("en-GB"),
+          "تم التنفيذ"
+        ]);
+      });
+    } else {
+      getFilteredRows().forEach(task => {
+        const status = getStatusInfo(task);
+        rows.push([
+          task.title || "",
+          task.type || "",
+          formatDate(task.due_date),
+          status.text
+        ]);
+      });
+    }
 
     const csvContent = "\uFEFF" + rows.map(row =>
       row.map(value => `"${String(value).replace(/"/g, '""')}"`).join(",")
@@ -480,35 +528,36 @@ document.addEventListener("DOMContentLoaded", function () {
     link.click();
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
-  };
+  }
 
-  async function loadTasks() {
-    const alertsList = document.getElementById("alertsList");
-    const tbody = document.getElementById("tasksTableBody");
+  document.querySelectorAll(".filter-card").forEach(card => {
+    card.addEventListener("click", () => {
+      currentFilter = card.dataset.filter;
+      updateFilterUI();
+      renderTable();
+    });
+  });
 
-    alertsList.innerHTML = `<div class="alert-item"><strong>جاري التحميل...</strong></div>`;
-    tbody.innerHTML = `<tr><td colspan="5" class="empty-text">جاري تحميل البيانات...</td></tr>`;
+  tasksTableBody.addEventListener("click", async function(e) {
+    const btn = e.target.closest("button");
+    if (!btn) return;
 
-    const { data, error } = await supabase
-      .from("tasks")
-      .select("*")
-      .order("id", { ascending: false });
+    const action = btn.dataset.action;
+    const id = btn.dataset.id;
 
-    if (error) {
-      alertsList.innerHTML = `<div class="alert-item"><strong>خطأ:</strong> ${error.message}</div>`;
-      tbody.innerHTML = `<tr><td colspan="5" class="empty-text">فشل تحميل البيانات</td></tr>`;
+    if (action === "processing") {
+      await setProcessingById(id);
       return;
     }
 
-    currentTasks = data || [];
-    renderStats(currentTasks);
-    renderGlobalReminder(currentTasks);
-    renderAlerts(currentTasks);
-    updateFilterUI();
-    renderTable(currentTasks);
-  }
+    if (action === "done") {
+      await completeTaskById(id);
+    }
+  });
 
-  loadTasks();
+  exportBtn.addEventListener("click", exportExcel);
+
+  loadData();
 });
 </script>
 
