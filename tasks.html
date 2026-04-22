@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="tasks.css" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 </head>
-<body> 
+<body>
 
 <header class="admin-header">
   <div class="admin-left">
@@ -58,20 +58,13 @@
     </div>
 
     <div class="reports-layout">
-      <section class="alerts-panel">
-        <h2 class="panel-title">تنبيهات المهام</h2>
-        <div id="alertsList">
-          <div class="alert-item"><strong>جاري التحميل...</strong></div>
-        </div>
-      </section>
-
       <section class="table-panel">
         <div class="table-header">
           <h2 class="panel-title" id="tableTitle">قائمة المهام</h2>
           <button class="btn-excel" onclick="exportExcel()">تصدير Excel</button>
         </div>
 
-        <table>
+        <table class="tasks-table">
           <thead>
             <tr>
               <th>الإجراء</th>
@@ -87,6 +80,13 @@
             </tr>
           </tbody>
         </table>
+      </section>
+
+      <section class="alerts-panel">
+        <h2 class="panel-title">تنبيهات المهام</h2>
+        <div id="alertsList">
+          <div class="alert-item"><strong>جاري التحميل...</strong></div>
+        </div>
       </section>
     </div>
   </main>
@@ -117,7 +117,7 @@ document.addEventListener("DOMContentLoaded", function () {
   let currentFilter = "all";
 
   function parseDateOnly(dateString) {
-    const [y, m, d] = dateString.split("-").map(Number);
+    const [y, m, d] = String(dateString).split("-").map(Number);
     return new Date(y, m - 1, d);
   }
 
@@ -130,7 +130,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function formatDate(dateString) {
     if (!dateString) return "-";
-    const [y, m, d] = dateString.split("-");
+    const [y, m, d] = String(dateString).split("-");
     return `${d}/${m}/${y}`;
   }
 
@@ -173,6 +173,11 @@ document.addEventListener("DOMContentLoaded", function () {
       return formatISO(d);
     }
 
+    if (type === "سنوي") {
+      d.setFullYear(d.getFullYear() + 1);
+      return formatISO(d);
+    }
+
     if (type === "سبتمبر/أكتوبر") {
       const now = new Date();
       const year = now.getMonth() < 8 ? now.getFullYear() : now.getFullYear() + 1;
@@ -188,36 +193,40 @@ document.addEventListener("DOMContentLoaded", function () {
     return dateString;
   }
 
-  function getDueText(task) {
-    if (task.status === "تم التنفيذ") {
-      return formatDate(task.due_date);
-    }
+  function getDueLabel(task) {
+    if (task.status === "تم التنفيذ") return "تم التنفيذ";
+    if (task.status === "يتم المعالجة") return "يتم المعالجة";
 
     const diff = daysBetween(task.due_date);
 
     if (task.type === "سبتمبر/أكتوبر") {
-      return "موعدها في سبتمبر";
+      return "في سبتمبر";
     }
 
-    if (task.type === "الأسبوع الأخير") {
-      return formatDate(task.due_date);
-    }
-
-    if (diff < 0) return `متأخرة (${formatDate(task.due_date)})`;
-    if (diff === 0) return "موعدها اليوم";
-    if (diff === 1) return "موعدها غدًا";
+    if (diff < 0) return "متأخرة";
+    if (diff === 0) return "اليوم";
+    if (diff === 1) return "غدًا";
 
     if (task.type === "أسبوعي") {
-      if (diff >= 6 && diff <= 8) return "موعدها الأسبوع القادم";
-      if (diff > 8) return `بعد ${Math.ceil(diff / 7)} أسابيع`;
+      if (diff >= 6 && diff <= 8) return "بعد أسبوع";
+      return `بعد ${diff} يوم`;
     }
 
     if (task.type === "شهري") {
-      if (diff >= 27 && diff <= 31) return "موعدها الشهر القادم";
-      if (diff > 31) return `بعد ${Math.ceil(diff / 30)} أشهر`;
+      if (diff >= 27 && diff <= 31) return "بعد شهر";
+      if (diff > 31) return `بعد ${Math.ceil(diff / 30)} شهر`;
     }
 
-    return formatDate(task.due_date);
+    if (task.type === "سنوي") {
+      if (diff >= 360) return "بعد سنة";
+      if (diff > 31) return `بعد ${Math.ceil(diff / 30)} شهر`;
+    }
+
+    if (task.type === "الأسبوع الأخير") {
+      return `بعد ${diff} يوم`;
+    }
+
+    return `بعد ${diff} يوم`;
   }
 
   function getStatusInfo(task) {
@@ -232,22 +241,9 @@ document.addEventListener("DOMContentLoaded", function () {
     const diff = daysBetween(task.due_date);
 
     if (diff < 0) return { text: "متأخرة", className: "status-soon" };
-    if (diff === 0) return { text: "موعدها اليوم", className: "status-soon" };
-    if (diff === 1) return { text: "موعدها غدًا", className: "status-soon" };
+    if (diff <= 3) return { text: getDueLabel(task), className: "status-soon" };
 
-    if (task.type === "أسبوعي" && diff >= 6 && diff <= 8) {
-      return { text: "الأسبوع القادم", className: "status-pending" };
-    }
-
-    if (task.type === "شهري" && diff >= 27 && diff <= 31) {
-      return { text: "الشهر القادم", className: "status-pending" };
-    }
-
-    if (task.type === "سبتمبر/أكتوبر") {
-      return { text: "سبتمبر/أكتوبر", className: "status-pending" };
-    }
-
-    return { text: "قيد التنفيذ", className: "status-pending" };
+    return { text: getDueLabel(task), className: "status-pending" };
   }
 
   function getDoneTasks(tasks) {
@@ -269,8 +265,7 @@ document.addEventListener("DOMContentLoaded", function () {
   function getSoonTasks(tasks) {
     return tasks.filter(task => {
       if (task.status === "تم التنفيذ") return false;
-      const diff = daysBetween(task.due_date);
-      return diff <= 3;
+      return daysBetween(task.due_date) <= 3;
     });
   }
 
@@ -318,15 +313,10 @@ document.addEventListener("DOMContentLoaded", function () {
       const diff = daysBetween(task.due_date);
       let text = "";
 
-      if (diff < 0) {
-        text = `المهمة "${task.title}" متأخرة عن موعدها.`;
-      } else if (diff === 0) {
-        text = `المهمة "${task.title}" موعدها اليوم.`;
-      } else if (diff === 1) {
-        text = `المهمة "${task.title}" موعدها غدًا.`;
-      } else {
-        text = `تبقى ${diff} أيام على المهمة "${task.title}".`;
-      }
+      if (diff < 0) text = `المهمة "${task.title}" متأخرة عن موعدها.`;
+      else if (diff === 0) text = `المهمة "${task.title}" موعدها اليوم.`;
+      else if (diff === 1) text = `المهمة "${task.title}" موعدها غدًا.`;
+      else text = `تبقى ${diff} أيام على المهمة "${task.title}".`;
 
       alertsList.innerHTML += `
         <div class="alert-item">
@@ -364,7 +354,7 @@ document.addEventListener("DOMContentLoaded", function () {
         actions = `
           <div class="task-actions">
             <button class="btn-small btn-process" data-id="${task.id}" onclick="setProcessing(this.dataset.id)">يتم المعالجة</button>
-            <button class="btn-small btn-done"
+            <button class="btn-done"
               data-id="${task.id}"
               data-type="${task.type}"
               data-date="${task.due_date}"
@@ -374,13 +364,15 @@ document.addEventListener("DOMContentLoaded", function () {
             </button>
           </div>
         `;
+      } else {
+        actions = `<span class="done-text">تم التنفيذ</span>`;
       }
 
       tbody.innerHTML += `
         <tr>
           <td>${actions}</td>
           <td><span class="status-tag ${status.className}">${status.text}</span></td>
-          <td>${getDueText(task)}</td>
+          <td>${formatDate(task.due_date)}</td>
           <td>${task.type}</td>
           <td>${task.title}</td>
         </tr>
@@ -409,9 +401,7 @@ document.addEventListener("DOMContentLoaded", function () {
       .eq("id", Number(id));
 
     if (error) {
-      document.getElementById("alertsList").innerHTML = `
-        <div class="alert-item"><strong>خطأ:</strong> ${error.message}</div>
-      `;
+      document.getElementById("alertsList").innerHTML = `<div class="alert-item"><strong>خطأ:</strong> ${error.message}</div>`;
       return;
     }
 
@@ -433,13 +423,11 @@ document.addEventListener("DOMContentLoaded", function () {
       .eq("id", numericId);
 
     if (updateError) {
-      document.getElementById("alertsList").innerHTML = `
-        <div class="alert-item"><strong>خطأ:</strong> ${updateError.message}</div>
-      `;
+      document.getElementById("alertsList").innerHTML = `<div class="alert-item"><strong>خطأ:</strong> ${updateError.message}</div>`;
       return;
     }
 
-    if (type !== "مرة واحدة") {
+    if (["يومي", "أسبوعي", "شهري", "سنوي", "سبتمبر/أكتوبر", "الأسبوع الأخير"].includes(type)) {
       const newDate = nextDate(dueDate, type);
 
       const { error: insertError } = await supabase
@@ -453,9 +441,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }]);
 
       if (insertError) {
-        document.getElementById("alertsList").innerHTML = `
-          <div class="alert-item"><strong>خطأ:</strong> ${insertError.message}</div>
-        `;
+        document.getElementById("alertsList").innerHTML = `<div class="alert-item"><strong>خطأ:</strong> ${insertError.message}</div>`;
         return;
       }
     }
@@ -475,7 +461,7 @@ document.addEventListener("DOMContentLoaded", function () {
       rows.push([
         task.title || "",
         task.type || "",
-        getDueText(task),
+        formatDate(task.due_date),
         status.text
       ]);
     });
@@ -509,12 +495,8 @@ document.addEventListener("DOMContentLoaded", function () {
       .order("id", { ascending: false });
 
     if (error) {
-      alertsList.innerHTML = `
-        <div class="alert-item"><strong>خطأ:</strong> ${error.message}</div>
-      `;
-      tbody.innerHTML = `
-        <tr><td colspan="5" class="empty-text">فشل تحميل البيانات</td></tr>
-      `;
+      alertsList.innerHTML = `<div class="alert-item"><strong>خطأ:</strong> ${error.message}</div>`;
+      tbody.innerHTML = `<tr><td colspan="5" class="empty-text">فشل تحميل البيانات</td></tr>`;
       return;
     }
 
