@@ -312,7 +312,6 @@ document.addEventListener("DOMContentLoaded", function () {
       const status = getStatusInfo(task);
 
       let actions = "";
-
       if (canActToday(task)) {
         actions = `
           <div class="task-actions">
@@ -329,7 +328,7 @@ document.addEventListener("DOMContentLoaded", function () {
       }
 
       tasksTableBody.innerHTML += `
-        <tr>
+        <tr data-task-id="${task.id}">
           <td>${actions}</td>
           <td><span class="status-tag ${status.className}">${status.text}</span></td>
           <td>${formatDate(task.due_date)}</td>
@@ -548,6 +547,54 @@ document.addEventListener("DOMContentLoaded", function () {
   exportBtn.addEventListener("click", exportExcel);
 
   loadData();
+
+  const channel = supabase
+    .channel('tasks-live')
+
+    .on(
+      'postgres_changes',
+      { event: '*', schema: 'public', table: 'tasks' },
+      (payload) => {
+        if (payload.eventType === "INSERT" && payload.new) {
+          const exists = currentTasks.some(t => t.id === payload.new.id);
+          if (!exists) currentTasks.push(payload.new);
+        }
+
+        if (payload.eventType === "UPDATE" && payload.new) {
+          const index = currentTasks.findIndex(t => t.id === payload.new.id);
+          if (index !== -1) currentTasks[index] = payload.new;
+        }
+
+        if (payload.eventType === "DELETE" && payload.old) {
+          currentTasks = currentTasks.filter(t => t.id !== payload.old.id);
+        }
+
+        renderStats();
+        renderReminder();
+        renderAlerts();
+        renderTable();
+      }
+    )
+
+    .on(
+      'postgres_changes',
+      { event: '*', schema: 'public', table: 'task_history' },
+      (payload) => {
+        if (payload.eventType === "INSERT" && payload.new) {
+          const exists = currentHistory.some(h => h.id === payload.new.id);
+          if (!exists) currentHistory.unshift(payload.new);
+        }
+
+        if (payload.eventType === "DELETE" && payload.old) {
+          currentHistory = currentHistory.filter(h => h.id !== payload.old.id);
+        }
+
+        renderStats();
+        renderTable();
+      }
+    )
+
+    .subscribe();
 });
 </script>
 
