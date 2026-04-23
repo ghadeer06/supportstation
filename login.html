@@ -1,30 +1,36 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>تسجيل الدخول</title>
+
   <style>
     * { box-sizing: border-box; }
 
-body{
-  margin:0;
-  min-height:100vh;
-  font-family: Arial, sans-serif;
-  direction: rtl;
-  background:
-    linear-gradient(rgba(18,44,74,0.70), rgba(18,44,74,0.70)),
-    url("img/h1.png") center/cover no-repeat;
-  display:flex;
-  flex-direction:column;   /* يخلي الصفحة عمودية */
-  justify-content:flex-start; /* يمنع الفوتر من الصعود */
-  align-items:center; /* يبقي الكارد بالنص */
-  color:#fff;
-  padding-top:60px; /* مسافة بسيطة فوق */
-}
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family: Arial, sans-serif;
+      direction: rtl;
+      color:#fff;
 
+      background:
+        linear-gradient(rgba(18,44,74,0.70), rgba(18,44,74,0.70)),
+        url("img/h1.png") center/cover no-repeat;
 
+      display:flex;
+      flex-direction:column;
+    }
+
+    /* يخلي المحتوى بالنص */
+    .page-content{
+      flex:1;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      padding:20px;
+    }
 
     .card{
       width:min(520px, 92%);
@@ -64,7 +70,6 @@ body{
       border:1px solid rgba(255,255,255,0.28);
       background:rgba(255,255,255,0.10);
       cursor:pointer;
-      user-select:none;
     }
 
     .field{
@@ -138,59 +143,48 @@ body{
     .back-link:hover{
       text-decoration:underline;
     }
-    :root{
-  --dark:#0F2F4A;
-  --footer:#2c3e50;
-}
 
+    /* الفوتر */
     .main-footer{
-  background:linear-gradient(to left, var(--dark), var(--footer));
-  color:#fff;
-  padding:16px 0;
-  text-align:center;
-  margin-top:auto;
-}
+      background:#0F2F4A;
+      color:#fff;
+      padding:16px 0;
+      text-align:center;
+    }
 
+    .footer-content {
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:8px;
+    }
 
-.footer-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-}
+    .footer-links {
+      list-style:none;
+      padding:0;
+      display:flex;
+      gap:15px;
+      margin:0;
+    }
 
-.footer-links {
-  list-style: none;
-  padding: 0;
-  display: flex;
-  gap: 15px;
-  margin: 0;
-}
+    .footer-links a {
+      color:#ecf0f1;
+      text-decoration:none;
+      font-size:14px;
+    }
 
-.footer-links a {
-  color: #ecf0f1;
-  text-decoration: none;
-  transition: color 0.3s;
-  font-size: 14px;
-}
+    .footer-links a:hover {
+      color:#cfd8df;
+    }
 
-.footer-links a:hover {
-  color: #cfd8df;
-}
   </style>
 </head>
+
 <body>
 
-<script>
-const email = localStorage.getItem("user_email");
-
-// استثناء مؤقت لإيميلك
-if (email === "445153760@tvtc.edu.sa") {
-    localStorage.setItem("user_role", "trainer");
-}
-</script>
-
+<div class="page-content">
   <div class="card">
+
     <h2>تسجيل الدخول</h2>
     <p class="sub">أدخلي بريدك الإلكتروني وسنرسل لك رمز تحقق على الإيميل.</p>
 
@@ -239,193 +233,11 @@ if (email === "445153760@tvtc.edu.sa") {
     <p class="msg" id="msg"></p>
 
     <a class="back-link" href="index.html">العودة للصفحة الرئيسية</a>
+
   </div>
+</div>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script>
-  
-    function getClient() {
-      return window.supabase.createClient(
-        'https://mcxdjisoyqdnyieboqpy.supabase.co',
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1jeGRqaXNveXFkbnlpZWJvcXB5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0MDI3NDAsImV4cCI6MjA5MDk3ODc0MH0.kIwJ1pc-GLX1lTvstLSDZ5Li1rd9vwutI4-Wz_HR6nE'
-      );
-    }
-
-    let currentUser = null;
-    let selectedRole = null;
-
-    function updateRoleNote() {
-      const role = document.querySelector('input[name="role"]:checked')?.value || "trainee";
-      const note = document.getElementById("roleNote");
-
-      if (role === "trainee") {
-        note.innerText = "يرجى استخدام البريد الإلكتروني الجامعي (@tvtc.edu.sa) للمتدربين.";
-      } else if (role === "trainer") {
-        note.innerText = "يرجى استخدام البريد الإلكتروني الوظيفي (@tvtc.gov.sa) للمدربين.";
-      } else {
-        note.innerText = "يرجى استخدام البريد الإلكتروني المعتمد للمسؤول.";
-      }
-    }
-
-    async function startOtp() {
-      const msg = document.getElementById("msg");
-      const email = document.getElementById("email").value.trim();
-      selectedRole = document.querySelector('input[name="role"]:checked')?.value || "trainee";
-
-      if (email === "") {
-        msg.innerText = "يرجى إدخال البريد الإلكتروني";
-        return;
-      }
-
-      // التحقق من البريد الإلكتروني حسب نوع المستخدم
-      if (selectedRole === "trainee") {
-        if (!email.endsWith("@tvtc.edu.sa")) {
-          msg.innerText = "يرجى استخدام البريد الإلكتروني الجامعي (@tvtc.edu.sa).";
-          return;
-        }
-      }
-
-      
-
-      msg.innerText = "جاري إرسال الرمز...";
-
-      try {
-        const supabase = getClient();
-
-        const { error } = await supabase.auth.signInWithOtp({
-          email: email,
-          options: {
-            shouldCreateUser: true
-          }
-        });
-
-        if (error) {
-          msg.innerText = error.message;
-          return;
-        }
-
-        document.getElementById("otpBox").style.display = "block";
-        msg.innerText = "تم إرسال الرمز إلى بريدك الإلكتروني";
-      } catch (e) {
-        msg.innerText = "صار خطأ: " + e.message;
-      }
-    }
-
-    async function verifyOtpCode() {
-      const msg = document.getElementById("msg");
-      const email = document.getElementById("email").value.trim();
-      const otp = document.getElementById("otp").value.trim();
-
-      if (otp === "") {
-        msg.innerText = "يرجى إدخال رمز التحقق";
-        return;
-      }
-
-      msg.innerText = "جاري التحقق...";
-
-      try {
-        const supabase = getClient();
-
-        const { data, error } = await supabase.auth.verifyOtp({
-          email: email,
-          token: otp,
-          type: "email"
-        });
-
-        if (error) {
-          msg.innerText = error.message;
-          return;
-        }
-
-        currentUser = data.user;
-
-        // نبحث في جدول users بالإيميل
-        const { data: existingUser, error: findError } = await supabase
-          .from("users")
-          .select("*")
-          .eq("email", email)
-          .maybeSingle();
-
-        if (findError) {
-          msg.innerText = "صار خطأ في جلب بيانات المستخدم: " + findError.message;
-          return;
-        }
-
-        // إذا المستخدم موجود من قبل
-        if (existingUser) {
-          const finalRole = existingUser.role || "trainee";
-
-          localStorage.setItem("user_email", email);
-          localStorage.setItem("user_role", finalRole);
-          localStorage.setItem("userName", existingUser.name || "");
-
-          msg.innerText = "تم تسجيل الدخول بنجاح";
-          goToPage(finalRole);
-          return;
-        }
-
-        // إذا المستخدم جديد
-        document.getElementById("nameBox").style.display = "block";
-        msg.innerText = "أدخلي اسمك لإكمال التسجيل أول مرة";
-      } catch (e) {
-        msg.innerText = "صار خطأ: " + e.message;
-      }
-    }
-
-    async function saveNameAndContinue() {
-      const msg = document.getElementById("msg");
-      const name = document.getElementById("name").value.trim();
-      const email = document.getElementById("email").value.trim();
-
-      if (name === "") {
-        msg.innerText = "يرجى إدخال الاسم";
-        return;
-      }
-
-      try {
-        const supabase = getClient();
-
-        const finalRole = selectedRole || "trainee";
-
-        const { error } = await supabase
-          .from("users")
-          .insert([
-            {
-              email: email,
-              name: name,
-              role: finalRole
-            }
-          ]);
-
-        if (error) {
-          msg.innerText = "صار خطأ في حفظ الاسم: " + error.message;
-          return;
-        }
-
-        localStorage.setItem("userName", name);
-        localStorage.setItem("user_email", email);
-        localStorage.setItem("user_role", finalRole);
-
-        msg.innerText = "تم حفظ الاسم وتسجيل الدخول بنجاح";
-        goToPage(finalRole);
-      } catch (e) {
-        msg.innerText = "صار خطأ: " + e.message;
-      }
-    }
-
-    function goToPage(role) {
-      if (role === "admin") {
-        window.location.href = "admin.html";
-      } else if (role === "trainer") {
-        window.location.href = "trainer_home.html";
-      } else {
-        window.location.href = "trainee_home.html";
-      }
-    }
-
-    updateRoleNote();
-  </script>
-  <footer class="main-footer">
+<footer class="main-footer">
   <div class="footer-content">
     <p>&copy; 2026 حقوق محفوظة | محطة الدعم</p>
     <ul class="footer-links">
