@@ -53,7 +53,7 @@
 
     <section class="events-section-box">
       <h2 class="panel-title no-margin">فعاليات سابقة</h2>
-      <div class="section-subtitle">الفعاليات التي مرّ عليها أكثر من أسبوع</div>
+      <div class="section-subtitle">الفعاليات التي انتهى تاريخها</div>
       <div id="pastEventsContainer" class="events-grid">
         <div class="empty-box">جارِ تحميل الفعاليات...</div>
       </div>
@@ -129,9 +129,6 @@ document.addEventListener("DOMContentLoaded", async function () {
         .select("*")
         .order("created_at", { ascending: false });
 
-      console.log("EVENTS DATA:", data);
-      console.log("EVENTS ERROR:", error);
-
       if (error) {
         currentContainer.innerHTML = `<div class="empty-box">خطأ في تحميل الفعاليات</div>`;
         pastContainer.innerHTML = `<div class="empty-box">خطأ في تحميل الفعاليات</div>`;
@@ -142,22 +139,25 @@ document.addEventListener("DOMContentLoaded", async function () {
       pastContainer.innerHTML = "";
 
       if (!data || data.length === 0) {
-        currentContainer.innerHTML = `<div class="empty-box">لا توجد فعاليات جديدة</div>`;
-        pastContainer.innerHTML = `<div class="empty-box">لا توجد فعاليات سابقة</div>`;
+        currentContainer.innerHTML = `<div class="empty-box">لا توجد فعاليات</div>`;
+        pastContainer.innerHTML = `<div class="empty-box">لا توجد فعاليات</div>`;
         return;
       }
 
-      const now = new Date();
+      const today = new Date();
+      today.setHours(0,0,0,0);
 
       data.forEach(event => {
-        const created = new Date(event.created_at);
-        const diffDays = (now - created) / (1000 * 60 * 60 * 24);
+        const eventDate = new Date(event.due_date);
+        eventDate.setHours(0,0,0,0);
+
         const card = createEventCard(event);
 
-        if (diffDays <= 7) {
-          currentContainer.innerHTML += card;
-        } else {
+        // 🔥 هنا التعديل
+        if (eventDate < today) {
           pastContainer.innerHTML += card;
+        } else {
+          currentContainer.innerHTML += card;
         }
       });
 
@@ -168,10 +168,11 @@ document.addEventListener("DOMContentLoaded", async function () {
       if (pastContainer.innerHTML.trim() === "") {
         pastContainer.innerHTML = `<div class="empty-box">لا توجد فعاليات سابقة</div>`;
       }
+
     } catch (err) {
-      console.log("CATCH ERROR:", err);
-      currentContainer.innerHTML = `<div class="empty-box">صار خطأ غير متوقع</div>`;
-      pastContainer.innerHTML = `<div class="empty-box">صار خطأ غير متوقع</div>`;
+      console.log(err);
+      currentContainer.innerHTML = `<div class="empty-box">صار خطأ</div>`;
+      pastContainer.innerHTML = `<div class="empty-box">صار خطأ</div>`;
     }
   }
 
