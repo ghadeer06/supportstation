@@ -23,7 +23,7 @@ body {
   background: var(--bg);
 }
 
-.container {
+.container { 
   flex: 1;
   width: 88%;
   max-width: 760px;
