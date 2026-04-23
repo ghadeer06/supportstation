@@ -641,12 +641,17 @@ body.login-page, body {
 
 
 .main-footer{
-  background:linear-gradient(to left, var(--dark), var(--footer));
+  background: #0F2F4A; /* لون صلب وواضح */
+  background: linear-gradient(to left, var(--dark), var(--footer));
   color:#fff;
-  padding:16px 0;
+  padding:18px 0;
   text-align:center;
+  width:100%;
   margin-top:auto;
+  position:relative;
+  z-index:10;
 }
+
 
 
 .footer-content {
