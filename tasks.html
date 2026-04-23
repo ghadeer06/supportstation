@@ -10,6 +10,8 @@
 <body>
 
 <header class="admin-header">
+  <button id="menuToggle" class="menu-btn">☰</button>
+
   <div class="admin-left">
     <img src="img/logo.png" class="admin-logo" alt="Logo">
     <div class="admin-title">
@@ -17,8 +19,11 @@
       <span>متابعة المهام اليومية والأسبوعية والشهرية الخاصة بالصحة والسلامة المهنية</span>
     </div>
   </div>
+
   <a href="index.html" class="logout">تسجيل الخروج</a>
 </header>
+
+<div id="overlay" class="overlay"></div>
 
 <div class="dashboard-layout">
   <aside class="sidebar">
@@ -64,22 +69,24 @@
           <button class="btn-excel" id="exportBtn">تصدير Excel</button>
         </div>
 
-        <table class="tasks-table">
-          <thead>
-            <tr>
-              <th>الإجراء</th>
-              <th>الحالة</th>
-              <th>الموعد</th>
-              <th>النوع</th>
-              <th>المهمة</th>
-            </tr>
-          </thead>
-          <tbody id="tasksTableBody">
-            <tr>
-              <td colspan="5" class="empty-text">جاري تحميل البيانات...</td>
-            </tr>
-          </tbody>
-        </table>
+        <div class="table-scroll">
+          <table class="tasks-table">
+            <thead>
+              <tr>
+                <th>الإجراء</th>
+                <th>الحالة</th>
+                <th>الموعد</th>
+                <th>النوع</th>
+                <th>المهمة</th>
+              </tr>
+            </thead>
+            <tbody id="tasksTableBody">
+              <tr>
+                <td colspan="5" class="empty-text">جاري تحميل البيانات...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </section>
 
       <section class="alerts-panel">
@@ -91,6 +98,12 @@
     </div>
   </main>
 </div>
+
+<footer class="main-footer">
+  <div class="footer-content">
+    <p>&copy; 2026 حقوق محفوظة | محطة الدعم</p>
+  </div>
+</footer>
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
@@ -540,8 +553,24 @@ document.addEventListener("DOMContentLoaded", function () {
 
   exportBtn.addEventListener("click", exportExcel);
 
+  /* ===== زر السايد بار ===== */
+  const menuBtn = document.getElementById("menuToggle");
+  const sidebar = document.querySelector(".sidebar");
+  const overlay = document.getElementById("overlay");
+
+  menuBtn.addEventListener("click", () => {
+    sidebar.classList.toggle("open");
+    overlay.classList.toggle("show");
+  });
+
+  overlay.addEventListener("click", () => {
+    sidebar.classList.remove("open");
+    overlay.classList.remove("show");
+  });
+
   loadData();
 
+  /* ===== Realtime ===== */
   const channel = supabase
     .channel('tasks-live')
 
@@ -591,16 +620,6 @@ document.addEventListener("DOMContentLoaded", function () {
     .subscribe();
 });
 </script>
-<footer class="main-footer">
-  <div class="footer-content">
-    <p>&copy; 2026 حقوق محفوظة | محطة الدعم</p>
-    <ul class="footer-links">
-      <li><a href="index.html">الرئيسية</a></li>
-      <li><a href="about.html">عن الموقع</a></li>
-      <li><a href="https://twitter.com/support0station" target="_blank">اتصل بنا</a></li>
-    </ul>
-  </div>
-</footer>
 
 </body>
 </html>
