@@ -422,3 +422,60 @@ table{
     align-items:flex-start;
   }
 }
+
+
+/* ===== Scroll ===== */
+
+/* نخلي البوكسين نفس الارتفاع */
+.table-panel,
+.alerts-panel{
+  height:520px;
+  display:flex;
+  flex-direction:column;
+}
+
+/* تثبيت الهيدر داخل بوكس المهام */
+.table-header{
+  flex-shrink:0;
+}
+
+/* تثبيت عنوان التنبيهات */
+.alerts-panel .panel-title{
+  flex-shrink:0;
+}
+
+/* سكرول للجدول */
+.table-panel table{
+  display:block;
+  overflow-y:auto;
+  height:100%;
+}
+
+/* سكرول للتنبيهات */
+#alertsList{
+  overflow-y:auto;
+  height:100%;
+}
+
+/* شكل السكرول */
+.table-panel table::-webkit-scrollbar,
+#alertsList::-webkit-scrollbar{
+  width:8px;
+}
+
+.table-panel table::-webkit-scrollbar-track,
+#alertsList::-webkit-scrollbar-track{
+  background:#edf1f5;
+  border-radius:10px;
+}
+
+.table-panel table::-webkit-scrollbar-thumb,
+#alertsList::-webkit-scrollbar-thumb{
+  background:var(--mid);
+  border-radius:10px;
+}
+
+.table-panel table::-webkit-scrollbar-thumb:hover,
+#alertsList::-webkit-scrollbar-thumb:hover{
+  background:var(--dark);
+}
