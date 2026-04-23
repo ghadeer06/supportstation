@@ -219,3 +219,36 @@ body{
   margin-right:250px;
 }
 
+/* ===== Sidebar Mobile Fix ===== */
+@media (max-width: 768px){
+
+  .sidebar{
+    position:relative;
+    width:100%;
+    height:auto;
+    top:0;
+    margin-bottom:20px;
+  }
+
+  .sidebar-menu{
+    flex-direction:row;
+    flex-wrap:wrap;
+    gap:10px;
+    justify-content:center;
+  }
+
+  .sidebar-menu li{
+    flex:1 1 calc(50% - 10px);
+  }
+
+  .sidebar-menu li a{
+    text-align:center;
+    padding:12px;
+    font-size:14px;
+  }
+
+  .admin-main{
+    margin-right:0 !important;
+    padding:16px;
+  }
+}
