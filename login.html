@@ -17,10 +17,13 @@ body{
     linear-gradient(rgba(18,44,74,0.70), rgba(18,44,74,0.70)),
     url("img/h1.png") center/cover no-repeat;
   display:flex;
-  flex-direction:column;   /* أهم سطر */
-  justify-content:center;  /* يخلي الكارد بالنص */
+  flex-direction:column;   /* يخلي الصفحة عمودية */
+  justify-content:flex-start; /* يمنع الفوتر من الصعود */
+  align-items:center; /* يبقي الكارد بالنص */
   color:#fff;
+  padding-top:60px; /* مسافة بسيطة فوق */
 }
+
 
 
     .card{
