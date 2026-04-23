@@ -120,7 +120,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const { data, error } = await supabaseClient
       .from("tasks")
       .select("*")
-      .order("created_at", { ascending: false })
+      .order("updated_at", { ascending: false })
       .limit(5);
 
     if (error) {
