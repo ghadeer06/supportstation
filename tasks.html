@@ -134,6 +134,38 @@ document.addEventListener("DOMContentLoaded", function () {
   let currentHistory = [];
   let currentFilter = "all";
 
+  function openSidebar() {
+    if (window.innerWidth <= 992) {
+      sidebar.classList.add("open");
+      overlay.classList.add("show");
+      document.body.style.overflow = "hidden";
+    }
+  }
+
+  function closeSidebar() {
+    sidebar.classList.remove("open");
+    overlay.classList.remove("show");
+    document.body.style.overflow = "";
+  }
+
+  menuBtn.addEventListener("click", function () {
+    if (window.innerWidth <= 992) {
+      if (sidebar.classList.contains("open")) {
+        closeSidebar();
+      } else {
+        openSidebar();
+      }
+    }
+  });
+
+  overlay.addEventListener("click", closeSidebar);
+
+  window.addEventListener("resize", function () {
+    if (window.innerWidth > 992) {
+      closeSidebar();
+    }
+  });
+
   function parseDateOnly(dateString) {
     const [y, m, d] = String(dateString).split("-").map(Number);
     return new Date(y, m - 1, d);
@@ -229,13 +261,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const diff = daysBetween(task.due_date);
 
-    if (diff < 0) {
-      return { text: getDueLabel(task), className: "status-soon" };
-    }
-
-    if (diff <= 3) {
-      return { text: getDueLabel(task), className: "status-soon" };
-    }
+    if (diff < 0) return { text: getDueLabel(task), className: "status-soon" };
+    if (diff <= 3) return { text: getDueLabel(task), className: "status-soon" };
 
     return { text: getDueLabel(task), className: "status-pending" };
   }
@@ -335,7 +362,7 @@ document.addEventListener("DOMContentLoaded", function () {
           </div>
         `;
       } else {
-        actions = `<span class="empty-text">—</span>`;
+        actions = `<span class="dash-only">—</span>`;
       }
 
       tasksTableBody.innerHTML += `
@@ -535,6 +562,7 @@ document.addEventListener("DOMContentLoaded", function () {
       currentFilter = card.dataset.filter;
       updateFilterUI();
       renderTable();
+      closeSidebar();
     });
   });
 
@@ -556,34 +584,6 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   exportBtn.addEventListener("click", exportExcel);
-
-  function closeSidebar() {
-    sidebar.classList.remove("open");
-    overlay.classList.remove("show");
-  }
-
-  function openSidebar() {
-    sidebar.classList.add("open");
-    overlay.classList.add("show");
-  }
-
-  menuBtn.addEventListener("click", () => {
-    if (window.innerWidth <= 992) {
-      if (sidebar.classList.contains("open")) {
-        closeSidebar();
-      } else {
-        openSidebar();
-      }
-    }
-  });
-
-  overlay.addEventListener("click", closeSidebar);
-
-  window.addEventListener("resize", () => {
-    if (window.innerWidth > 992) {
-      closeSidebar();
-    }
-  });
 
   loadData();
 
