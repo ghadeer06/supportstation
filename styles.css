@@ -628,57 +628,12 @@ body.login-page, body {
 }
 
 
-
-
-
-
-
 .admin-body .admin-priority-badge{
   background:#f2d7b6;
   border-color:#e8c79f;
   color:#7a4a00;
 }
 
-
-.main-footer{
-  background: #0F2F4A; /* لون صلب وواضح */
-  background: linear-gradient(to left, var(--dark), var(--footer));
-  color:#fff;
-  padding:18px 0;
-  text-align:center;
-  width:100%;
-  margin-top:auto;
-  position:relative;
-  z-index:10;
-}
-
-
-
-.footer-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-}
-
-.footer-links {
-  list-style: none;
-  padding: 0;
-  display: flex;
-  gap: 15px;
-  margin: 0;
-}
-
-.footer-links a {
-  color: #ecf0f1;
-  text-decoration: none;
-  transition: color 0.3s;
-  font-size: 14px;
-}
-
-.footer-links a:hover {
-  color: #cfd8df;
-}
 
 /* لجعل الفوتر متجاوباً مع الشاشات الصغيرة */
 @media (max-width: 600px) {
