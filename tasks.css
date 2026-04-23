@@ -12,7 +12,7 @@
   padding:0;
 }
 
-html, body{
+html, body{ 
   min-height:100%;
 }
 
@@ -73,6 +73,30 @@ body{
 
 .logout:hover{
   background:#e7e7e7;
+}
+
+/* زر المنيو */
+.menu-btn{
+  display:none;
+  background:#fff;
+  color:var(--dark);
+  border:none;
+  padding:6px 10px;
+  border-radius:8px;
+  font-size:18px;
+  cursor:pointer;
+}
+
+/* overlay */
+.overlay{
+  position:fixed;
+  top:0;
+  right:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.4);
+  z-index:998;
+  display:none;
 }
 
 /* ===== Layout ===== */
@@ -223,7 +247,18 @@ body{
   margin-bottom:14px;
 }
 
+.table-scroll{
+  overflow-x:auto;
+  overflow-y:auto;
+  max-height:500px;
+}
+
 /* ===== Alerts ===== */
+#alertsList{
+  max-height:500px;
+  overflow-y:auto;
+}
+
 .alert-item{
   background:#f8fafc;
   border:1px solid #e8edf3;
@@ -418,15 +453,58 @@ table{
     padding-top:70px;
   }
 
+  .menu-btn{
+    display:block;
+  }
+
   .admin-header{
     padding:14px 16px;
+    gap:10px;
+  }
+
+  .admin-left{
+    gap:10px;
+    min-width:0;
+  }
+
+  .admin-logo{
+    width:58px;
+    flex-shrink:0;
+  }
+
+  .admin-title h1{
+    font-size:18px;
+    line-height:1.2;
+  }
+
+  .admin-title span{
+    font-size:11px;
+    line-height:1.4;
+    display:block;
+  }
+
+  .logout{
+    padding:7px 12px;
+    font-size:12px;
+    flex-shrink:0;
   }
 
   .sidebar{
-    position:relative;
-    width:100%;
-    height:auto;
-    top:0;
+    position:fixed;
+    top:80px;
+    right:-260px;
+    width:250px;
+    height:calc(100vh - 80px);
+    z-index:999;
+    transition:.3s;
+  }
+
+  .sidebar.open{
+    right:0;
+  }
+
+  .overlay.show{
+    display:block;
   }
 
   .admin-main{
@@ -438,71 +516,34 @@ table{
     grid-template-columns:1fr;
   }
 
+  .tasks-table{
+    min-width:700px;
+  }
+
   .tasks-table th,
   .tasks-table td{
     font-size:12px;
     padding:10px;
+    white-space:nowrap;
   }
 
   .table-header{
     flex-direction:column;
     align-items:flex-start;
   }
-}
 
+  .btn-excel{
+    width:100%;
+  }
 
-/* ===== Scroll ===== */
+  .task-actions{
+    flex-direction:column;
+    min-width:110px;
+  }
 
-/* نخلي البوكسين نفس الارتفاع */
-.table-panel,
-.alerts-panel{
-  height:520px;
-  display:flex;
-  flex-direction:column;
-}
-
-/* تثبيت الهيدر داخل بوكس المهام */
-.table-header{
-  flex-shrink:0;
-}
-
-/* تثبيت عنوان التنبيهات */
-.alerts-panel .panel-title{
-  flex-shrink:0;
-}
-
-/* سكرول للجدول */
-.table-panel table{
-  display:block;
-  overflow-y:auto;
-  height:100%;
-}
-
-/* سكرول للتنبيهات */
-#alertsList{
-  overflow-y:auto;
-  height:100%;
-}
-
-/* شكل السكرول */
-.table-panel table::-webkit-scrollbar,
-#alertsList::-webkit-scrollbar{
-  width:8px;
-}
-
-.table-panel table::-webkit-scrollbar-track,
-#alertsList::-webkit-scrollbar-track{
-  background:#edf1f5;
-  border-radius:10px;
-}
-
-.table-panel table::-webkit-scrollbar-thumb,
-#alertsList::-webkit-scrollbar-thumb{
-  background:var(--mid);
-  border-radius:10px;
-}
-
-.table-panel table::-webkit-scrollbar-thumb:hover,
-#alertsList::-webkit-scrollbar-thumb:hover{
-  background:var(--dark);
+  .btn-small,
+  .btn-done{
+    width:100%;
+    text-align:center;
+  }
 }
