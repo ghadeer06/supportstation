@@ -10,6 +10,8 @@
 <body>
 
 <header class="admin-header">
+  <button id="menuToggle" class="menu-btn">☰</button>
+
   <div class="admin-left">
     <img src="img/logo.png" class="admin-logo" alt="Logo">
     <div class="admin-title">
@@ -17,8 +19,11 @@
       <span>متابعة المهام اليومية والأسبوعية والشهرية الخاصة بالصحة والسلامة المهنية</span>
     </div>
   </div>
+
   <a href="index.html" class="logout">تسجيل الخروج</a>
 </header>
+
+<div id="overlay" class="overlay"></div>
 
 <div class="dashboard-layout">
   <aside class="sidebar">
@@ -64,22 +69,24 @@
           <button class="btn-excel" id="exportBtn">تصدير Excel</button>
         </div>
 
-        <table class="tasks-table">
-          <thead>
-            <tr>
-              <th>الإجراء</th>
-              <th>الحالة</th>
-              <th>الموعد</th>
-              <th>النوع</th>
-              <th>المهمة</th>
-            </tr>
-          </thead>
-          <tbody id="tasksTableBody">
-            <tr>
-              <td colspan="5" class="empty-text">جاري تحميل البيانات...</td>
-            </tr>
-          </tbody>
-        </table>
+        <div class="table-scroll">
+          <table class="tasks-table">
+            <thead>
+              <tr>
+                <th>الإجراء</th>
+                <th>الحالة</th>
+                <th>الموعد</th>
+                <th>النوع</th>
+                <th>المهمة</th>
+              </tr>
+            </thead>
+            <tbody id="tasksTableBody">
+              <tr>
+                <td colspan="5" class="empty-text">جاري تحميل البيانات...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </section>
 
       <section class="alerts-panel">
@@ -92,15 +99,13 @@
   </main>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+
 <script>
 document.addEventListener("DOMContentLoaded", function () {
   const role = localStorage.getItem("user_role");
 
-  if (role && role !== "admin") {
-    alert("هذه الصفحة خاصة بالمسؤول فقط");
-    window.location.href = "login.html";
-    return;
-  }
+
 
   const supabase = window.supabase.createClient(
     "https://mcxdjisoyqdnyieboqpy.supabase.co",
@@ -473,45 +478,55 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function exportExcel() {
-    const rows = [["المهمة","النوع","الموعد","الحالة"]];
+  let data = [];
 
-    if (currentFilter === "done") {
-      getDoneVisible(currentHistory).forEach(row => {
-        rows.push([
-          row.title || "",
-          row.type || "",
-          new Date(row.completed_at).toLocaleDateString("en-GB"),
-          "تم التنفيذ"
-        ]);
-      });
-    } else {
-      const sourceRows = currentFilter === "processing" ? getProcessingTasks(currentTasks) : currentTasks;
-      sourceRows.forEach(task => {
-        const status = getStatusInfo(task);
-        rows.push([
-          task.title || "",
-          task.type || "",
-          formatDate(task.due_date),
-          status.text
-        ]);
-      });
-    }
+  // العناوين
+  data.push(["المهمة", "النوع", "الموعد", "الحالة"]);
 
-    const csvContent = "\uFEFF" + rows.map(row =>
-      row.map(value => `"${String(value).replace(/"/g, '""')}"`).join(",")
-    ).join("\n");
+  if (currentFilter === "done") {
+    getDoneVisible(currentHistory).forEach(row => {
+      data.push([
+        row.title || "",
+        row.type || "",
+        new Date(row.completed_at).toLocaleDateString("en-GB"),
+        "تم التنفيذ"
+      ]);
+    });
+  } else {
+    const source = currentFilter === "processing"
+      ? getProcessingTasks(currentTasks)
+      : currentTasks;
 
-    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-    const link = document.createElement("a");
-    const url = URL.createObjectURL(blob);
+    source.forEach(task => {
+      const status = getStatusInfo(task);
 
-    link.href = url;
-    link.download = "مهام_السلامة.csv";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
+      data.push([
+        task.title || "",
+        task.type || "",
+        formatDate(task.due_date),
+        status.text
+      ]);
+    });
   }
+
+  // إنشاء الشيت
+  const ws = XLSX.utils.aoa_to_sheet(data);
+
+  // تنسيق الأعمدة
+  ws["!cols"] = [
+    { wch: 35 },
+    { wch: 15 },
+    { wch: 15 },
+    { wch: 20 }
+  ];
+
+  // إنشاء الملف
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "مهام السلامة");
+
+  // تحميل
+  XLSX.writeFile(wb, "مهام_السلامة.xlsx");
+}
 
   document.querySelectorAll(".filter-card").forEach(card => {
     card.addEventListener("click", () => {
@@ -540,8 +555,24 @@ document.addEventListener("DOMContentLoaded", function () {
 
   exportBtn.addEventListener("click", exportExcel);
 
+  /* ===== زر السايد بار ===== */
+  const menuBtn = document.getElementById("menuToggle");
+  const sidebar = document.querySelector(".sidebar");
+  const overlay = document.getElementById("overlay");
+
+  menuBtn.addEventListener("click", () => {
+    sidebar.classList.toggle("open");
+    overlay.classList.toggle("show");
+  });
+
+  overlay.addEventListener("click", () => {
+    sidebar.classList.remove("open");
+    overlay.classList.remove("show");
+  });
+
   loadData();
 
+  /* ===== Realtime ===== */
   const channel = supabase
     .channel('tasks-live')
 
@@ -601,6 +632,5 @@ document.addEventListener("DOMContentLoaded", function () {
     </ul>
   </div>
 </footer>
-
 </body>
 </html>
