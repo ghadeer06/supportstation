@@ -10,7 +10,7 @@
 <body>
 
 <header class="admin-header">
-  <button id="menuToggle" class="menu-btn">☰</button>
+  <button id="menuToggle" class="menu-btn" type="button" aria-label="فتح القائمة">☰</button>
 
   <div class="admin-left">
     <img src="img/logo.png" class="admin-logo" alt="Logo">
@@ -26,7 +26,7 @@
 <div id="overlay" class="overlay"></div>
 
 <div class="dashboard-layout">
-  <aside class="sidebar">
+  <aside class="sidebar" id="sidebar">
     <div class="sidebar-brand">
       <h2>محطة الدعم</h2>
     </div>
@@ -66,7 +66,7 @@
       <section class="table-panel">
         <div class="table-header">
           <h2 class="panel-title" id="tableTitle">قائمة المهام</h2>
-          <button class="btn-excel" id="exportBtn">تصدير Excel</button>
+          <button class="btn-excel" id="exportBtn" type="button">تصدير Excel</button>
         </div>
 
         <div class="table-scroll">
@@ -99,13 +99,21 @@
   </main>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+<footer class="main-footer">
+  <div class="footer-content">
+    <p>&copy; 2026 حقوق محفوظة | محطة الدعم</p>
+  </div>
+</footer>
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
   const role = localStorage.getItem("user_role");
 
-
+  if (role && role !== "admin") {
+    alert("هذه الصفحة خاصة بالمسؤول فقط");
+    window.location.href = "login.html";
+    return;
+  }
 
   const supabase = window.supabase.createClient(
     "https://mcxdjisoyqdnyieboqpy.supabase.co",
@@ -118,9 +126,45 @@ document.addEventListener("DOMContentLoaded", function () {
   const globalReminder = document.getElementById("globalReminder");
   const exportBtn = document.getElementById("exportBtn");
 
+  const menuBtn = document.getElementById("menuToggle");
+  const sidebar = document.getElementById("sidebar");
+  const overlay = document.getElementById("overlay");
+
   let currentTasks = [];
   let currentHistory = [];
   let currentFilter = "all";
+
+  function openSidebar() {
+    if (window.innerWidth <= 992) {
+      sidebar.classList.add("open");
+      overlay.classList.add("show");
+      document.body.style.overflow = "hidden";
+    }
+  }
+
+  function closeSidebar() {
+    sidebar.classList.remove("open");
+    overlay.classList.remove("show");
+    document.body.style.overflow = "";
+  }
+
+  menuBtn.addEventListener("click", function () {
+    if (window.innerWidth <= 992) {
+      if (sidebar.classList.contains("open")) {
+        closeSidebar();
+      } else {
+        openSidebar();
+      }
+    }
+  });
+
+  overlay.addEventListener("click", closeSidebar);
+
+  window.addEventListener("resize", function () {
+    if (window.innerWidth > 992) {
+      closeSidebar();
+    }
+  });
 
   function parseDateOnly(dateString) {
     const [y, m, d] = String(dateString).split("-").map(Number);
@@ -217,13 +261,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const diff = daysBetween(task.due_date);
 
-    if (diff < 0) {
-      return { text: getDueLabel(task), className: "status-soon" };
-    }
-
-    if (diff <= 3) {
-      return { text: getDueLabel(task), className: "status-soon" };
-    }
+    if (diff < 0) return { text: getDueLabel(task), className: "status-soon" };
+    if (diff <= 3) return { text: getDueLabel(task), className: "status-soon" };
 
     return { text: getDueLabel(task), className: "status-pending" };
   }
@@ -323,7 +362,7 @@ document.addEventListener("DOMContentLoaded", function () {
           </div>
         `;
       } else {
-        actions = `<span class="empty-text">—</span>`;
+        actions = `<span class="dash-only">—</span>`;
       }
 
       tasksTableBody.innerHTML += `
@@ -478,61 +517,52 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function exportExcel() {
-  let data = [];
+    const rows = [["المهمة","النوع","الموعد","الحالة"]];
 
-  // العناوين
-  data.push(["المهمة", "النوع", "الموعد", "الحالة"]);
+    if (currentFilter === "done") {
+      getDoneVisible(currentHistory).forEach(row => {
+        rows.push([
+          row.title || "",
+          row.type || "",
+          new Date(row.completed_at).toLocaleDateString("en-GB"),
+          "تم التنفيذ"
+        ]);
+      });
+    } else {
+      const sourceRows = currentFilter === "processing" ? getProcessingTasks(currentTasks) : currentTasks;
+      sourceRows.forEach(task => {
+        const status = getStatusInfo(task);
+        rows.push([
+          task.title || "",
+          task.type || "",
+          formatDate(task.due_date),
+          status.text
+        ]);
+      });
+    }
 
-  if (currentFilter === "done") {
-    getDoneVisible(currentHistory).forEach(row => {
-      data.push([
-        row.title || "",
-        row.type || "",
-        new Date(row.completed_at).toLocaleDateString("en-GB"),
-        "تم التنفيذ"
-      ]);
-    });
-  } else {
-    const source = currentFilter === "processing"
-      ? getProcessingTasks(currentTasks)
-      : currentTasks;
+    const csvContent = "\uFEFF" + rows.map(row =>
+      row.map(value => `"${String(value).replace(/"/g, '""')}"`).join(",")
+    ).join("\n");
 
-    source.forEach(task => {
-      const status = getStatusInfo(task);
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
 
-      data.push([
-        task.title || "",
-        task.type || "",
-        formatDate(task.due_date),
-        status.text
-      ]);
-    });
+    link.href = url;
+    link.download = "مهام_السلامة.csv";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
   }
-
-  // إنشاء الشيت
-  const ws = XLSX.utils.aoa_to_sheet(data);
-
-  // تنسيق الأعمدة
-  ws["!cols"] = [
-    { wch: 35 },
-    { wch: 15 },
-    { wch: 15 },
-    { wch: 20 }
-  ];
-
-  // إنشاء الملف
-  const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, "مهام السلامة");
-
-  // تحميل
-  XLSX.writeFile(wb, "مهام_السلامة.xlsx");
-}
 
   document.querySelectorAll(".filter-card").forEach(card => {
     card.addEventListener("click", () => {
       currentFilter = card.dataset.filter;
       updateFilterUI();
       renderTable();
+      closeSidebar();
     });
   });
 
@@ -555,30 +585,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
   exportBtn.addEventListener("click", exportExcel);
 
-  /* ===== زر السايد بار ===== */
-  const menuBtn = document.getElementById("menuToggle");
-  const sidebar = document.querySelector(".sidebar");
-  const overlay = document.getElementById("overlay");
-
-  menuBtn.addEventListener("click", () => {
-    sidebar.classList.toggle("open");
-    overlay.classList.toggle("show");
-  });
-
-  overlay.addEventListener("click", () => {
-    sidebar.classList.remove("open");
-    overlay.classList.remove("show");
-  });
-
   loadData();
 
-  /* ===== Realtime ===== */
   const channel = supabase
-    .channel('tasks-live')
-
+    .channel("tasks-live")
     .on(
-      'postgres_changes',
-      { event: '*', schema: 'public', table: 'tasks' },
+      "postgres_changes",
+      { event: "*", schema: "public", table: "tasks" },
       (payload) => {
         if (payload.eventType === "INSERT" && payload.new) {
           const exists = currentTasks.some(t => t.id === payload.new.id);
@@ -600,10 +613,9 @@ document.addEventListener("DOMContentLoaded", function () {
         renderTable();
       }
     )
-
     .on(
-      'postgres_changes',
-      { event: '*', schema: 'public', table: 'task_history' },
+      "postgres_changes",
+      { event: "*", schema: "public", table: "task_history" },
       (payload) => {
         if (payload.eventType === "INSERT" && payload.new) {
           const exists = currentHistory.some(h => h.id === payload.new.id);
@@ -618,19 +630,9 @@ document.addEventListener("DOMContentLoaded", function () {
         renderTable();
       }
     )
-
     .subscribe();
 });
 </script>
-<footer class="main-footer">
-  <div class="footer-content">
-    <p>&copy; 2026 حقوق محفوظة | محطة الدعم</p>
-    <ul class="footer-links">
-      <li><a href="index.html">الرئيسية</a></li>
-      <li><a href="about.html">عن الموقع</a></li>
-      <li><a href="https://twitter.com/support0station" target="_blank">اتصل بنا</a></li>
-    </ul>
-  </div>
-</footer>
+
 </body>
 </html>
