@@ -10,8 +10,6 @@
 <body>
 
 <header class="admin-header">
-  <button id="menuToggle" class="menu-btn" type="button" aria-label="فتح القائمة">☰</button>
-
   <div class="admin-left">
     <img src="img/logo.png" class="admin-logo" alt="Logo">
     <div class="admin-title">
@@ -19,14 +17,11 @@
       <span>متابعة المهام اليومية والأسبوعية والشهرية الخاصة بالصحة والسلامة المهنية</span>
     </div>
   </div>
-
   <a href="index.html" class="logout">تسجيل الخروج</a>
 </header>
 
-<div id="overlay" class="overlay"></div>
-
 <div class="dashboard-layout">
-  <aside class="sidebar" id="sidebar">
+  <aside class="sidebar">
     <div class="sidebar-brand">
       <h2>محطة الدعم</h2>
     </div>
@@ -66,27 +61,25 @@
       <section class="table-panel">
         <div class="table-header">
           <h2 class="panel-title" id="tableTitle">قائمة المهام</h2>
-          <button class="btn-excel" id="exportBtn" type="button">تصدير Excel</button>
+          <button class="btn-excel" id="exportBtn">تصدير Excel</button>
         </div>
 
-        <div class="table-scroll">
-          <table class="tasks-table">
-            <thead>
-              <tr>
-                <th>الإجراء</th>
-                <th>الحالة</th>
-                <th>الموعد</th>
-                <th>النوع</th>
-                <th>المهمة</th>
-              </tr>
-            </thead>
-            <tbody id="tasksTableBody">
-              <tr>
-                <td colspan="5" class="empty-text">جاري تحميل البيانات...</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+        <table class="tasks-table">
+          <thead>
+            <tr>
+              <th>الإجراء</th>
+              <th>الحالة</th>
+              <th>الموعد</th>
+              <th>النوع</th>
+              <th>المهمة</th>
+            </tr>
+          </thead>
+          <tbody id="tasksTableBody">
+            <tr>
+              <td colspan="5" class="empty-text">جاري تحميل البيانات...</td>
+            </tr>
+          </tbody>
+        </table>
       </section>
 
       <section class="alerts-panel">
@@ -98,12 +91,6 @@
     </div>
   </main>
 </div>
-
-<footer class="main-footer">
-  <div class="footer-content">
-    <p>&copy; 2026 حقوق محفوظة | محطة الدعم</p>
-  </div>
-</footer>
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
@@ -126,45 +113,9 @@ document.addEventListener("DOMContentLoaded", function () {
   const globalReminder = document.getElementById("globalReminder");
   const exportBtn = document.getElementById("exportBtn");
 
-  const menuBtn = document.getElementById("menuToggle");
-  const sidebar = document.getElementById("sidebar");
-  const overlay = document.getElementById("overlay");
-
   let currentTasks = [];
   let currentHistory = [];
   let currentFilter = "all";
-
-  function openSidebar() {
-    if (window.innerWidth <= 992) {
-      sidebar.classList.add("open");
-      overlay.classList.add("show");
-      document.body.style.overflow = "hidden";
-    }
-  }
-
-  function closeSidebar() {
-    sidebar.classList.remove("open");
-    overlay.classList.remove("show");
-    document.body.style.overflow = "";
-  }
-
-  menuBtn.addEventListener("click", function () {
-    if (window.innerWidth <= 992) {
-      if (sidebar.classList.contains("open")) {
-        closeSidebar();
-      } else {
-        openSidebar();
-      }
-    }
-  });
-
-  overlay.addEventListener("click", closeSidebar);
-
-  window.addEventListener("resize", function () {
-    if (window.innerWidth > 992) {
-      closeSidebar();
-    }
-  });
 
   function parseDateOnly(dateString) {
     const [y, m, d] = String(dateString).split("-").map(Number);
@@ -261,8 +212,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const diff = daysBetween(task.due_date);
 
-    if (diff < 0) return { text: getDueLabel(task), className: "status-soon" };
-    if (diff <= 3) return { text: getDueLabel(task), className: "status-soon" };
+    if (diff < 0) {
+      return { text: getDueLabel(task), className: "status-soon" };
+    }
+
+    if (diff <= 3) {
+      return { text: getDueLabel(task), className: "status-soon" };
+    }
 
     return { text: getDueLabel(task), className: "status-pending" };
   }
@@ -362,7 +318,7 @@ document.addEventListener("DOMContentLoaded", function () {
           </div>
         `;
       } else {
-        actions = `<span class="dash-only">—</span>`;
+        actions = `<span class="empty-text">—</span>`;
       }
 
       tasksTableBody.innerHTML += `
@@ -562,7 +518,6 @@ document.addEventListener("DOMContentLoaded", function () {
       currentFilter = card.dataset.filter;
       updateFilterUI();
       renderTable();
-      closeSidebar();
     });
   });
 
@@ -588,10 +543,11 @@ document.addEventListener("DOMContentLoaded", function () {
   loadData();
 
   const channel = supabase
-    .channel("tasks-live")
+    .channel('tasks-live')
+
     .on(
-      "postgres_changes",
-      { event: "*", schema: "public", table: "tasks" },
+      'postgres_changes',
+      { event: '*', schema: 'public', table: 'tasks' },
       (payload) => {
         if (payload.eventType === "INSERT" && payload.new) {
           const exists = currentTasks.some(t => t.id === payload.new.id);
@@ -613,9 +569,10 @@ document.addEventListener("DOMContentLoaded", function () {
         renderTable();
       }
     )
+
     .on(
-      "postgres_changes",
-      { event: "*", schema: "public", table: "task_history" },
+      'postgres_changes',
+      { event: '*', schema: 'public', table: 'task_history' },
       (payload) => {
         if (payload.eventType === "INSERT" && payload.new) {
           const exists = currentHistory.some(h => h.id === payload.new.id);
@@ -630,9 +587,20 @@ document.addEventListener("DOMContentLoaded", function () {
         renderTable();
       }
     )
+
     .subscribe();
 });
 </script>
+<footer class="main-footer">
+  <div class="footer-content">
+    <p>&copy; 2026 حقوق محفوظة | محطة الدعم</p>
+    <ul class="footer-links">
+      <li><a href="index.html">الرئيسية</a></li>
+      <li><a href="about.html">عن الموقع</a></li>
+      <li><a href="https://twitter.com/support0station" target="_blank">اتصل بنا</a></li>
+    </ul>
+  </div>
+</footer>
 
 </body>
 </html>
