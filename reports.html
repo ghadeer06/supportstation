@@ -56,6 +56,9 @@
         <p id="countDone">0</p>
       </button>
     </div>
+<button onclick="exportExcel()" class="btn-process" style="margin-bottom:15px;">
+  تصدير البلاغات إلى Excel
+</button>
 
     <section class="reports-section">
       <h2 class="section-title">بلاغات المدربين</h2>
@@ -74,9 +77,100 @@
   </main>
 </div>
 
-
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
 
 <script>
+function exportExcel() {
+  let data = [];
+
+  // العناوين
+  data.push([
+    "رقم البلاغ",
+    "نوع البلاغ",
+    "الوصف",
+    "الموقع",
+    "شدة البلاغ",
+    "الحالة",
+    "مقدم البلاغ",
+    "الإيميل",
+    "الدور",
+    "تاريخ الإنشاء",
+    "الصورة",
+    "منقول من",
+    "منقول إلى"
+  ]);
+
+  // كل البلاغات المعروضة
+  const cards = document.querySelectorAll(".report-card");
+
+  if (cards.length === 0) {
+    alert("لا توجد بلاغات للتصدير");
+    return;
+  }
+
+  cards.forEach(card => {
+    const id = card.querySelector("h3")?.textContent.match(/\d+/)?.[0] || "";
+    const type = card.querySelector("h3")?.textContent.split("-")[1]?.trim() || "";
+    const desc = card.querySelector("p:nth-of-type(1)")?.textContent.replace("الوصف:", "").trim() || "";
+    const loc = card.querySelector("p:nth-of-type(2)")?.textContent.replace("الموقع:", "").trim() || "";
+    const sender = card.querySelector("p:nth-of-type(3)")?.textContent.replace("مقدم البلاغ:", "").trim() || "";
+    const email = card.querySelector("p:nth-of-type(4)")?.textContent.replace("الإيميل:", "").trim() || "";
+    const role = card.querySelector("p:nth-of-type(5)")?.textContent.replace("الدور:", "").trim() || "";
+    const status = card.dataset.status || "";
+    const created = card.dataset.created || "";
+    const rate = card.dataset.rate || "";
+    const img = card.dataset.image || "";
+    const transferFrom = card.dataset.transfer_from || "";
+    const transferTo = card.dataset.transfer_to || "";
+
+    data.push([
+      id,
+      type,
+      desc,
+      loc,
+      rate,
+      status,
+      sender,
+      email,
+      role,
+      created,
+      img,
+      transferFrom,
+      transferTo
+    ]);
+  });
+
+  // إنشاء الشيت
+  const ws = XLSX.utils.aoa_to_sheet(data);
+
+  // تنسيق الأعمدة
+  ws["!cols"] = [
+    { wch: 12 },  // رقم البلاغ
+    { wch: 15 },  // النوع
+    { wch: 40 },  // الوصف
+    { wch: 20 },  // الموقع
+    { wch: 10 },  // الشدة
+    { wch: 15 },  // الحالة
+    { wch: 18 },  // مقدم البلاغ
+    { wch: 25 },  // الإيميل
+    { wch: 12 },  // الدور
+    { wch: 20 },  // تاريخ الإنشاء
+    { wch: 30 },  // الصورة
+    { wch: 15 },  // منقول من
+    { wch: 15 }   // منقول إلى
+  ];
+
+  // إنشاء الملف
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "البلاغات");
+
+  // تحميل
+  XLSX.writeFile(wb, "البلاغات.xlsx");
+}
+
+
+
+
 function getClient() {
   return window.supabase.createClient(
     'https://mcxdjisoyqdnyieboqpy.supabase.co',
