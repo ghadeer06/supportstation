@@ -192,3 +192,18 @@
     max-height: 180px;
   }
 }
+
+.event-img {
+  width: 120px;          /* حجم مربع */
+  height: 120px;         /* حجم مربع */
+  object-fit: cover;     /* يخلي الصورة كاملة بدون تمدد */
+  border-radius: 10px;
+  margin-left: 15px;     /* مسافة بين الصورة والنص */
+  float: right;          /* يخلي الصورة على اليمين */
+}
+
+.report-card {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
