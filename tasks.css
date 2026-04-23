@@ -371,6 +371,13 @@ table{
 }
 
 /* ===== Footer ===== */
+.main-footer{
+  background:linear-gradient(to left, var(--dark), var(--footer));
+  color:#fff;
+  padding:16px 0;
+  text-align:center;
+  margin-top:20px;
+}
 .footer-content {
   display: flex;
   flex-direction: column;
