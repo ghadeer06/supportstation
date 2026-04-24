@@ -11,6 +11,8 @@
 <body>
 
 <header class="admin-header"> 
+    <button id="menuToggle" class="menu-btn">☰</button>
+
   <div class="admin-left">
     <img src="./img/logo.png" class="admin-logo" alt="Logo">
     <div class="admin-title">
@@ -175,7 +177,41 @@ document.addEventListener("DOMContentLoaded", async function () {
       pastContainer.innerHTML = `<div class="empty-box">صار خطأ</div>`;
     }
   }
+document.addEventListener("DOMContentLoaded", function () {
 
+  const menuBtn = document.getElementById("menuToggle");
+  const sidebar = document.getElementById("sidebar");
+  const overlay = document.getElementById("overlay");
+
+  function openSidebar() {
+    sidebar.classList.add("open");
+    overlay.classList.add("show");
+    document.body.style.overflow = "hidden";
+  }
+
+  function closeSidebar() {
+    sidebar.classList.remove("open");
+    overlay.classList.remove("show");
+    document.body.style.overflow = "";
+  }
+
+  menuBtn.addEventListener("click", function () {
+    if (sidebar.classList.contains("open")) {
+      closeSidebar();
+    } else {
+      openSidebar();
+    }
+  });
+
+  overlay.addEventListener("click", closeSidebar);
+
+  window.addEventListener("resize", function () {
+    if (window.innerWidth > 992) {
+      closeSidebar();
+    }
+  });
+
+});
   loadEvents();
 });
 </script>
