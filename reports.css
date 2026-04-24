@@ -290,28 +290,63 @@ body{
   color: #cfd8df;
 }
 
-/* ===== Mobile ===== */
-/* ===== القائمة في الجوال (محسّنة) ===== /
 @media (max-width:992px){
 
+  .admin-header{
+    direction: rtl !important;
+    display:flex !important;
+    flex-direction: row !important;
+    align-items:center !important;
+    justify-content:space-between !important;
+  }
+
+  .menu-btn{
+    display:flex !important;
+    align-items:center;
+    justify-content:center;
+    order:1 !important;
+  }
+
+  .admin-left{
+    order:2 !important;
+    direction:rtl !important;
+    flex:1 !important;
+    justify-content:center !important;
+    min-width:0 !important;
+  }
+
+  .logout{
+    order:3 !important;
+    flex-shrink:0 !important;
+  }
+
   .sidebar{
-    position: fixed;
-    top: 0;
-    right: -260px; / مخفية خارج الشاشة /
-    width: 250px;
-    height: 100vh;
-    background: linear-gradient(to bottom,var(--dark),var(--mid));
-    z-index: 2000;
-    padding: 20px 16px;
-    transition: right 0.35s ease;
-    box-shadow: -4px 0 20px rgba(0,0,0,0.25);
+    position:fixed !important;
+    top:0 !important;
+    right:-270px !important;
+    left:auto !important;
+    height:100vh !important;
+    width:250px !important;
+    z-index:1600 !important;
+    transition:right .3s ease !important;
+    overflow-y:auto;
   }
 
   .sidebar.open{
-    right: 0; / تظهر /
+    right:0 !important;
+    left:auto !important;
   }
 
-  / تحسين ظهور الخلفية */
+  .admin-main{
+    margin-right:0 !important;
+    width:100% !important;
+    padding:16px 12px;
+  }
+
+  .main-footer{
+    margin-right:0 !important;
+    width:100% !important;
+  }
   .overlay{
     position: fixed;
     inset: 0;
