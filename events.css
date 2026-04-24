@@ -12,7 +12,6 @@
   z-index: 1;
 }
 
-/* ===== صندوق الأقسام ===== */
 .events-section-box{
   background: #fff;
   border-radius: 16px;
@@ -21,7 +20,6 @@
   margin-bottom: 18px;
 }
 
-/* ===== شبكة الكروت ===== */
 .events-grid{
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -29,7 +27,6 @@
   margin-top: 14px;
 }
 
-/* ===== الكرت نفسه ===== */
 .event-card{
   background: #fff;
   border-radius: 16px;
@@ -46,7 +43,6 @@
   box-shadow: 0 10px 20px rgba(0,0,0,0.1);
 }
 
-/* ===== العنوان ===== */
 .event-card h3{
   color: #0F2F4A;
   margin-bottom: 8px;
@@ -54,7 +50,6 @@
   font-weight: 900;
 }
 
-/* ===== الوصف ===== */
 .event-card p{
   margin-bottom: 8px;
   line-height: 1.7;
@@ -62,14 +57,12 @@
   font-size: 14px;
 }
 
-/* ===== التاريخ ===== */
 .event-date{
   color: #666;
   font-size: 13px;
   margin-bottom: 10px;
 }
 
-/* ===== الصورة ===== */
 .event-card img{
   width: 100%;
   height: 180px;
@@ -79,7 +72,6 @@
   display: block;
 }
 
-/* ===== الأزرار ===== */
 .event-actions{
   display: flex;
   gap: 8px;
@@ -105,7 +97,6 @@
   transform: translateY(-2px);
 }
 
-/* ===== لا يوجد بيانات ===== */
 .empty-box{
   background: #fff;
   padding: 18px;
@@ -117,7 +108,6 @@
   margin-top: 12px;
 }
 
-/* ===== أعلى الصفحة ===== */
 .top-actions{
   display: flex;
   justify-content: space-between;
@@ -163,7 +153,7 @@
   transform: translateX(-6px);
 }
 
-/* ===== زر القائمة للجوال ===== */
+/* زر القائمة */
 .menu-btn{
   display:none;
   background:#fff;
@@ -178,7 +168,7 @@
   flex-shrink:0;
 }
 
-/* ===== Overlay ===== */
+/* الخلفية السوداء */
 .overlay{
   position:fixed;
   inset:0;
@@ -191,7 +181,7 @@
   display:block;
 }
 
-/* ===== فوتر ===== */
+/* الفوتر */
 .main-footer{
   background: linear-gradient(to left, var(--dark), var(--footer));
   color:#fff;
@@ -200,33 +190,33 @@
   margin-top:20px;
 }
 
-.footer-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
+.footer-content{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:8px;
 }
 
-.footer-links {
-  list-style: none;
-  padding: 0;
-  display: flex;
-  gap: 15px;
-  margin: 0;
+.footer-links{
+  list-style:none;
+  padding:0;
+  display:flex;
+  gap:15px;
+  margin:0;
 }
 
-.footer-links a {
-  color: #ecf0f1;
-  text-decoration: none;
+.footer-links a{
+  color:#ecf0f1;
+  text-decoration:none;
   transition: color 0.3s;
-  font-size: 14px;
+  font-size:14px;
 }
 
-.footer-links a:hover {
-  color: #cfd8df;
+.footer-links a:hover{
+  color:#cfd8df;
 }
 
-/* ===== موبايل ===== */
+/* الجوال */
 @media (max-width:992px){
 
   .menu-btn{
@@ -237,12 +227,13 @@
 
   .sidebar{
     position:fixed !important;
-    top:0 !important;
+    top:74px !important;
     right:-270px !important;
-    height:100vh !important;
+    height:calc(100vh - 74px) !important;
     width:250px !important;
     z-index:1600 !important;
     transition:right .3s ease !important;
+    overflow-y:auto;
   }
 
   .sidebar.open{
