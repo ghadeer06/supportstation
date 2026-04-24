@@ -291,23 +291,38 @@ body{
 }
 
 /* ===== Mobile ===== */
-@media (max-width:768px){
+/* ===== القائمة في الجوال (محسّنة) ===== /
+@media (max-width:992px){
+
   .sidebar{
-    position:relative;
-    width:100%;
-    height:auto;
+    position: fixed;
+    top: 0;
+    right: -260px; / مخفية خارج الشاشة /
+    width: 250px;
+    height: 100vh;
+    background: linear-gradient(to bottom,var(--dark),var(--mid));
+    z-index: 2000;
+    padding: 20px 16px;
+    transition: right 0.35s ease;
+    box-shadow: -4px 0 20px rgba(0,0,0,0.25);
   }
 
-  .admin-main{
-    margin-right:0;
-    padding:16px;
+  .sidebar.open{
+    right: 0; / تظهر /
   }
 
-  .admin-cards{
-    grid-template-columns:1fr;
+  / تحسين ظهور الخلفية */
+  .overlay{
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    z-index: 1500;
+    opacity: 0;
+    visibility: hidden;
+    transition: 0.3s;
   }
 
-  .report-card{
-    padding:14px;
+  .overlay.show{
+    opacity: 1;
+    visibility: visible;
   }
-}
