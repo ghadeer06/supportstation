@@ -1,18 +1,21 @@
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>الصفحة الرئيسية - محطة الدعم</title>
 
-  <link rel="stylesheet" href="admin.css"/>
+  <link rel="stylesheet" href="admin.css?v=2"/>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 
 <body class="admin-body">
 
 <header class="admin-header">
+  <button id="menuToggle" class="menu-btn">☰</button>
+
   <div class="admin-left">
-    <img src="img/logo.png" class="admin-logo" alt="Logo">
+    <img src="img/logo.png" class="admin-logo">
     <div class="admin-title">
       <h1>الصفحة الرئيسية</h1>
       <span>نظرة عامة على النظام</span>
@@ -22,36 +25,30 @@
   <a href="index.html" class="logout">تسجيل الخروج</a>
 </header>
 
+<div id="overlay" class="overlay"></div>
+
 <div class="dashboard-layout">
 
-  <!-- Sidebar -->
-  <aside class="sidebar">
+  <aside class="sidebar" id="sidebar">
     <div class="sidebar-brand">
       <h2>محطة الدعم</h2>
     </div>
 
     <ul class="sidebar-menu">
-      <li class="active"><a href="admin.html">الصفحة الرئيسية</a></li>
+      <li class="active"><a href="#">الصفحة الرئيسية</a></li>
       <li><a href="reports.html">البلاغات</a></li>
       <li><a href="tasks.html">مهام السلامة</a></li>
-      <li><a href="events.html">الفعاليات والأيام العالمية</a></li>
+      <li><a href="events.html">الفعاليات</a></li>
     </ul>
   </aside>
 
-  <!-- Main -->
   <main class="admin-main">
 
-    
-    <!-- Latest Reports -->
-   
-
-    <!-- Latest Notifications -->
     <section class="reports-section">
       <h2 class="section-title">أحدث الإشعارات</h2>
       <div class="reports-box" id="latestNotifications"></div>
     </section>
 
-    <!-- Latest Tasks -->
     <section class="reports-section">
       <h2 class="section-title">أحدث المهام</h2>
       <div class="reports-box" id="latestTasks"></div>
@@ -60,113 +57,91 @@
   </main>
 </div>
 
+<footer class="main-footer">
+  <div class="footer-content">
+    <p>&copy; 2026 محطة الدعم</p>
+  </div>
+</footer>
 
 <script>
 document.addEventListener("DOMContentLoaded", async () => {
 
-  // نص تحميل داخل المربعات
-  document.getElementById("latestNotifications").innerHTML =
-    "<div class='loading-box'>جارٍ تحميل الفعاليات...</div>";
+  // ===== SIDEBAR =====
+  const menuBtn = document.getElementById("menuToggle");
+  const sidebar = document.getElementById("sidebar");
+  const overlay = document.getElementById("overlay");
 
-  document.getElementById("latestTasks").innerHTML =
-    "<div class='loading-box'>جارٍ تحميل المهام...</div>";
+  function closeSidebar(){
+    sidebar.classList.remove("open");
+    overlay.classList.remove("show");
+  }
 
-  // تهيئة Supabase
-  const supabaseClient = window.supabase.createClient(
+  function openSidebar(){
+    sidebar.classList.add("open");
+    overlay.classList.add("show");
+  }
+
+  menuBtn.addEventListener("click", () => {
+    if (window.innerWidth <= 992) {
+      sidebar.classList.contains("open") ? closeSidebar() : openSidebar();
+    }
+  });
+
+  overlay.addEventListener("click", closeSidebar);
+
+  window.addEventListener("resize", () => {
+    if (window.innerWidth > 992) closeSidebar();
+  });
+
+  // ===== SUPABASE =====
+  const supabase = window.supabase.createClient(
     "https://mcxdjisoyqdnyieboqpy.supabase.co",
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1jeGRqaXNveXFkbnlpZWJvcXB5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0MDI3NDAsImV4cCI6MjA5MDk3ODc0MH0.kIwJ1pc-GLX1lTvstLSDZ5Li1rd9vwutI4-Wz_HR6nE"
   );
 
-  // ===============================
-  // 1) جلب آخر 5 فعاليات (الإشعارات)
-  // ===============================
-  async function loadLatestEvents() {
-  const box = document.getElementById("latestNotifications");
+  const notifBox = document.getElementById("latestNotifications");
+  const taskBox = document.getElementById("latestTasks");
 
-  const { data, error } = await supabaseClient
-    .from("events")
-    .select("*")
-    .order("created_at", { ascending: false })
-    .limit(5);
+  notifBox.innerHTML = "<div class='loading-box'>جارٍ التحميل...</div>";
+  taskBox.innerHTML = "<div class='loading-box'>جارٍ التحميل...</div>";
 
-  if (error) {
-    box.innerHTML = "<div class='empty-box'>خطأ في تحميل الفعاليات</div>";
-    return;
-  }
+  async function loadEvents(){
+    const { data } = await supabase.from("events").select("*").limit(5);
+    notifBox.innerHTML = "";
 
-  if (!data || data.length === 0) {
-    box.innerHTML = "<div class='empty-box'>لا توجد فعاليات</div>";
-    return;
-  }
-
-  box.innerHTML = "";
-  data.forEach(event => {
-    box.innerHTML += `
-      <div class="report-card">
-        <img src="${event.image_url || 'img/default-event.jpg'}" class="event-img" alt="صورة الفعالية">
-        <h3>${event.title || "بدون عنوان"}</h3>
-        <p>${event.description || ""}</p>
-        <span class="date">${event.due_date || ""}</span>
-      </div>
-    `;
-  });
-}
-
-
-  // ===============================
-  // 2) جلب آخر 5 مهام (المهام)
-  // ===============================
-  async function loadLatestTasks() {
-    const box = document.getElementById("latestTasks");
-
-    const { data, error } = await supabaseClient
-      .from("tasks")
-      .select("*")
-.order("updated_at", { ascending: false })
-      .limit(5);
-
-    if (error) {
-      box.innerHTML = "<div class='empty-box'>خطأ في تحميل المهام</div>";
-      return;
-    }
-
-    if (!data || data.length === 0) {
-      box.innerHTML = "<div class='empty-box'>لا توجد مهام</div>";
-      return;
-    }
-
-    box.innerHTML = "";
-    data.forEach(task => {
-      box.innerHTML += `
+    data?.forEach(e=>{
+      notifBox.innerHTML += `
         <div class="report-card">
-          <h3>${task.title || "بدون عنوان"}</h3>
-          <p>النوع: ${task.type || "-"}</p>
-          <p>الحالة: ${task.status || "-"}</p>
-          <span class="date">${task.due_date || ""}</span>
-        </div>
-      `;
+          <img src="${e.image_url || 'img/default.jpg'}" class="event-img">
+          <div>
+            <h3>${e.title}</h3>
+            <p>${e.description || ""}</p>
+          </div>
+        </div>`;
     });
   }
 
-  // تشغيل الدوال
-  loadLatestEvents();  // الإشعارات = الفعاليات
-  loadLatestTasks();   // المهام = المهام
+  async function loadTasks(){
+    const { data } = await supabase.from("tasks").select("*").limit(5);
+    taskBox.innerHTML = "";
+
+    data?.forEach(t=>{
+      taskBox.innerHTML += `
+        <div class="report-card">
+          <div>
+            <h3>${t.title}</h3>
+            <p>${t.type}</p>
+            <span>${t.status}</span>
+          </div>
+        </div>`;
+    });
+  }
+
+  loadEvents();
+  loadTasks();
+
 });
 </script>
 
-
-
 </body>
-
-<footer class="main-footer">
-  <div class="footer-content">
-    <p>&copy; 2026 حقوق محفوظة | محطة الدعم</p>
-    <ul class="footer-links">
-      <li><a href="index.html">الرئيسية</a></li>
-      <li><a href="about.html">عن الموقع</a></li>
-      <li><a href="https://twitter.com/support0station" target="_blank">اتصل بنا</a></li>
-    </ul>
-  </div>
-</footer>
-
 </html>
