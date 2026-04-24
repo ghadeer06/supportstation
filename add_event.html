@@ -11,8 +11,6 @@
 <body>
 
 <header class="admin-header">
-  <button id="menuToggle" class="menu-btn" type="button" aria-label="فتح القائمة">☰</button>
-
   <div class="admin-left">
     <img src="./img/logo.png" class="admin-logo" alt="Logo">
     <div class="admin-title">
@@ -23,11 +21,9 @@
   <a href="./index.html" class="logout">تسجيل الخروج</a>
 </header>
 
-<div id="overlay" class="overlay"></div>
-
 <div class="dashboard-layout">
 
-  <aside class="sidebar" id="sidebar">
+  <aside class="sidebar">
     <div class="sidebar-brand">
       <h2>محطة الدعم</h2>
     </div>
@@ -77,43 +73,9 @@
   </main>
 </div>
 
-<footer class="main-footer">
-  <div class="footer-content">
-    <p>&copy; 2026 حقوق محفوظة | محطة الدعم</p>
-    <ul class="footer-links">
-      <li><a href="index.html">الرئيسية</a></li>
-      <li><a href="about.html">عن الموقع</a></li>
-      <li><a href="https://twitter.com/support0station" target="_blank">اتصل بنا</a></li>
-    </ul>
-  </div>
-</footer>
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <script>
 document.addEventListener("DOMContentLoaded", function () {
-  const menuBtn = document.getElementById("menuToggle");
-  const sidebar = document.getElementById("sidebar");
-  const overlay = document.getElementById("overlay");
-
-  function closeSidebar() {
-    sidebar.classList.remove("open");
-    overlay.classList.remove("show");
-    document.body.style.overflow = "";
-  }
-
-  menuBtn.addEventListener("click", function () {
-    sidebar.classList.toggle("open");
-    overlay.classList.toggle("show");
-    document.body.style.overflow = sidebar.classList.contains("open") ? "hidden" : "";
-  });
-
-  overlay.addEventListener("click", closeSidebar);
-
-  window.addEventListener("resize", function () {
-    if (window.innerWidth > 992) closeSidebar();
-  });
-
   if (!window.supabase) {
     alert("تعذر تحميل المكتبة");
     return;
@@ -221,6 +183,16 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 </script>
+<footer class="main-footer">
+  <div class="footer-content">
+    <p>&copy; 2026 حقوق محفوظة | محطة الدعم</p>
+    <ul class="footer-links">
+      <li><a href="index.html">الرئيسية</a></li>
+      <li><a href="about.html">عن الموقع</a></li>
+      <li><a href="https://twitter.com/support0station" target="_blank">اتصل بنا</a></li>
+    </ul>
+  </div>
+</footer>
 
 </body>
 </html>
