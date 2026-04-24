@@ -24,18 +24,24 @@
 
 <div class="dashboard-layout">
 
-  <aside class="sidebar">
-    <div class="sidebar-brand">
-      <h2>محطة الدعم</h2>
-    </div>
+ <button id="menuToggle" class="menu-btn" type="button" aria-label="فتح القائمة">☰</button>
 
-    <ul class="sidebar-menu">
-      <li><a href="admin.html">الصفحة الرئيسية</a></li>
-      <li class="active"><a href="reports.html">البلاغات</a></li>
-      <li><a href="tasks.html">مهام السلامة</a></li>
-      <li><a href="events.html">الفعاليات والأيام العالمية</a></li>
-    </ul>
-  </aside>
+<!-- الخلفية السوداء -->
+<div id="overlay" class="overlay"></div>
+
+<!-- القائمة الجانبية -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-brand">
+    <h2>محطة الدعم</h2>
+  </div>
+
+  <ul class="sidebar-menu">
+    <li><a href="./admin.html">الصفحة الرئيسية</a></li>
+    <li><a href="./reports.html">البلاغات</a></li>
+    <li><a href="./tasks.html">مهام السلامة</a></li>
+    <li class="active"><a href="./events.html">الفعاليات والأيام العالمية</a></li>
+  </ul>
+</aside>
 
   <main class="admin-main">
 
@@ -79,6 +85,36 @@
 <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
 
 <script>
+
+  <script>
+document.addEventListener("DOMContentLoaded", function () {
+
+  const menuBtn = document.getElementById("menuToggle");
+  const sidebar = document.getElementById("sidebar");
+  const overlay = document.getElementById("overlay");
+
+  function closeSidebar() {
+    sidebar.classList.remove("open");
+    overlay.classList.remove("show");
+    document.body.style.overflow = "";
+  }
+
+  menuBtn.addEventListener("click", function () {
+    sidebar.classList.toggle("open");
+    overlay.classList.toggle("show");
+    document.body.style.overflow = sidebar.classList.contains("open") ? "hidden" : "";
+  });
+
+  overlay.addEventListener("click", closeSidebar);
+
+  window.addEventListener("resize", function () {
+    if (window.innerWidth > 992) closeSidebar();
+  });
+
+});
+</script>
+
+  
 function exportExcel() {
   let data = [];
 
