@@ -66,10 +66,11 @@
 .event-card img{
   width: 100%;
   height: 180px;
-  object-fit: cover;
+  object-fit: contain;
   border-radius: 12px;
   margin-top: 12px;
   display: block;
+  background:#fff;
 }
 
 .event-actions{
@@ -153,92 +154,15 @@
   transform: translateX(-6px);
 }
 
-@media (max-width:768px){
-  .admin-main{
-    padding: 16px 12px;
-  }
-
-  .events-section-box{
-    padding: 14px;
-  }
-
-  .top-actions{
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .add-event-btn{
-    width: 100%;
-    text-align: center;
-  }
-
-  .events-grid{
-    grid-template-columns: 1fr;
-  }
-
-  .event-card{
-    padding: 14px;
-  }
-
-  .event-card h3{
-    font-size: 16px;
-  }
-
-  .event-card p,
-  .event-date{
-    font-size: 13px;
-  }
-
-  .event-card img{
-    height: 150px;
-  }
-}
-
-.main-footer{
-  background: linear-gradient(to left, var(--dark), var(--footer));
-  color:#fff;
-  padding:16px 0;
-  text-align:center;
-  margin-top:20px;
-}
-
-.footer-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-}
-
-.footer-links {
-  list-style: none;
-  padding: 0;
-  display: flex;
-  gap: 15px;
-  margin: 0;
-}
-
-.footer-links a {
-  color: #ecf0f1;
-  text-decoration: none;
-  transition: color 0.3s;
-  font-size: 14px;
-}
-
-.footer-links a:hover {
-  color: #cfd8df;
-}
-
-/* ===== إضافة الجوال فقط بدون تخريب التصميم ===== */
-
 .menu-btn{
   display:none;
   background:#fff;
   color:#0F2F4A;
   border:none;
-  width:38px;
-  height:38px;
-  border-radius:10px;
-  font-size:22px;
+  width:44px;
+  height:44px;
+  border-radius:12px;
+  font-size:24px;
   font-weight:900;
   cursor:pointer;
   flex-shrink:0;
@@ -256,32 +180,216 @@
   display:block;
 }
 
+.main-footer{
+  background: linear-gradient(to left, var(--dark), var(--footer));
+  color:#fff;
+  padding:16px 0;
+  text-align:center;
+  margin-top:20px;
+}
+
+.footer-content{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:8px;
+}
+
+.footer-links{
+  list-style:none;
+  padding:0;
+  display:flex;
+  gap:15px;
+  margin:0;
+}
+
+.footer-links a{
+  color:#ecf0f1;
+  text-decoration:none;
+  transition: color 0.3s;
+  font-size:14px;
+}
+
+.footer-links a:hover{
+  color:#cfd8df;
+}
+
 @media (max-width:992px){
 
+  body{
+    padding-top:74px !important;
+  }
+
+  .admin-header{
+    position:fixed !important;
+    top:0 !important;
+    right:0 !important;
+    left:0 !important;
+    height:74px !important;
+    z-index:1700 !important;
+    padding:10px 12px !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:space-between !important;
+    gap:8px !important;
+  }
+
   .menu-btn{
-    display:flex;
+    display:flex !important;
     align-items:center;
     justify-content:center;
+    order:3;
+  }
+
+  .admin-left{
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    gap:8px !important;
+    min-width:0 !important;
+    flex:1 !important;
+    order:2;
+  }
+
+  .admin-logo{
+    width:42px !important;
+    height:auto !important;
+    flex-shrink:0 !important;
+    display:block !important;
+  }
+
+  .admin-title{
+    display:block !important;
+    min-width:0 !important;
+    text-align:center !important;
+  }
+
+  .admin-title h1{
+    display:block !important;
+    color:#fff !important;
+    font-size:16px !important;
+    font-weight:900 !important;
+    margin:0 !important;
+    white-space:nowrap !important;
+    overflow:hidden !important;
+    text-overflow:ellipsis !important;
+  }
+
+  .admin-title span{
+    display:block !important;
+    color:#fff !important;
+    font-size:10px !important;
+    opacity:.9 !important;
+    white-space:nowrap !important;
+    overflow:hidden !important;
+    text-overflow:ellipsis !important;
+  }
+
+  .logout{
+    display:block !important;
+    background:#fff !important;
+    color:#0F2F4A !important;
+    padding:8px 10px !important;
+    border-radius:10px !important;
+    font-size:12px !important;
+    font-weight:900 !important;
+    text-decoration:none !important;
+    white-space:nowrap !important;
+    flex-shrink:0 !important;
+    order:1;
   }
 
   .sidebar{
     position:fixed !important;
     top:74px !important;
     right:-270px !important;
-    height:calc(100vh - 74px) !important;
     width:250px !important;
+    height:calc(100vh - 74px) !important;
     z-index:1600 !important;
+    background:linear-gradient(to bottom,#0F2F4A,#5E7B93) !important;
+    padding:22px 16px !important;
     transition:right .3s ease !important;
-    overflow-y:auto;
+    overflow-y:auto !important;
   }
 
   .sidebar.open{
     right:0 !important;
   }
 
+  .sidebar-brand h2{
+    display:block !important;
+    color:#fff !important;
+    font-size:24px !important;
+    text-align:center !important;
+    margin-bottom:20px !important;
+  }
+
+  .sidebar-menu{
+    display:flex !important;
+    flex-direction:column !important;
+    gap:10px !important;
+    list-style:none !important;
+    padding:0 !important;
+    margin:0 !important;
+  }
+
+  .sidebar-menu li a{
+    display:block !important;
+    color:#fff !important;
+    text-decoration:none !important;
+    padding:12px 14px !important;
+    border-radius:12px !important;
+    font-weight:900 !important;
+    font-size:16px !important;
+  }
+
+  .sidebar-menu li.active a,
+  .sidebar-menu li a:hover{
+    background:rgba(255,255,255,.16) !important;
+  }
+
   .admin-main{
     margin-right:0 !important;
     width:100% !important;
+    padding:16px 12px !important;
+  }
+
+  .events-section-box{
+    padding:14px !important;
+  }
+
+  .top-actions{
+    flex-direction:column !important;
+    align-items:stretch !important;
+  }
+
+  .add-event-btn{
+    width:100% !important;
+    text-align:center !important;
+  }
+
+  .events-grid{
+    grid-template-columns:1fr !important;
+  }
+
+  .event-card{
+    padding:14px !important;
+  }
+
+  .event-card h3{
+    font-size:16px !important;
+  }
+
+  .event-card p,
+  .event-date{
+    font-size:13px !important;
+  }
+
+  .event-card img{
+    width:100% !important;
+    height:180px !important;
+    object-fit:contain !important;
+    background:#fff !important;
   }
 
   .main-footer{
