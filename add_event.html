@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>إضافة فعالية</title>
-
   <link rel="stylesheet" href="./admin.css" />
   <link rel="stylesheet" href="./add_event.css" />
 </head>
@@ -12,10 +11,10 @@
 <body>
 
 <header class="admin-header">
-  <button id="menuToggle" class="menu-btn">☰</button>
+  <button id="menuToggle" class="menu-btn" type="button" aria-label="فتح القائمة">☰</button>
 
   <div class="admin-left">
-    <img src="./img/logo.png" class="admin-logo">
+    <img src="./img/logo.png" class="admin-logo" alt="Logo">
     <div class="admin-title">
       <h1>إضافة فعالية</h1>
     </div>
@@ -29,68 +28,197 @@
 <div class="dashboard-layout">
 
   <aside class="sidebar" id="sidebar">
-    <h2>محطة الدعم</h2>
+    <div class="sidebar-brand">
+      <h2>محطة الدعم</h2>
+    </div>
+
     <ul class="sidebar-menu">
-      <li><a href="./admin.html">الرئيسية</a></li>
+      <li><a href="./admin.html">الصفحة الرئيسية</a></li>
       <li><a href="./reports.html">البلاغات</a></li>
-      <li><a href="./tasks.html">المهام</a></li>
-      <li class="active"><a href="./events.html">الفعاليات</a></li>
+      <li><a href="./tasks.html">مهام السلامة</a></li>
+      <li class="active"><a href="./events.html"> الفعاليات والأيام العالمية</a></li>
     </ul>
   </aside>
 
   <main class="admin-main">
+    <section class="event-form-box">
+      <h2>إضافة فعالية جديدة</h2>
 
-    <div class="event-form-box">
-      <h2>إضافة فعالية</h2>
+      <div class="event-field">
+        <label for="eventTitle">عنوان الفعالية</label>
+        <input type="text" id="eventTitle" placeholder="اكتبي عنوان الفعالية">
+      </div>
 
-      <input id="eventTitle" placeholder="عنوان الفعالية">
-      <textarea id="eventDesc" placeholder="الوصف"></textarea>
-      <input type="date" id="eventDate">
-      <input type="file" id="eventImage">
+      <div class="event-field">
+        <label for="eventDesc">وصف الفعالية</label>
+        <textarea id="eventDesc" placeholder="اكتبي وصفًا مختصرًا للفعالية"></textarea>
+      </div>
 
-      <img id="previewImage" style="display:none; width:100%; margin-top:10px;">
+      <div class="event-field">
+        <label for="eventDate">تاريخ الفعالية</label>
+        <input type="date" id="eventDate">
+      </div>
 
-      <button id="saveBtn">حفظ</button>
+      <div class="event-field">
+        <label for="eventImage">صورة الفعالية</label>
+        <input type="file" id="eventImage" accept="image/*">
+      </div>
 
-    </div>
+      <div class="preview-box" id="previewBox">
+        <p>معاينة الصورة:</p>
+        <img id="previewImage" src="" alt="معاينة الصورة">
+      </div>
 
+      <div class="event-actions">
+        <button type="button" class="event-save-btn" id="saveBtn">حفظ الفعالية</button>
+        <a href="./events.html" class="event-cancel-btn">رجوع للفعاليات</a>
+      </div>
+    </section>
   </main>
 </div>
 
 <footer class="main-footer">
-  © 2026 محطة الدعم
+  <div class="footer-content">
+    <p>&copy; 2026 حقوق محفوظة | محطة الدعم</p>
+    <ul class="footer-links">
+      <li><a href="index.html">الرئيسية</a></li>
+      <li><a href="about.html">عن الموقع</a></li>
+      <li><a href="https://twitter.com/support0station" target="_blank">اتصل بنا</a></li>
+    </ul>
+  </div>
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
-document.addEventListener("DOMContentLoaded", () => {
-
+document.addEventListener("DOMContentLoaded", function () {
   const menuBtn = document.getElementById("menuToggle");
   const sidebar = document.getElementById("sidebar");
   const overlay = document.getElementById("overlay");
 
-  menuBtn.onclick = () => {
-    sidebar.classList.toggle("open");
-    overlay.classList.toggle("show");
-  };
-
-  overlay.onclick = () => {
+  function closeSidebar() {
     sidebar.classList.remove("open");
     overlay.classList.remove("show");
-  };
+    document.body.style.overflow = "";
+  }
 
-  // صورة
-  const input = document.getElementById("eventImage");
-  const preview = document.getElementById("previewImage");
+  menuBtn.addEventListener("click", function () {
+    sidebar.classList.toggle("open");
+    overlay.classList.toggle("show");
+    document.body.style.overflow = sidebar.classList.contains("open") ? "hidden" : "";
+  });
 
-  input.onchange = () => {
-    const file = input.files[0];
-    if (!file) return;
-    preview.src = URL.createObjectURL(file);
-    preview.style.display = "block";
-  };
+  overlay.addEventListener("click", closeSidebar);
 
+  window.addEventListener("resize", function () {
+    if (window.innerWidth > 992) closeSidebar();
+  });
+
+  if (!window.supabase) {
+    alert("تعذر تحميل المكتبة");
+    return;
+  }
+
+  const supabase = window.supabase.createClient(
+    "https://mcxdjisoyqdnyieboqpy.supabase.co",
+    "sb_publishable_CoPFxO5-flUjMYi-jOdikw_kwAaUoZr"
+  );
+
+  const eventImageInput = document.getElementById("eventImage");
+  const previewBox = document.getElementById("previewBox");
+  const previewImage = document.getElementById("previewImage");
+  const saveBtn = document.getElementById("saveBtn");
+
+  eventImageInput.addEventListener("change", function () {
+    const file = this.files[0];
+
+    if (!file) {
+      previewBox.style.display = "none";
+      previewImage.src = "";
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      previewImage.src = e.target.result;
+      previewBox.style.display = "block";
+    };
+    reader.readAsDataURL(file);
+  });
+
+  function fileToBase64(file) {
+    return new Promise((resolve, reject) => {
+      if (!file) {
+        resolve("");
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = () => reject(new Error("فشل قراءة الصورة"));
+      reader.readAsDataURL(file);
+    });
+  }
+
+  saveBtn.addEventListener("click", async function () {
+    const title = document.getElementById("eventTitle").value.trim();
+    const desc = document.getElementById("eventDesc").value.trim();
+    const date = document.getElementById("eventDate").value;
+    const file = document.getElementById("eventImage").files[0];
+
+    if (!title || !desc || !date) {
+      alert("الرجاء تعبئة عنوان الفعالية والوصف والتاريخ");
+      return;
+    }
+
+    try {
+      saveBtn.disabled = true;
+      saveBtn.textContent = "جاري الحفظ...";
+
+      let imageBase64 = "";
+
+      if (file) {
+        if (file.size > 800 * 1024) {
+          alert("الصورة كبيرة، اختاري صورة أصغر من 800KB");
+          saveBtn.disabled = false;
+          saveBtn.textContent = "حفظ الفعالية";
+          return;
+        }
+
+        imageBase64 = await fileToBase64(file);
+      }
+
+      const { error } = await supabase
+        .from("events")
+        .insert([
+          {
+            title: title,
+            description: desc,
+            due_date: date,
+            image_url: imageBase64,
+            status: "current",
+            type: "فعالية",
+            email: "445153575@tvtc.edu.sa"
+          }
+        ]);
+
+      if (error) {
+        console.log(error);
+        alert("صار خطأ في الحفظ: " + error.message);
+        saveBtn.disabled = false;
+        saveBtn.textContent = "حفظ الفعالية";
+        return;
+      }
+
+      alert("تم حفظ الفعالية بنجاح");
+      window.location.href = "./events.html";
+    } catch (err) {
+      console.log(err);
+      alert("صار خطأ غير متوقع");
+      saveBtn.disabled = false;
+      saveBtn.textContent = "حفظ الفعالية";
+    }
+  });
 });
 </script>
 
