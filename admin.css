@@ -37,6 +37,15 @@ body{
   box-shadow:0 4px 14px rgba(0,0,0,0.08);
 }
 
+.menu-btn{
+  display:none;
+  background:none;
+  border:none;
+  font-size:26px;
+  color:#fff;
+  cursor:pointer;
+}
+
 .admin-left{
   display:flex;
   align-items:center;
@@ -64,11 +73,11 @@ body{
   text-decoration:none;
   border-radius:10px;
   font-weight:900;
-  transition:.2s;
 }
 
-.logout:hover{
-  background:#e7e7e7;
+/* ===== Layout ===== */
+.dashboard-layout{
+  display:flex;
 }
 
 /* ===== Sidebar ===== */
@@ -81,36 +90,31 @@ body{
   background:linear-gradient(to bottom, var(--dark), var(--mid));
   padding:22px 16px;
   overflow-y:auto;
+  transition:.3s;
 }
 
 .sidebar-brand h2{
   color:#fff;
-  font-size:24px;
-  font-weight:900;
   text-align:center;
+  font-weight:900;
 }
 
 .sidebar-menu{
   list-style:none;
   margin-top:20px;
-  display:flex;
-  flex-direction:column;
-  gap:10px;
 }
 
 .sidebar-menu li a{
   color:#fff;
   text-decoration:none;
-  padding:12px 14px;
+  padding:12px;
   display:block;
-  border-radius:12px;
+  border-radius:10px;
   font-weight:900;
-  transition:.2s;
 }
 
 .sidebar-menu li.active a{
-  background:linear-gradient(to left, var(--dark), #1e4f73);
-  box-shadow:0 6px 12px rgba(15,47,74,0.4);
+  background:rgba(255,255,255,0.2);
 }
 
 .sidebar-menu li a:hover{
@@ -120,36 +124,7 @@ body{
 /* ===== Main ===== */
 .admin-main{
   margin-right:250px;
-  padding:20px 28px;
-}
-
-/* ===== Cards ===== */
-.admin-cards{
-  display:grid;
-  grid-template-columns:repeat(3, 1fr);
-  gap:14px;
-  margin-bottom:20px;
-}
-
-.stat-card{
-  background:#fff;
-  border-radius:14px;
-  padding:18px;
-  box-shadow:0 3px 10px rgba(0,0,0,0.05);
-  border-right:4px solid var(--mid);
-  text-align:center;
-  transition:.2s;
-}
-
-.stat-card h3{
-  font-size:15px;
-  font-weight:700;
-}
-
-.stat-card p{
-  font-size:34px;
-  font-weight:900;
-  margin-top:6px;
+  padding:20px;
 }
 
 /* ===== Sections ===== */
@@ -171,212 +146,73 @@ body{
   box-shadow:0 4px 14px rgba(0,0,0,0.05);
 }
 
-/* ===== Report Card ===== */
+/* ===== Cards ===== */
 .report-card{
   background:#fff;
   border-radius:14px;
-  padding:16px;
-  border-right:5px solid var(--mid);
-  box-shadow:0 4px 12px rgba(0,0,0,0.05);
-  margin-bottom:16px;
-  transition:.2s;
-}
-
-.report-card:hover{
-  transform:translateX(-4px);
-}
-
-.report-head{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
+  padding:14px;
+  border-right:4px solid var(--mid);
+  box-shadow:0 4px 10px rgba(0,0,0,0.05);
   margin-bottom:10px;
+  display:flex;
+  gap:10px;
+  align-items:center;
 }
 
-.status-tag{
-  background:#eef2f7;
-  padding:6px 12px;
-  border-radius:999px;
-  font-size:12px;
-  font-weight:900;
-  border:1px solid #d9e2ec;
-  color:var(--dark);
-}
-
-.btn-process{
-  margin-top:12px;
-  width:100%;
-  padding:10px;
-  border:none;
+.event-img{
+  width:80px;
+  height:80px;
+  object-fit:cover;
   border-radius:10px;
-  background:linear-gradient(to left, var(--dark), var(--mid));
-  color:#fff;
-  font-weight:900;
-  cursor:pointer;
-  transition:.2s;
 }
 
-.btn-process:hover{
-  opacity:.85;
-}
-
-/* ===== Footer ===== */
 /* ===== Footer ===== */
 .main-footer{
   background:linear-gradient(to left, var(--dark), var(--footer));
   color:#fff;
-  padding:16px 0;
+  padding:16px;
   text-align:center;
   margin-top:20px;
 }
 
-
-.footer-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
+/* ===== Overlay ===== */
+.overlay{
+  position:fixed;
+  top:0;
+  right:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.4);
+  opacity:0;
+  visibility:hidden;
+  transition:.3s;
+  z-index:998;
 }
 
-.footer-links {
-  list-style: none;
-  padding: 0;
-  display: flex;
-  gap: 15px;
-  margin: 0;
+.overlay.show{
+  opacity:1;
+  visibility:visible;
 }
 
-.footer-links a {
-  color: #ecf0f1;
-  text-decoration: none;
-  transition: color 0.3s;
-  font-size: 14px;
-}
+/* ===== Responsive ===== */
+@media (max-width:992px){
 
-.footer-links a:hover {
-  color: #cfd8df;
-}
-
-
-
-/* ===== Mobile Responsive ===== */
-@media (max-width: 768px){
-
-  body{
-    padding-top:70px;
-  }
-
-  .admin-header{
-    padding:14px 16px;
+  .menu-btn{
+    display:block;
   }
 
   .sidebar{
-    position:relative;
-    width:100%;
-    height:auto;
-    padding:16px;
+    top:0;
+    right:-260px;
+    height:100%;
+    z-index:999;
   }
 
-  .sidebar-menu{
-    flex-direction:row;
-    flex-wrap:wrap;
-    gap:8px;
-  }
-
-  .sidebar-menu li{
-    flex:1 1 calc(50% - 10px);
+  .sidebar.open{
+    right:0;
   }
 
   .admin-main{
     margin-right:0;
-    padding:16px;
   }
-
-  .admin-cards{
-    grid-template-columns:1fr;
-  }
-
-  .section-title{
-    font-size:18px;
-  }
-
-  .reports-box{
-    padding:16px;
-  }
-
-  .report-card{
-    padding:14px;
-  }
-}
-html, body {
-  height: 100%;
-}
-
-.dashboard-layout {
-  min-height: calc(100vh - 80px); /* ارتفاع الهيدر */
-  display: flex;
-}
-
-.admin-main {
-  flex: 1;
-  padding-bottom: 40px; /* مساحة للفوتر */
-}
-
-.main-footer {
-  margin-top: auto;
-}
-.loading-box {
-  padding: 15px;
-  background: #f1f1f1;
-  border-radius: 8px;
-  text-align: center;
-  color: #555;
-  font-size: 15px;
-}
-.event-img {
-  width: 120px;          /* حجم مربع */
-  height: 120px;         /* حجم مربع */
-  object-fit: cover;     /* يخلي الصورة كاملة بدون تمدد */
-  border-radius: 10px;
-  margin-left: 15px;     /* مسافة بين الصورة والنص */
-  float: right;          /* يخلي الصورة على اليمين */
-}
-
-.report-card {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
-
-.main-footer{
-  background:linear-gradient(to left, var(--dark), var(--footer));
-  color:#fff;
-  padding:16px 0;
-  text-align:center;
-  margin-top:20px;
-}
-.footer-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-}
-
-.footer-links {
-  list-style: none;
-  padding: 0;
-  display: flex;
-  gap: 15px;
-  margin: 0;
-}
-
-.footer-links a {
-  color: #ecf0f1;
-  text-decoration: none;
-  transition: color 0.3s;
-  font-size: 14px;
-}
-
-.footer-links a:hover {
-  color: #cfd8df;
 }
