@@ -12,9 +12,6 @@
 
 <header class="admin-header"> 
   <button id="menuToggle" class="menu-btn" type="button" aria-label="فتح القائمة">☰</button>
-  <aside class="sidebar" id="sidebar">
-<div class="overlay" id="overlay"></div>
-
 
   <div class="admin-left">
     <img src="./img/logo.png" class="admin-logo" alt="Logo">
@@ -103,9 +100,7 @@ document.addEventListener("DOMContentLoaded", async function () {
   overlay.addEventListener("click", closeSidebar);
 
   window.addEventListener("resize", function () {
-    if (window.innerWidth > 992) {
-      closeSidebar();
-    }
+    if (window.innerWidth > 992) closeSidebar();
   });
 
   const currentContainer = document.getElementById("currentEventsContainer");
