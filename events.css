@@ -164,47 +164,41 @@
 }
 
 /* ===== موبايل ===== */
-@media (max-width:768px){
+/* ===== القائمة في الجوال (محسّنة) ===== /
+@media (max-width:992px){
 
-  .admin-main{
-    padding: 16px 12px;
+  .sidebar{
+    position: fixed;
+    top: 0;
+    right: -260px; / مخفية خارج الشاشة /
+    width: 250px;
+    height: 100vh;
+    background: linear-gradient(to bottom,var(--dark),var(--mid));
+    z-index: 2000;
+    padding: 20px 16px;
+    transition: right 0.35s ease;
+    box-shadow: -4px 0 20px rgba(0,0,0,0.25);
   }
 
-  .events-section-box{
-    padding: 14px;
+  .sidebar.open{
+    right: 0; / تظهر /
   }
 
-  .top-actions{
-    flex-direction: column;
-    align-items: stretch;
+  / تحسين ظهور الخلفية */
+  .overlay{
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    z-index: 1500;
+    opacity: 0;
+    visibility: hidden;
+    transition: 0.3s;
   }
 
-  .add-event-btn{
-    width: 100%;
-    text-align: center;
+  .overlay.show{
+    opacity: 1;
+    visibility: visible;
   }
-
-  .events-grid{
-    grid-template-columns: 1fr;
-  }
-
-  .event-card{
-    padding: 14px;
-  }
-
-  .event-card h3{
-    font-size: 16px;
-  }
-
-  .event-card p,
-  .event-date{
-    font-size: 13px;
-  }
-
-  .event-card img{
-    height: 150px;
-  }
-}
 
 /* ===== فوتر ===== */
 .main-footer{
