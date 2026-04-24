@@ -153,7 +153,6 @@
   transform: translateX(-6px);
 }
 
-/* ===== فوتر ===== */
 .main-footer{
   background: linear-gradient(to left, var(--dark), var(--footer));
   color:#fff;
@@ -188,7 +187,7 @@
   color: #cfd8df;
 }
 
-/* ===== زر القائمة للجوال ===== */
+/* زر القائمة */
 .menu-btn{
   display:none;
   background:#fff;
@@ -203,7 +202,6 @@
   flex-shrink:0;
 }
 
-/* ===== Overlay ===== */
 .overlay{
   position:fixed;
   inset:0;
@@ -219,16 +217,39 @@
 /* ===== موبايل ===== */
 @media (max-width:992px){
 
+  .admin-header{
+    direction: rtl !important;
+    display:flex !important;
+    flex-direction: row !important;
+    align-items:center !important;
+    justify-content:space-between !important;
+  }
+
   .menu-btn{
-    display:flex;
+    display:flex !important;
     align-items:center;
     justify-content:center;
+    order:1 !important;
+  }
+
+  .admin-left{
+    order:2 !important;
+    direction:rtl !important;
+    flex:1 !important;
+    justify-content:center !important;
+    min-width:0 !important;
+  }
+
+  .logout{
+    order:3 !important;
+    flex-shrink:0 !important;
   }
 
   .sidebar{
     position:fixed !important;
     top:0 !important;
     right:-270px !important;
+    left:auto !important;
     height:100vh !important;
     width:250px !important;
     z-index:1600 !important;
@@ -238,6 +259,7 @@
 
   .sidebar.open{
     right:0 !important;
+    left:auto !important;
   }
 
   .admin-main{
