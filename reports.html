@@ -4,24 +4,15 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>لوحة تحكم المسؤول - البلاغات</title>
-
   <link rel="stylesheet" href="reports.css" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-
 </head>
 
 <body class="admin-body">
 
-  <!-- زر القائمة -->
-  <button id="menuToggle" class="menu-btn">☰</button>
-
-  <!-- الخلفية -->
-  <div id="overlay" class="overlay"></div>
-
 <header class="admin-header">
   <div class="admin-left">
-    <img src="img/logo.png" class="admin-logo">
+    <img src="img/logo.png" class="admin-logo" alt="Logo">
     <div class="admin-title">
       <h1>لوحة تحكم المسؤول</h1>
       <span>محطة الدعم</span>
@@ -33,8 +24,7 @@
 
 <div class="dashboard-layout">
 
-  <!-- ✅ تم إضافة id -->
-  <aside class="sidebar" id="sidebar">
+  <aside class="sidebar">
     <div class="sidebar-brand">
       <h2>محطة الدعم</h2>
     </div>
@@ -65,10 +55,9 @@
         <p id="countDone">0</p>
       </button>
     </div>
-
-    <button onclick="exportExcel()" class="btn-process" style="margin-bottom:15px;">
-      تصدير البلاغات إلى Excel
-    </button>
+<button onclick="exportExcel()" class="btn-process" style="margin-bottom:15px;">
+  تصدير البلاغات إلى Excel
+</button>
 
     <section class="reports-section">
       <h2 class="section-title">بلاغات المدربين</h2>
@@ -90,7 +79,7 @@
 <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
 
 <script>
-  function exportExcel() {
+function exportExcel() {
   let data = [];
 
   // العناوين
@@ -324,42 +313,17 @@ async function loadReports() {
 }
 
 loadReports();
-document.addEventListener("DOMContentLoaded", function () {
-
-  const menuBtn = document.getElementById("menuToggle");
-  const sidebar = document.getElementById("sidebar");
-  const overlay = document.getElementById("overlay");
-
-  function openSidebar() {
-    sidebar.classList.add("open");
-    overlay.classList.add("show");
-    document.body.style.overflow = "hidden";
-  }
-
-  function closeSidebar() {
-    sidebar.classList.remove("open");
-    overlay.classList.remove("show");
-    document.body.style.overflow = "";
-  }
-
-  menuBtn.addEventListener("click", function () {
-    if (sidebar.classList.contains("open")) {
-      closeSidebar();
-    } else {
-      openSidebar();
-    }
-  });
-
-  overlay.addEventListener("click", closeSidebar);
-
-  window.addEventListener("resize", function () {
-    if (window.innerWidth > 992) {
-      closeSidebar();
-    }
-  });
-
-});
 </script>
+<footer class="main-footer">
+  <div class="footer-content">
+    <p>&copy; 2026 حقوق محفوظة | محطة الدعم</p>
+    <ul class="footer-links">
+      <li><a href="index.html">الرئيسية</a></li>
+      <li><a href="about.html">عن الموقع</a></li>
+      <li><a href="https://twitter.com/support0station" target="_blank">اتصل بنا</a></li>
+    </ul>
+  </div>
+</footer>
 
 </body>
 </html>
