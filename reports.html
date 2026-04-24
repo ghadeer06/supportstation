@@ -84,33 +84,34 @@
 
 <script>
 
+document.addEventListener("DOMContentLoaded", async () => {
   const menuBtn = document.getElementById("menuToggle");
-const sidebar = document.getElementById("sidebar");
-const overlay = document.getElementById("overlay");
+  const sidebar = document.getElementById("sidebar");
+  const overlay = document.getElementById("overlay");
 
-function openSidebar() {
-  if (window.innerWidth <= 992) {
-    sidebar.classList.add("open");
-    overlay.classList.add("show");
-    document.body.style.overflow = "hidden";
+  function openSidebar() {
+    if (window.innerWidth <= 992) {
+      sidebar.classList.add("open");
+      overlay.classList.add("show");
+      document.body.style.overflow = "hidden";
+    }
   }
-}
 
-function closeSidebar() {
-  sidebar.classList.remove("open");
-  overlay.classList.remove("show");
-  document.body.style.overflow = "";
-}
+  function closeSidebar() {
+    sidebar.classList.remove("open");
+    overlay.classList.remove("show");
+    document.body.style.overflow = "";
+  }
 
-menuBtn.addEventListener("click", () => {
-  sidebar.classList.contains("open") ? closeSidebar() : openSidebar();
-});
+  menuBtn.addEventListener("click", () => {
+    sidebar.classList.contains("open") ? closeSidebar() : openSidebar();
+  });
 
-overlay.addEventListener("click", closeSidebar);
+  overlay.addEventListener("click", closeSidebar);
 
-window.addEventListener("resize", () => {
-  if (window.innerWidth > 992) closeSidebar();
-});
+  window.addEventListener("resize", () => {
+    if (window.innerWidth > 992) closeSidebar();
+  });
   
 function exportExcel() {
   let data = [];
