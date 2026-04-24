@@ -5,6 +5,7 @@
   --footer:#2c3e50;
   --white:#ffffff;
   --text:#1c2a38;
+  --line:#e8edf3;
 }
 
 *{
@@ -20,6 +21,7 @@ html,body{
 }
 
 body{
+  min-height:100vh;
   font-family:"Tajawal", Arial, sans-serif;
   direction:rtl;
   background:var(--bg);
@@ -43,16 +45,25 @@ body{
   display:flex;
   align-items:center;
   justify-content:space-between;
+  gap:12px;
+  box-shadow:0 4px 14px rgba(0,0,0,.08);
 }
 
 .admin-left{
   display:flex;
   align-items:center;
   gap:12px;
+  min-width:0;
+  flex:1;
 }
 
 .admin-logo{
-  width:70px;
+  width:72px;
+  flex-shrink:0;
+}
+
+.admin-title{
+  min-width:0;
 }
 
 .admin-title h1{
@@ -61,6 +72,7 @@ body{
 }
 
 .admin-title span{
+  display:block;
   font-size:12px;
   opacity:.9;
 }
@@ -90,7 +102,7 @@ body{
 .overlay{
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,.4);
+  background:rgba(0,0,0,.38);
   z-index:1500;
   display:none;
 }
@@ -110,32 +122,36 @@ body{
   padding:22px 16px;
   overflow-y:auto;
   z-index:1600;
-  transition:.3s;
+  transition:right .3s ease;
 }
 
 .sidebar-brand h2{
   color:#fff;
-  text-align:center;
+  font-size:24px;
   font-weight:900;
+  text-align:center;
 }
 
 .sidebar-menu{
   list-style:none;
   margin-top:20px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
 }
 
 .sidebar-menu li a{
   color:#fff;
   text-decoration:none;
-  padding:12px;
+  padding:12px 14px;
   display:block;
-  border-radius:10px;
+  border-radius:12px;
   font-weight:900;
 }
 
 .sidebar-menu li.active a,
 .sidebar-menu li a:hover{
-  background:rgba(255,255,255,.2);
+  background:rgba(255,255,255,.16);
 }
 
 /* ===== Main ===== */
@@ -145,17 +161,18 @@ body{
 
 .admin-main{
   margin-right:250px;
-  padding:20px;
+  padding:20px 28px 40px;
+  flex:1;
 }
 
-/* 🔥 البوكسات فوق بعض دائمًا */
+/* 🔥 أهم تعديل: البوكسات تحت بعض */
 .reports-layout{
   display:grid;
-  grid-template-columns:1fr;
+  grid-template-columns:1fr !important;
   gap:18px;
 }
 
-/* ===== Box ===== */
+/* ===== Panels ===== */
 .alerts-panel{
   background:#fff;
   padding:20px;
@@ -170,13 +187,13 @@ body{
   margin-bottom:14px;
 }
 
-/* 🔥 سكرول داخلي */
+/* ===== Scroll ===== */
 .scroll-box{
   max-height:520px;
   overflow-y:auto;
 }
 
-/* ===== Cards ===== */
+/* ===== Card ===== */
 .report-card{
   background:#f8fafc;
   border:1px solid #e8edf3;
@@ -185,57 +202,40 @@ body{
   padding:12px;
   margin-bottom:10px;
   display:flex;
-  gap:12px;
+  gap:15px;
   align-items:center;
 }
 
-.report-card:hover{
-  transform:translateX(-4px);
-}
-
-.report-info h3{
-  font-size:16px;
-  color:var(--dark);
-}
-
-.report-info p{
-  font-size:13px;
-  color:#444;
-}
-
-.date{
-  font-size:12px;
-  color:#777;
+.report-info{
+  flex:1;
 }
 
 .event-img{
-  width:90px;
-  height:90px;
+  width:95px;
+  height:95px;
   object-fit:cover;
   border-radius:10px;
 }
 
-/* ===== Scrollbar ===== */
-.scroll-box::-webkit-scrollbar{
-  width:6px;
-}
-
-.scroll-box::-webkit-scrollbar-thumb{
-  background:var(--mid);
-  border-radius:10px;
+.loading-box,
+.empty-box{
+  padding:15px;
+  background:#f1f1f1;
+  border-radius:8px;
+  text-align:center;
 }
 
 /* ===== Footer ===== */
 .main-footer{
   background:linear-gradient(to left,var(--dark),var(--footer));
   color:#fff;
-  padding:16px;
+  padding:16px 0;
   text-align:center;
   margin-top:auto;
 }
 
 /* ===== Mobile ===== */
-@media (max-width:768px){
+@media (max-width:992px){
 
   .menu-btn{
     display:block;
@@ -243,7 +243,7 @@ body{
 
   .sidebar{
     top:0;
-    right:-260px;
+    right:-270px;
     height:100%;
   }
 
@@ -253,9 +253,28 @@ body{
 
   .admin-main{
     margin-right:0;
+    padding:14px;
   }
 
   .scroll-box{
-    max-height:320px;
+    max-height:330px;
+  }
+}
+
+/* ===== Small Phone ===== */
+@media (max-width:480px){
+
+  .panel-title{
+    font-size:19px;
+  }
+
+  .report-card{
+    flex-direction:column;
+    align-items:flex-start;
+  }
+
+  .event-img{
+    width:80px;
+    height:80px;
   }
 }
