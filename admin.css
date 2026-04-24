@@ -14,7 +14,7 @@
   padding:0;
 }
 
-html, body{
+html,body{
   width:100%;
   min-height:100%;
   overflow-x:hidden;
@@ -27,6 +27,8 @@ body{
   background:var(--bg);
   color:var(--text);
   padding-top:86px;
+  display:flex;
+  flex-direction:column;
 }
 
 /* ===== Header ===== */
@@ -122,12 +124,6 @@ body{
   display:block;
 }
 
-/* ===== Layout ===== */
-.dashboard-layout{
-  min-height:calc(100vh - 86px);
-  display:block;
-}
-
 /* ===== Sidebar ===== */
 .sidebar{
   width:250px;
@@ -164,55 +160,65 @@ body{
   display:block;
   border-radius:12px;
   font-weight:900;
-  transition:.2s;
 }
 
-.sidebar-menu li.active a{
-  background:linear-gradient(to left,var(--dark),#1e4f73);
-  box-shadow:0 6px 12px rgba(15,47,74,.4);
-}
-
+.sidebar-menu li.active a,
 .sidebar-menu li a:hover{
-  background:rgba(255,255,255,.15);
+  background:rgba(255,255,255,.16);
 }
 
 /* ===== Main ===== */
+.dashboard-layout{
+  flex:1;
+}
+
 .admin-main{
   margin-right:250px;
   padding:20px 28px 40px;
   min-width:0;
+  flex:1;
 }
 
-/* ===== Sections ===== */
-.reports-section{
-  margin-top:30px;
+/* ===== Panels نفس طريقة التاسك ===== */
+.reports-layout{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:18px;
+  align-items:start;
 }
 
-.section-title{
+.alerts-panel{
+  background:#fff;
+  padding:20px;
+  border-radius:16px;
+  box-shadow:0 4px 14px rgba(0,0,0,.05);
+  min-width:0;
+}
+
+.panel-title{
   font-size:22px;
   font-weight:900;
   color:var(--dark);
   margin-bottom:14px;
 }
 
-.reports-box{
-  background:#fff;
-  padding:20px;
-  border-radius:16px;
-  box-shadow:0 4px 14px rgba(0,0,0,.05);
-  max-height:360px;
+.scroll-box{
+  max-height:520px;
   overflow-y:auto;
+  padding-left:2px;
 }
 
-/* ===== Report Card ===== */
+/* ===== Card ===== */
 .report-card{
-  background:#fff;
-  border-radius:14px;
-  padding:16px;
-  border-right:5px solid var(--mid);
-  box-shadow:0 4px 12px rgba(0,0,0,.05);
-  margin-bottom:16px;
-  transition:.2s;
+  background:#f8fafc;
+  border:1px solid #e8edf3;
+  border-right:4px solid var(--mid);
+  border-radius:12px;
+  padding:12px 14px;
+  margin-bottom:10px;
+  line-height:1.9;
+  font-size:14px;
+  color:#334155;
   display:flex;
   align-items:center;
   gap:15px;
@@ -220,23 +226,24 @@ body{
 
 .report-card:hover{
   transform:translateX(-4px);
-}
-
-.report-card h3{
-  color:var(--dark);
-  font-size:17px;
-  margin-bottom:6px;
-}
-
-.report-card p{
-  font-size:14px;
-  color:#334155;
-  line-height:1.8;
+  transition:.2s;
 }
 
 .report-info{
   flex:1;
   min-width:0;
+}
+
+.report-card h3{
+  color:var(--dark);
+  font-size:17px;
+  margin-bottom:4px;
+}
+
+.report-card p{
+  color:#334155;
+  font-size:14px;
+  line-height:1.8;
 }
 
 .date{
@@ -248,8 +255,8 @@ body{
 }
 
 .event-img{
-  width:120px;
-  height:120px;
+  width:95px;
+  height:95px;
   object-fit:cover;
   border-radius:10px;
   flex-shrink:0;
@@ -265,14 +272,36 @@ body{
   font-size:15px;
 }
 
+/* ===== Scrollbar ===== */
+.scroll-box::-webkit-scrollbar,
+.sidebar::-webkit-scrollbar{
+  width:8px;
+}
+
+.scroll-box::-webkit-scrollbar-track,
+.sidebar::-webkit-scrollbar-track{
+  background:#edf1f5;
+  border-radius:10px;
+}
+
+.scroll-box::-webkit-scrollbar-thumb,
+.sidebar::-webkit-scrollbar-thumb{
+  background:var(--mid);
+  border-radius:10px;
+}
+
+.scroll-box::-webkit-scrollbar-thumb:hover,
+.sidebar::-webkit-scrollbar-thumb:hover{
+  background:var(--dark);
+}
+
 /* ===== Footer ===== */
 .main-footer{
-  margin-right:250px;
-  background:linear-gradient(to left,var(--dark),var(--footer));
+  background:linear-gradient(to left, var(--dark), var(--footer));
   color:#fff;
   padding:16px 0;
   text-align:center;
-  margin-top:20px;
+  margin-top:auto;
 }
 
 .footer-content{
@@ -284,37 +313,31 @@ body{
 
 .footer-links{
   list-style:none;
+  padding:0;
   display:flex;
   gap:15px;
-  padding:0;
   margin:0;
 }
 
 .footer-links a{
   color:#ecf0f1;
   text-decoration:none;
+  transition:color .3s;
   font-size:14px;
 }
 
-/* ===== Scrollbar ===== */
-.reports-box::-webkit-scrollbar,
-.sidebar::-webkit-scrollbar{
-  width:8px;
+.footer-links a:hover{
+  color:#cfd8df;
 }
 
-.reports-box::-webkit-scrollbar-track,
-.sidebar::-webkit-scrollbar-track{
-  background:#edf1f5;
-  border-radius:10px;
+/* ===== Medium ===== */
+@media (max-width:1200px){
+  .reports-layout{
+    grid-template-columns:1fr;
+  }
 }
 
-.reports-box::-webkit-scrollbar-thumb,
-.sidebar::-webkit-scrollbar-thumb{
-  background:var(--mid);
-  border-radius:10px;
-}
-
-/* ===== Tablet + Mobile ===== */
+/* ===== Mobile + Tablet ===== */
 @media (max-width:992px){
   body{
     padding-top:74px;
@@ -371,23 +394,34 @@ body{
     width:100% !important;
   }
 
-  .section-title{
-    font-size:20px;
+  .reports-layout{
+    grid-template-columns:1fr;
+    gap:14px;
   }
 
-  .reports-box{
+  .alerts-panel{
     padding:16px;
-    max-height:330px;
-    overflow-y:auto;
   }
 
-  .report-card{
-    padding:14px;
+  .scroll-box{
+    max-height:330px;
   }
 }
 
-/* ===== Small Mobile ===== */
-@media (max-width:600px){
+/* ===== Small Phone ===== */
+@media (max-width:480px){
+  .admin-title h1{
+    font-size:15px;
+  }
+
+  .admin-title span{
+    font-size:9px;
+  }
+
+  .panel-title{
+    font-size:19px;
+  }
+
   .report-card{
     align-items:flex-start;
     gap:10px;
