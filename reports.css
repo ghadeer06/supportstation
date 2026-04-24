@@ -292,72 +292,67 @@ body{
 
 @media (max-width:992px){
 
-  .admin-header{
-    direction: rtl !important;
-    display:flex !important;
-    flex-direction: row !important;
-    align-items:center !important;
-    justify-content:space-between !important;
-  }
-
+  /* ===== زر القائمة ===== */
   .menu-btn{
     display:flex !important;
     align-items:center;
     justify-content:center;
-    order:1 !important;
+    position:fixed;
+    top:15px;
+    right:15px;
+    z-index:2000;
   }
 
-  .admin-left{
-    order:2 !important;
-    direction:rtl !important;
-    flex:1 !important;
-    justify-content:center !important;
-    min-width:0 !important;
+  /* ===== الهيدر ===== */
+  .admin-header{
+    flex-direction:row;
+    justify-content:space-between;
   }
 
-  .logout{
-    order:3 !important;
-    flex-shrink:0 !important;
-  }
-
+  /* ===== القائمة (المهم) ===== */
   .sidebar{
     position:fixed !important;
-    top:0 !important;
-    right:-270px !important;
-    left:auto !important;
+    top:0 !important; /* يغطي كامل الشاشة */
+    right:-260px !important;
+    width:260px !important;
     height:100vh !important;
-    width:250px !important;
-    z-index:1600 !important;
-    transition:right .3s ease !important;
-    overflow-y:auto;
+    z-index:1800 !important;
+    transition:right .3s ease;
+    padding-top:100px; /* عشان ما يغطي الهيدر */
   }
 
   .sidebar.open{
     right:0 !important;
-    left:auto !important;
   }
 
+  /* ===== الخلفية ===== */
+  .overlay{
+    position: fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background: rgba(0,0,0,0.45);
+    z-index:1700;
+    opacity:0;
+    visibility:hidden;
+    transition:.3s;
+  }
+
+  .overlay.show{
+    opacity:1;
+    visibility:visible;
+  }
+
+  /* ===== المحتوى ===== */
   .admin-main{
     margin-right:0 !important;
-    width:100% !important;
+    width:100%;
     padding:16px 12px;
   }
 
   .main-footer{
     margin-right:0 !important;
-    width:100% !important;
+    width:100%;
   }
-  .overlay{
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.45);
-    z-index: 1500;
-    opacity: 0;
-    visibility: hidden;
-    transition: 0.3s;
-  }
-
-  .overlay.show{
-    opacity: 1;
-    visibility: visible;
-  }
+}
