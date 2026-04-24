@@ -648,6 +648,11 @@ body{
     display:block;
   }
 
+.menu-btn{
+  position: relative;
+  z-index: 9999;
+}
+  
   .event-img{
     width:70px;
     height:70px;
