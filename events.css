@@ -199,104 +199,54 @@
   font-size:22px;
   font-weight:900;
   cursor:pointer;
-  flex-shrink:0;
 }
 
-.overlay{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.38);
-  z-index:1500;
-  display:none;
-}
-
-.overlay.show{
-  display:block;
-}
-
-/* ===== موبايل ===== */
+/* ===== الحل النهائي للهيدر (هذا المهم) ===== */
 @media (max-width:992px){
 
   .admin-header{
-    direction: rtl !important;
-    display:flex !important;
-    flex-direction: row !important;
-    align-items:center !important;
-    justify-content:space-between !important;
     position:relative !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    height:70px !important;
   }
 
   .menu-btn{
     display:flex !important;
-    align-items:center;
-    justify-content:center;
-    order:1 !important;
-    flex-shrink:0 !important;
+    position:absolute !important;
+    right:15px !important;
+    top:50% !important;
+    transform:translateY(-50%) !important;
   }
 
-  /* هذا التعديل المهم: يخلي عنوان الفعاليات بالنص مثل المهام */
+  .logout{
+    position:absolute !important;
+    left:15px !important;
+    top:50% !important;
+    transform:translateY(-50%) !important;
+  }
+
   .admin-left{
-    order:2 !important;
-    direction:rtl !important;
     position:absolute !important;
     left:50% !important;
-    transform:translateX(-50%) !important;
+    top:50% !important;
+    transform:translate(-50%,-50%) !important;
     display:flex !important;
     align-items:center !important;
-    justify-content:center !important;
     gap:8px !important;
-    min-width:0 !important;
-    width:auto !important;
-    text-align:center !important;
-  }
-
-  .admin-logo{
-    width:42px !important;
-    height:auto !important;
-    flex-shrink:0 !important;
-  }
-
-  .admin-title{
-    text-align:center !important;
-    min-width:0 !important;
   }
 
   .admin-title h1{
-    margin:0 !important;
-    color:#fff !important;
     font-size:18px !important;
-    font-weight:900 !important;
-    white-space:nowrap !important;
+    color:#fff !important;
+    margin:0 !important;
   }
 
   .admin-title span{
     display:block !important;
-    color:#fff !important;
     font-size:11px !important;
-    opacity:.9 !important;
-    white-space:nowrap !important;
-  }
-
-  .logout{
-    order:3 !important;
-    flex-shrink:0 !important;
-  }
-
-  .sidebar{
-    position:fixed !important;
-    top:0 !important;
-    right:-270px !important;
-    left:auto !important;
-    height:100vh !important;
-    width:250px !important;
-    z-index:1600 !important;
-    transition:right .3s ease !important;
-    overflow-y:auto;
-  }
-
-  .sidebar.open{
-    right:0 !important;
-    left:auto !important;
+    color:#fff !important;
   }
 
   .admin-main{
@@ -305,43 +255,7 @@
     padding:16px 12px;
   }
 
-  .main-footer{
-    margin-right:0 !important;
-    width:100% !important;
-  }
-
-  .events-section-box{
-    padding:14px;
-  }
-
-  .top-actions{
-    flex-direction:column;
-    align-items:stretch;
-  }
-
-  .add-event-btn{
-    width:100%;
-    text-align:center;
-  }
-
   .events-grid{
     grid-template-columns:1fr;
-  }
-
-  .event-card{
-    padding:14px;
-  }
-
-  .event-card h3{
-    font-size:16px;
-  }
-
-  .event-card p,
-  .event-date{
-    font-size:13px;
-  }
-
-  .event-card img{
-    height:150px;
   }
 }
