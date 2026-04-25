@@ -223,6 +223,7 @@
     flex-direction: row !important;
     align-items:center !important;
     justify-content:space-between !important;
+    position:relative !important;
   }
 
   .menu-btn{
@@ -230,14 +231,50 @@
     align-items:center;
     justify-content:center;
     order:1 !important;
+    flex-shrink:0 !important;
   }
 
+  /* هذا التعديل المهم: يخلي عنوان الفعاليات بالنص مثل المهام */
   .admin-left{
     order:2 !important;
     direction:rtl !important;
-    flex:1 !important;
+    position:absolute !important;
+    left:50% !important;
+    transform:translateX(-50%) !important;
+    display:flex !important;
+    align-items:center !important;
     justify-content:center !important;
+    gap:8px !important;
     min-width:0 !important;
+    width:auto !important;
+    text-align:center !important;
+  }
+
+  .admin-logo{
+    width:42px !important;
+    height:auto !important;
+    flex-shrink:0 !important;
+  }
+
+  .admin-title{
+    text-align:center !important;
+    min-width:0 !important;
+  }
+
+  .admin-title h1{
+    margin:0 !important;
+    color:#fff !important;
+    font-size:18px !important;
+    font-weight:900 !important;
+    white-space:nowrap !important;
+  }
+
+  .admin-title span{
+    display:block !important;
+    color:#fff !important;
+    font-size:11px !important;
+    opacity:.9 !important;
+    white-space:nowrap !important;
   }
 
   .logout{
