@@ -161,14 +161,14 @@
   margin-top:20px;
 }
 
-.footer-content {
+.footer-content{
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 8px;
 }
 
-.footer-links {
+.footer-links{
   list-style: none;
   padding: 0;
   display: flex;
@@ -176,18 +176,17 @@
   margin: 0;
 }
 
-.footer-links a {
+.footer-links a{
   color: #ecf0f1;
   text-decoration: none;
   transition: color 0.3s;
   font-size: 14px;
 }
 
-.footer-links a:hover {
+.footer-links a:hover{
   color: #cfd8df;
 }
 
-/* زر القائمة */
 .menu-btn{
   display:none;
   background:#fff;
@@ -199,63 +198,187 @@
   font-size:22px;
   font-weight:900;
   cursor:pointer;
+  flex-shrink:0;
 }
 
-/* ===== الحل النهائي للهيدر (هذا المهم) ===== */
+.overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.38);
+  z-index:1500;
+  display:none;
+}
+
+.overlay.show{
+  display:block;
+}
+
+/* ===== الجوال: نفس شكل صفحة المهام ===== */
 @media (max-width:992px){
 
+  body{
+    padding-top:74px !important;
+  }
+
   .admin-header{
-    position:relative !important;
+    position:fixed !important;
+    top:0 !important;
+    right:0 !important;
+    left:0 !important;
+    height:74px !important;
+    z-index:1700 !important;
+    background:linear-gradient(to left,#0F2F4A,#5E7B93) !important;
     display:flex !important;
     align-items:center !important;
     justify-content:center !important;
-    height:70px !important;
+    padding:10px 12px !important;
+    margin:0 !important;
+    direction:rtl !important;
   }
 
   .menu-btn{
     display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
     position:absolute !important;
-    right:15px !important;
+    right:22px !important;
+    left:auto !important;
     top:50% !important;
     transform:translateY(-50%) !important;
+    width:44px !important;
+    height:44px !important;
+    border-radius:12px !important;
+    z-index:5 !important;
   }
 
   .logout{
     position:absolute !important;
-    left:15px !important;
+    left:22px !important;
+    right:auto !important;
     top:50% !important;
     transform:translateY(-50%) !important;
+    background:#fff !important;
+    color:#0F2F4A !important;
+    padding:8px 12px !important;
+    border-radius:10px !important;
+    font-size:12px !important;
+    font-weight:900 !important;
+    text-decoration:none !important;
+    white-space:nowrap !important;
+    z-index:5 !important;
   }
 
   .admin-left{
     position:absolute !important;
     left:50% !important;
+    right:auto !important;
     top:50% !important;
-    transform:translate(-50%,-50%) !important;
+    transform:translate(-50%, -50%) !important;
     display:flex !important;
     align-items:center !important;
+    justify-content:center !important;
     gap:8px !important;
+    width:auto !important;
+    max-width:260px !important;
+    margin:0 !important;
+    padding:0 !important;
+    flex:none !important;
+    text-align:center !important;
+    direction:rtl !important;
+  }
+
+  .admin-logo{
+    width:42px !important;
+    height:auto !important;
+    display:block !important;
+    flex-shrink:0 !important;
+  }
+
+  .admin-title{
+    text-align:center !important;
+    min-width:0 !important;
   }
 
   .admin-title h1{
-    font-size:18px !important;
-    color:#fff !important;
     margin:0 !important;
+    color:#fff !important;
+    font-size:18px !important;
+    font-weight:900 !important;
+    line-height:1.2 !important;
+    white-space:nowrap !important;
   }
 
   .admin-title span{
     display:block !important;
-    font-size:11px !important;
     color:#fff !important;
+    font-size:11px !important;
+    opacity:.9 !important;
+    line-height:1.4 !important;
+    white-space:nowrap !important;
+    overflow:hidden !important;
+    text-overflow:ellipsis !important;
+  }
+
+  .sidebar{
+    position:fixed !important;
+    top:74px !important;
+    right:-270px !important;
+    left:auto !important;
+    height:calc(100vh - 74px) !important;
+    width:250px !important;
+    z-index:1600 !important;
+    transition:right .3s ease !important;
+    overflow-y:auto !important;
+  }
+
+  .sidebar.open{
+    right:0 !important;
+    left:auto !important;
   }
 
   .admin-main{
     margin-right:0 !important;
     width:100% !important;
-    padding:16px 12px;
+    padding:16px 12px !important;
+  }
+
+  .main-footer{
+    margin-right:0 !important;
+    width:100% !important;
+  }
+
+  .events-section-box{
+    padding:14px;
+  }
+
+  .top-actions{
+    flex-direction:column;
+    align-items:stretch;
+  }
+
+  .add-event-btn{
+    width:100%;
+    text-align:center;
   }
 
   .events-grid{
     grid-template-columns:1fr;
+  }
+
+  .event-card{
+    padding:14px;
+  }
+
+  .event-card h3{
+    font-size:16px;
+  }
+
+  .event-card p,
+  .event-date{
+    font-size:13px;
+  }
+
+  .event-card img{
+    height:150px;
   }
 }
