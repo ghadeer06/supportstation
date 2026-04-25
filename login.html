@@ -138,6 +138,15 @@
 </head>
 <body>
 
+<script>
+const email = localStorage.getItem("user_email");
+
+// استثناء مؤقت لإيميلك
+if (email === "445153760@tvtc.edu.sa") {
+    localStorage.setItem("user_role", "trainer");
+}
+</script>
+
   <div class="card">
     <h2>تسجيل الدخول</h2>
     <p class="sub">أدخلي بريدك الإلكتروني وسنرسل لك رمز تحقق على الإيميل.</p>
@@ -191,6 +200,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
+  
     function getClient() {
       return window.supabase.createClient(
         'https://mcxdjisoyqdnyieboqpy.supabase.co',
@@ -232,7 +242,7 @@
         }
       }
 
-  
+      
 
       msg.innerText = "جاري إرسال الرمز...";
 
