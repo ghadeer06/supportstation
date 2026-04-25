@@ -23,6 +23,7 @@ if (email === "445153760@tvtc.edu.sa") {
 
   <!-- الهيدر -->
   <header class="admin-header">
+    <button id="menuToggle" class="menu-btn">☰</button>
     <div class="admin-left">
       <img src="img/logo.png" class="admin-logo" alt="Logo">
       <div class="admin-title">
@@ -32,9 +33,9 @@ if (email === "445153760@tvtc.edu.sa") {
     </div>
     <a href="index.html" class="logout">تسجيل الخروج</a>
   </header>
-
+<div id="overlay" class="overlay"></div>
   <!-- القائمة الجانبية -->
-  <aside class="sidebar">
+ <aside class="sidebar" id="sidebar">
     <div class="sidebar-brand">
       <h2>محطة الدعم</h2>
     </div>
@@ -194,6 +195,6 @@ document.addEventListener("DOMContentLoaded", async function () {
     </ul>
   </div>
 </footer>
-
+<script src="menu.js"></script>
 </body>
 </html>
