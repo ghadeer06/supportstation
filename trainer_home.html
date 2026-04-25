@@ -118,7 +118,7 @@ document.addEventListener("DOMContentLoaded", async function () {
           <div style="flex:1;">
             <h3 style="margin:0; font-size:18px;">${event.title}</h3>
             <p style="margin:5px 0; color:#555;">${event.description || "لا يوجد وصف"}</p>
-            <span style="font-size:14px; color:#888;">📅 ${event.due_date || "بدون تاريخ"}</span>
+            <span style="font-size:14px; color:#888;"> ${event.due_date || "بدون تاريخ"}</span>
           </div>
 
         </div>
@@ -164,11 +164,11 @@ document.addEventListener("DOMContentLoaded", async function () {
           </p>
 
           <p style="margin:0; font-size:14px; color:#888;">
-            📅 ${report.created_at.split("T")[0]}
+             ${report.created_at.split("T")[0]}
           </p>
 
           <p style="margin:0; font-size:14px; color:#888;">
-            🟢 الحالة: <strong>${report.status || "غير محدد"}</strong>
+             الحالة: <strong>${report.status || "غير محدد"}</strong>
           </p>
 
         </div>
