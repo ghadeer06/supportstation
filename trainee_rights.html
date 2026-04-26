@@ -22,7 +22,7 @@
     border-radius: 8px; text-decoration: none; font-size: 14px;
 }
 
-.side-menu {
+#side-menu{
     position: fixed;
     top: 0;
     right: -100%;
@@ -38,10 +38,10 @@
 
 
 
-.side-menu h2 { text-align: center; font-size: 24px; margin-bottom: 40px; }
+#side-menu h2 {text-align: center; font-size: 24px; margin-bottom: 40px; }
 
 
-.side-menu a {
+#side-menu a{
     display: block; color: white; padding: 18px; text-decoration: none;
     font-size: 18px; margin-bottom: 10px; border-radius: 12px;
     transition: 0.3s;
@@ -74,7 +74,7 @@
 
   <a href="index.html" class="logout">تسجيل الخروج</a>
 
-  <div id="menu" class="side-menu">
+  <div id="side-menu" class="side-menu">
     <h2>محطة الدعم</h2>
     <hr>
     <a href="trainee_home.html">الصفحة الرئيسية</a>
@@ -306,7 +306,7 @@ if (reportImageInput) {
 }
 
 function toggleMenu() {
-  const menu = document.getElementById("menu");
+  const menu = document.getElementById("side-menu")
 
   if (menu.style.right === "0px") {
     menu.style.right = "-100%"; // يقفل
