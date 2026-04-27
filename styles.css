@@ -12,7 +12,7 @@ body {
 }
 
 header.hero {
-  flex: 1; /* يخلي الهيدر ياخذ المساحة المتبقية */
+  flex: 1; 
 }
 
 
@@ -26,8 +26,8 @@ body{
 }
 .hero{
   position:relative;
-  min-height:100vh;   /* يغطي الشاشة كاملة */
-  height:auto;        /* يسمح بالتمدد */
+  min-height:100vh;   
+  height:auto;        
   background:
     linear-gradient(rgba(18,44,74,0.65), rgba(18,44,74,0.65)),
     url("img/h1.png");
@@ -39,7 +39,7 @@ body{
 .overlay{
   position:absolute;
   inset:0;
-  background:rgba(18,44,74,0.65);
+  background:rgba(18,44,74,0.01);
 	pointer-events:none;
 }
 .wrap{
@@ -51,7 +51,6 @@ body{
   z-index:2;
 }
 
-/* الهيدر فوق يمين */
 .top{
   position:absolute;
   top:0;
@@ -63,7 +62,6 @@ body{
   display:block;
 }
 
-/* نص الجهة */
 .org-ar{
   font-size:18px;
   font-weight:800;
@@ -76,7 +74,6 @@ body{
   opacity:.9;
 }
 
-/* المحتوى يمين */
 .box{
   position:absolute;
   right:34px;
@@ -129,7 +126,6 @@ body{
   .box h1{font-size:30px}
   .box p{font-size:16px}
 }
-/* ===== صفحة تسجيل الدخول ===== */
 
 .auth-body{
   background:#fff;
@@ -181,7 +177,6 @@ body{
   margin-bottom:14px;
 }
 
-/* خيارات الدور */
 .role-group{
   display:flex;
   gap:10px;
@@ -207,7 +202,6 @@ body{
   transform: scale(1.1);
 }
 
-/* الحقول */
 .auth-form{
   display:flex;
   flex-direction:column;
@@ -266,12 +260,10 @@ body{
   text-decoration:underline;
 }
 
-/* موبايل */
 @media (max-width:768px){
   .top--auth{right:16px;top:16px}
   .auth-card{right:16px;left:16px;width:auto;transform:translateY(-30%)}
 }
-/* خلي صفحة تسجيل الدخول تتوسّط */
 body.login-page, body {
   min-height: 100vh;
 }
@@ -282,7 +274,6 @@ body.login-page, body {
   left: 50%;
   transform: translate(-50%, -50%);
 }
-/* ===== توسيط كرت تسجيل الدخول بالنص ===== */
 .auth-card{
   left: 50%;
   right: auto;
@@ -290,14 +281,8 @@ body.login-page, body {
   transform: translate(-50%, -50%);
 }
 
-/* تنسيق صفحه المسؤول*/
-/* =========================
-   ADMIN ONLY (Safe)
-   يعمل فقط داخل: body.admin-body
-========================= */
-/* =========================
-   ADMIN ONLY (Scoped)
-   ========================= */
+
+/* تنسيق صفحه المسؤول*/*/
 
 .admin-body{
   font-family: Arial, sans-serif;
@@ -306,7 +291,6 @@ body.login-page, body {
   margin:0;
 }
 
-/* ===== الهيدر ===== */
 .admin-body .admin-header{
   background:linear-gradient(to left, #0F2F4A, #5E7B93);
   color:#fff;
@@ -346,12 +330,10 @@ body.login-page, body {
 }
 .admin-body .logout:hover{background:#e0e0e0}
 
-/* ===== المحتوى ===== */
 .admin-body .admin-main{
   padding:30px 40px;
 }
 
-/* ===== الإحصائيات ===== */
 .admin-body .admin-cards{
   display:flex;
   gap:20px;
@@ -383,7 +365,6 @@ body.login-page, body {
   margin:0;
 }
 
-/* ===== عناوين الأقسام ===== */
 .admin-body .admin-section-title{
   margin: 16px 0 10px;
   color:#0F2F4A;
@@ -391,7 +372,6 @@ body.login-page, body {
   font-size:18px;
 }
 
-/* ===== شبكة البوكسات (نفس شكل اللي فوق) ===== */
 .admin-body .admin-cards-grid{
   display:grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -439,7 +419,7 @@ body.login-page, body {
   font-weight:900;
 }
 
-/* ===== نسبة تحديد المشكلة ===== */
+
 .admin-body .admin-severity{
   display:flex;
   align-items:center;
@@ -461,21 +441,6 @@ body.login-page, body {
   border-radius:999px;
   font-weight:900;
   font-size:12px;
-}
-
-/* تظهر فقط إذا البلاغ عالي (بنحطها بالـ HTML أو بالـ JS) */
-.admin-body .admin-priority-badge{
-  display:none;
-  background:#ffe8cc;
-  color:#a85b00;
-  border:1px solid #ffd3a1;
-  padding:4px 10px;
-  border-radius:999px;
-  font-weight:900;
-  font-size:12px;
-}
-.admin-body .admin-report-card.is-priority .admin-priority-badge{
-  display:inline-block;
 }
 
 .admin-body .admin-meta{
@@ -503,7 +468,7 @@ body.login-page, body {
   flex-wrap:wrap;
 }
 
-/* أزرار */
+
 .admin-body .btn-process,
 .admin-body .btn-close{
   border:none;
@@ -534,7 +499,7 @@ body.login-page, body {
   line-height:1.8;
 }
 
-/* ريسبونسف */
+
 @media (max-width: 900px){
   .admin-body .admin-cards-grid{ grid-template-columns: 1fr; }
 }
@@ -544,14 +509,14 @@ body.login-page, body {
   .admin-body .admin-header h1{font-size:18px}
 }
 
-/* ===== تحسين شكل كروت الادمن (مثل الشكل الطويل) ===== */
+
 .admin-body .admin-cards-grid{
-  grid-template-columns: 1fr;       /* كل سطر كرت واحد */
+  grid-template-columns: 1fr;       
   gap:14px;
 }
 
 .admin-body #trainerReports.admin-cards-grid{
-  grid-template-columns: 1fr;       /* المدربين كذلك */
+  grid-template-columns: 1fr;       
 }
 
 .admin-body .admin-report-card{
@@ -562,7 +527,7 @@ body.login-page, body {
 }
 
 .admin-body .admin-report-top{
-  width:220px;                      /* جهة البادجات */
+  width:220px;                      
   flex-shrink:0;
   margin:0;
   flex-direction:column;
@@ -591,27 +556,23 @@ body.login-page, body {
 }
 
 .admin-body .admin-sev-value,
-.admin-body .admin-priority-badge,
 .admin-body .admin-id{
   font-size:12px;
   padding:6px 12px;
   border-radius:999px;
 }
 
-/* محتوى الكرت (النص والميتا والأزرار) */
 .admin-body .admin-report-card .admin-meta,
 .admin-body .admin-report-card .admin-content,
 .admin-body .admin-report-card .admin-actions{
   flex:1;
 }
 
-/* الأزرار تحت وبجهة اليمين */
 .admin-body .admin-actions{
   justify-content:flex-start;
   margin-top:10px;
 }
 
-/* ريسبونسف للجوال */
 @media (max-width: 900px){
   .admin-body .admin-report-card{
     flex-direction:column;
@@ -625,17 +586,9 @@ body.login-page, body {
   .admin-body .admin-sev-label{
     width:auto;
   }
-}
 
 
-.admin-body .admin-priority-badge{
-  background:#f2d7b6;
-  border-color:#e8c79f;
-  color:#7a4a00;
-}
 
-
-/* لجعل الفوتر متجاوباً مع الشاشات الصغيرة */
 @media (max-width: 600px) {
     .footer-links {
         flex-direction: column;
