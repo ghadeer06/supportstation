@@ -1,335 +1,213 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>رفع بلاغ</title>
-  <link rel="stylesheet" href="style_report.css">
-    <link rel="stylesheet" href="studentHome.css">
-
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>حقوق المتدرب</title>
 
 <style>
+    body {
+        font-family: Arial;
+        background-color: #F3F1EC;
+        margin: 0;
+        text-align: center;
+    }
 
-.admin-header { 
-    display: flex; justify-content: space-between; align-items: center; 
-    padding: 15px 25px; background: #fff; border-bottom: 1px solid #eee;
-}
+    header {
+        background: linear-gradient(135deg, #0F2F4A, #5E7B93);
+        color: white;
+        padding: 20px;
+    }
 
+    h1 {
+        margin: 0;
+    }
 
-.logout {
-    background: #f0f0f0; color: #333; padding: 8px 18px; 
-    border-radius: 8px; text-decoration: none; font-size: 14px;
-}
+    .section {
+        margin: 30px;
+    }
 
-#side-menu{
-    position: fixed;
-    top: 0;
-    right: -100%;
-    width: 75%;
-    height: 100vh;
-    z-index: 1000;
-    background: linear-gradient(180deg, #162a4d 0%, #2a5298 100%);
-    color: white;
-    padding: 40px 20px;
-    text-align: right;
-    transition: 0.3s;
-}
+    h2 {
+        color: #0F2F4A;
+    }
 
+    .cards {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
 
+    .card {
+        background: white;
+        padding: 15px;
+        margin: 10px;
+        width: 250px;
+        border-radius: 12px;
+        border-top: 4px solid #0F2F4A;
+        box-shadow: 0 6px 15px rgba(0,0,0,.08);
+    }
 
-#side-menu h2 {text-align: center; font-size: 24px; margin-bottom: 40px; }
+    .alert {
+        background-color: #0F2F4A;
+        color: white;
+        padding: 15px;
+        margin: 20px;
+        border-radius: 10px;
+    }
 
+    button {
+        padding: 10px 20px;
+        background: linear-gradient(135deg, #0F2F4A, #5E7B93);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+    }
 
-#side-menu a{
-    display: block; color: white; padding: 18px; text-decoration: none;
-    font-size: 18px; margin-bottom: 10px; border-radius: 12px;
-    transition: 0.3s;
-}
+    button:hover {
+        opacity: 0.9;
+    }
 
+    /* الفوتر */
+    .main-footer {
+        background-color: #2c3e50;
+        color: #ffffff;
+        padding: 20px 0;
+        text-align: center;
+        margin-top: 40px;
+    }
 
-.side-menu a.active { background: rgba(255, 255, 255, 0.15); }
+    .footer-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+    }
 
+    .footer-links {
+        list-style: none;
+        padding: 0;
+        display: flex;
+        gap: 15px;
+    }
 
-.close-btn { 
-    width: 100%; background: none; border: 1px solid rgba(255,255,255,0.3); 
-    color: white; padding: 12px; border-radius: 10px; margin-top: 30px; 
-}
+    .footer-links a {
+        color: #ecf0f1;
+        text-decoration: none;
+    }
+
+    .footer-links a:hover {
+        color: #3498db;
+    }
 </style>
- </head>
+</head>
 
 <body>
 
-<!-- الهيدر -->
-<header class="admin-header">
-  <button class="menu-btn" onclick="toggleMenu()">☰</button>
-  
-  <div class="admin-left">
-    <img src="img/logo.png" class="admin-logo" alt="Logo">
-    <div class="admin-title">
-      <h1>رفع بلاغ</h1>
-      <span>محطة الدعم</span>
-    </div>
-  </div>
-
-  <a href="index.html" class="logout">تسجيل الخروج</a>
-
-  <div id="side-menu" class="side-menu">
-    <h2>محطة الدعم</h2>
-    <hr>
-    <a href="trainee_home.html">الصفحة الرئيسية</a>
-    <a href="trainee_reports.html">بلاغاتي</a>
-    <a href="add_report_trainee.html">رفع بلاغ</a>
-    <a href="trainee_events.html">الفعاليات</a>
-    <a href="trainee_rights.html">حقوق المتدرب</a>
-	<button onclick="toggleMenu()" class="close-btn">إغلاق ×</button>
-  </div>
+<header>
+    <h1>حقوق المتدرب</h1>
+    <p>حقوق المتدرب وفقاً للائحة المعتمدة</p>
 </header>
 
-
-<!-- المحتوى -->
-<main class="admin-main" style="margin-right:250px; padding-top:40px;">
-
-  <div class="container" style="max-width:700px; margin:auto;">
-    <div class="card">
-
-      <h2 style="margin-bottom:20px; color:#0F2F4A; font-weight:900;">إنشاء بلاغ جديد</h2>
-
-      <label>نوع البلاغ</label>
-
-      <div class="custom-select" onclick="toggleDropdown()">
-        <div id="selectedOption">صيانة</div>
-        <ul id="optionsList" class="options">
-          <li onclick="selectOption('صيانة',event)">صيانة</li>
-          <li onclick="selectOption('نظافة',event)">نظافة</li>
-          <li onclick="selectOption('حماية الحقوق',event)">حماية الحقوق</li>
-        </ul>
-      </div>
-
-      <input type="hidden" id="type" value="صيانة">
-
-      <div id="rightsNote" class="rights-note" style="display:none;">
-        يتم تحويل البلاغ مباشرة إلى المسؤول المختص مع المحافظة على سرية المعالجة.
-      </div>
-
-      <div id="rightsGuideBox" class="rights-guide-box" style="display:none;">
-        <span>اطلع على حقوقك قبل الإبلاغ</span>
-        <button type="button" class="rights-btn" onclick="goToRights()">الحقوق</button>
-      </div>
-
-      <br><br>
-
-      <label>شدة البلاغ: <span id="rateValue">1</span> / 10</label>
-      <input type="range" id="rate" min="1" max="10" value="1" oninput="updateRate()">
-
-      <div id="locationField">
-        <label id="locationLabel">الموقع</label>
-        <input type="text" id="location" placeholder="مثال: مبنى A - قاعة 3">
-      </div>
-
-      <br><br>
-
-      <label for="reportImage">إرفاق صورة</label>
-      <input type="file" id="reportImage" accept="image/*" capture="environment">
-      <p id="imageName" style="font-size:13px; color:#666;"></p>
-
-      <label>الوصف</label>
-      <textarea id="desc" placeholder="اكتبي تفاصيل البلاغ"></textarea>
-
-      <button class="primary" onclick="saveReport()">إرسال البلاغ</button>
-      <button class="light" onclick="window.location.href='trainee_reports.html'">رجوع</button>
-
+<div class="section">
+    <h2>1. الحقوق الأساسية</h2>
+    <div class="cards">
+        <div class="card">احترام شخصية المتدرب والتعامل معه بشكل لائق</div>
+        <div class="card">الحفاظ على سرية بياناته ومعلوماته</div>
+        <div class="card">تعيين مشرف تدريبي لكل متدرب</div>
     </div>
-  </div>
+</div>
 
-</main>
+<div class="section">
+    <h2>2. البيئة والخدمات</h2>
+    <div class="cards">
+        <div class="card">توفير بيئة تدريب مناسبة</div>
+        <div class="card">وجود مدربين مؤهلين</div>
+        <div class="card">إتاحة الخدمات الإلكترونية</div>
+    </div>
+</div>
 
-<!-- سكربت Supabase -->
-<script>
-function getClient() {
-  return window.supabase.createClient(
-    'https://mcxdjisoyqdnyieboqpy.supabase.co',
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1jeGRqaXNveXFkbnlpZWJvcXB5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0MDI3NDAsImV4cCI6MjA5MDk3ODc0MH0.kIwJ1pc-GLX1lTvstLSDZ5Li1rd9vwutI4-Wz_HR6nE'
-  );
-}
+<div class="section">
+    <h2>3. الحقوق المالية والإدارية</h2>
+    <div class="cards">
+        <div class="card">صرف المكافأة في موعدها</div>
+        <div class="card">معرفة مواعيد التدريب والإجازات</div>
+        <div class="card">الاطلاع على نتائج التقييم</div>
+    </div>
+</div>
 
-function toggleDropdown() {
-  const list = document.getElementById("optionsList");
-  list.style.display = list.style.display === "block" ? "none" : "block";
-}
+<div class="section">
+    <h2>4. الشهادات والوثائق</h2>
+    <div class="cards">
+        <div class="card">الحصول على شهادة تدريب معتمدة</div>
+        <div class="card">إمكانية استخراج بدل فاقد</div>
+        <div class="card">سجل بساعات التدريب</div>
+    </div>
+</div>
 
-function selectOption(value, event) {
-  event.stopPropagation();
-  document.getElementById("selectedOption").innerText = value;
-  document.getElementById("type").value = value;
-  document.getElementById("optionsList").style.display = "none";
-  toggleFields();
-}
+<div class="section">
+    <h2>5. الواجبات الإدارية</h2>
+    <div class="cards">
+        <div class="card">تحديث بيانات التواصل</div>
+        <div class="card">تحديث رقم الآيبان</div>
+        <div class="card">الالتزام بالاتفاقية التدريبية</div>
+    </div>
+</div>
 
-function toggleFields(){
-  const type = document.getElementById("type").value;
-  const note = document.getElementById("rightsNote");
-  const guideBox = document.getElementById("rightsGuideBox");
-  const label = document.getElementById("locationLabel");
-  const locationInput = document.getElementById("location");
+<div class="section">
+    <h2>6. السلوك والانضباط</h2>
+    <div class="cards">
+        <div class="card">الالتزام بالحضور وعدم التأخر</div>
+        <div class="card">الالتزام بالزي الرسمي</div>
+        <div class="card">اتباع الأنظمة والتعليمات</div>
+    </div>
+</div>
 
-  if(type === "حماية الحقوق"){
-    note.style.display = "block";
-    guideBox.style.display = "flex";
-    label.innerText = "الجهة المرتبطة بالبلاغ";
-    locationInput.placeholder = "مثال: القسم أو الجهة أو الموقع المرتبط بالبلاغ";
-  } else {
-    note.style.display = "none";
-    guideBox.style.display = "none";
-    label.innerText = "الموقع";
-    locationInput.placeholder = "مثال: مبنى A - قاعة 3";
-  }
-}
+<div class="section">
+    <h2>7. حفظ الممتلكات</h2>
+    <div class="cards">
+        <div class="card">المحافظة على ممتلكات المنشأة</div>
+        <div class="card">الحفاظ على الشهادات والوثائق</div>
+        <div class="card">احترام حقوق الملكية الفكرية</div>
+    </div>
+</div>
 
-function updateRate(){
-  document.getElementById("rateValue").innerText = document.getElementById("rate").value;
-}
+<div class="section">
+    <h2>8. السلامة</h2>
+    <div class="cards">
+        <div class="card">الالتزام بتعليمات السلامة</div>
+        <div class="card">عدم نشر معلومات بدون إذن</div>
+        <div class="card">اتباع أنظمة المعامل والورش</div>
+    </div>
+</div>
 
-function goToRights() {
-  window.location.href = "trainee_rights.html";
-}
+<div class="section">
+    <h2>9. الشكاوى والتظلم</h2>
+    <div class="cards">
+        <div class="card">عن طريق وكيل شؤون المتدربين</div>
+        <div class="card">عن طريق خدمة العملاء</div>
+        <div class="card">عن طريق موقع المؤسسة</div>
+    </div>
+</div>
 
-/* رفع الصورة */
-async function uploadReportImage(file) {
-  if (!file) return null;
+<div class="alert">
+⚠️ يرجى الاطلاع على الحقوق قبل تقديم أي بلاغ
+</div>
 
-  const supabase = getClient();
-
-  const fileExt = file.name.split('.').pop();
-  const fileName = ${Date.now()}.${fileExt};
-  const filePath = reports/${fileName};
-
-  const { error: uploadError } = await supabase.storage
-    .from("report-images")
-    .upload(filePath, file);
-
-  if (uploadError) {
-    alert("خطأ في رفع الصورة: " + uploadError.message);
-    return null;
-  }
-
-  const { data } = supabase.storage
-    .from("report-images")
-    .getPublicUrl(filePath);
-
-  return data.publicUrl;
-}
-
-async function saveReport(){
-  const type = document.getElementById("type").value;
-  const location = document.getElementById("location").value.trim();
-  const desc = document.getElementById("desc").value.trim();
-  const rate = document.getElementById("rate").value;
-
-  const senderName = localStorage.getItem("userName");
-  const senderEmail = localStorage.getItem("user_email");
-  const senderRole = localStorage.getItem("user_role");
-
-  if (!senderEmail) {
-    alert("لازم تسجل دخول أول");
-    return;
-  }
-
-  if(location === ""){
-    alert("الرجاء تعبئة الموقع");
-    return;
-  }
-
-  if(desc === ""){
-    alert("الرجاء كتابة وصف البلاغ");
-    return;
-  }
-
-  try {
-    const supabase = getClient();
-
-    const imageFile = document.getElementById("reportImage").files[0];
-    let imageUrl = null;
-
-    if (imageFile) {
-      imageUrl = await uploadReportImage(imageFile);
-      if (!imageUrl) return;
-    }
-
-    const { error } = await supabase
-      .from("reports")
-      .insert([
-        {
-          type: type,
-          description: desc,
-          location: location,
-          rate: parseInt(rate),
-          status: "قيد المراجعة",
-          sender_name: senderName || "-",
-          sender_email: senderEmail,
-          sender_role: senderRole || "trainee",
-          image_url: imageUrl
-        }
-      ]);
-
-    if (error) {
-      alert("خطأ: " + error.message);
-      return;
-    }
-
-    alert("تم إرسال البلاغ بنجاح");
-    window.location.href = "trainee_reports.html";
-
-  } catch (e) {
-    alert("صار خطأ: " + e.message);
-  }
-}
-
-document.addEventListener("click", function(e) {
-  const list = document.getElementById("optionsList");
-  const select = document.querySelector(".custom-select");
-
-  if (select && !select.contains(e.target)) {
-    list.style.display = "none";
-  }
-});
-
-/* إظهار اسم الصورة */
-const reportImageInput = document.getElementById("reportImage");
-const imageName = document.getElementById("imageName");
-
-if (reportImageInput) {
-  reportImageInput.addEventListener("change", () => {
-    const file = reportImageInput.files[0];
-    imageName.textContent = file ? تم اختيار الصورة: ${file.name} : "";
-  });
-}
-
-function toggleMenu() {
-  const menu = document.getElementById("side-menu")
-
-  if (menu.style.right === "0px") {
-    menu.style.right = "-100%"; // يقفل
-  } else {
-    menu.style.right = "0"; // يفتح
-  }
-}
-
-toggleFields();
-updateRate();
-</script>
+<br>
+<a href="add_report_trainee.html">
+  <button>رجوع</button>
+</a>
 
 <footer class="main-footer">
   <div class="footer-content">
     <p>&copy; 2026 حقوق محفوظة | محطة الدعم</p>
-	<ul class="footer-links">
+    <ul class="footer-links">
       <li><a href="index.html">الرئيسية</a></li>
       <li><a href="about.html">عن الموقع</a></li>
-      <li><a href="https://twitter.com/support0station" target="_blank">اتصل بنا</a></li>
     </ul>
   </div>
 </footer>
-
 
 </body>
 </html>
