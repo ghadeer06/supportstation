@@ -31,7 +31,7 @@ body{
   min-height:100vh;   /* يغطي الشاشة كاملة */
   height:auto;        /* يسمح بالتمدد */
   background:
-    linear-gradient(rgba(18,44,74,0.65), rgba(18,44,74,0.65)),
+    linear-gradient(rgba(18,44,74,0.65), rgba(18,44,74,0.55)),
     url("img/h1.png");
   background-size:cover;
   background-position:center;
