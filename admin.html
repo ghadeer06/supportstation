@@ -11,6 +11,16 @@
 
 <body class="admin-body">
 
+<script>
+  const ADMIN_EMAIL = "445153575@tvtc.edu.sa";
+
+  const email = localStorage.getItem("user_email");
+
+  if (email !== ADMIN_EMAIL) {
+    alert("عذرًا، لا تملك صلاحية الوصول إلى هذه الصفحة.");
+    window.location.href = "login.html";
+  }
+</script>
 <header class="admin-header">
   <button id="menuToggle" class="menu-btn" type="button" aria-label="فتح القائمة">☰</button>
 
