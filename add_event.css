@@ -168,3 +168,8 @@
 .footer-links a:hover {
   color: #cfd8df;
 }
+.date-ltr{
+  direction: ltr;
+  text-align: right;
+  unicode-bidi: plaintext;
+}
