@@ -128,6 +128,22 @@ function openReport(id) {
 loadReports();
 </script>
 
+	<script>
+function toggleMenu() {
+    const menu = document.getElementById("side-menu");
+    if (!menu) {
+        console.error("لم يتم العثور على العنصر side-menu");
+        return;
+    }
+    
+    if (menu.style.right === "0px") {
+        menu.style.right = "-100%";
+    } else {
+        menu.style.right = "0px";
+    }
+}
+</script> 
+
 <footer class="main-footer">
   <div class="footer-content">
     <p>&copy; 2026 حقوق محفوظة | محطة الدعم</p>
