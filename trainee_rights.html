@@ -5,12 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <link rel="stylesheet" href="reports.css">
 	      <link rel="stylesheet" href="studentHome.css">
-
+ <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <title>حقوق المتدرب</title>
 
 <style>
-}
+
+
+
 
 
 
@@ -217,6 +219,8 @@ async function loadRights() {
     const email = localStorage.getItem("user_email");
     const supabase = getClient();
 
+
+
     let query = supabase.from("rights").select("*").order("id", { ascending: false });
 
     if (email) {
@@ -244,7 +248,7 @@ async function loadRights() {
         const statusText = getStatusText(r.status);
 
         rightsContainer.innerHTML += `
-            <div class="report-card">
+            <div class="right-card">
                 <h3>#${r.id} - ${r.type || "-"}</h3>
                 <p><b>الجهة:</b> ${r.location || "-"}</p>
                 <p><b>الوصف:</b> ${r.description || "-"}</p>
