@@ -89,8 +89,6 @@
   </aside>
 
 
-
-
 <main class="admin-main" style="flex:1; padding-top:50px;">
 <div class="alert" 
             style=" padding:15px; 
@@ -105,6 +103,15 @@
     style="width:100%; padding:18px; border-radius:14px; cursor:pointer;">
       <h2 style="margin:0; font-size:20px; font-weight:900;">➕ إضافة شكوى جديدة</h2>
   </button>
+
+<section class="reports-section" style="max-width:900px; margin:auto; margin-top:40px;">
+  <h2 class="section-title" style="text-align:center;">شكاويك السابقة</h2>
+
+  <div class="reports-box">
+    <div class="reports-scroll" id="rightsCards"></div>
+  </div>
+</section>
+
 
 <div class="section">
     <h2>1. الحقوق الأساسية</h2>
@@ -188,6 +195,74 @@
 </div>
 
 </main>
+
+<script>
+function getClient() {
+  return window.supabase.createClient(
+    'https://mcxdjisoyqdnyieboqpy.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1jeGRqaXNveXFkbnlpZWJvcXB5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0MDI3NDAsImV4cCI6MjA5MDk3ODc0MH0.kIwJ1pc-GLX1lTvstLSDZ5Li1rd9vwutI4-Wz_HR6nE'
+  );
+}
+
+const rightsContainer = document.getElementById("rightsCards");
+
+function getStatusText(status) {
+  if (status === "processing" || status === "قيد المراجعة") return "قيد المراجعة";
+  if (status === "running" || status === "تحت الدراسة") return "تحت الدراسة";
+  if (status === "done" || status === "تم الحل") return "تم الحل";
+  return status || "غير محدد";
+}
+
+async function loadRights() {
+    const email = localStorage.getItem("user_email");
+    const supabase = getClient();
+
+    let query = supabase.from("rights").select("*").order("id", { ascending: false });
+
+    if (email) {
+        query = query.eq("sender_email", email);
+    }
+
+    const { data, error } = await query;
+
+    if (error) {
+        rightsContainer.innerHTML = `<p>خطأ في تحميل الشكاوى</p>`;
+        return;
+    }
+
+    if (!data || data.length === 0) {
+        rightsContainer.innerHTML = `
+            <div class="report-card" style="text-align:center;">
+                لا توجد شكاوى حتى الآن
+            </div>`;
+        return;
+    }
+
+    rightsContainer.innerHTML = "";
+
+    data.forEach(r => {
+        const statusText = getStatusText(r.status);
+
+        rightsContainer.innerHTML += `
+            <div class="report-card">
+                <h3>#${r.id} - ${r.type || "-"}</h3>
+                <p><b>الجهة:</b> ${r.location || "-"}</p>
+                <p><b>الوصف:</b> ${r.description || "-"}</p>
+                <p><b>الحالة:</b> ${statusText}</p>
+                <button class="btn-process" onclick="openRight(${r.id})">عرض الشكوى</button>
+            </div>
+        `;
+    });
+}
+
+function openRight(id) {
+    localStorage.setItem("selectedRightId", id);
+    window.location.href = "trainee_right.html"; 
+}
+
+loadRights();
+</script>
+
 
 <footer class="main-footer">
   <div class="footer-content">
