@@ -713,3 +713,89 @@ body{
     justify-content:center;
   }
 }
+/* ===== MOBILE RIGHTS CARDS FINAL ===== */
+@media (max-width: 768px){
+
+  body{
+    padding-top:72px !important;
+    overflow-x:hidden !important;
+  }
+
+  .admin-main,
+  .rights-main,
+  .rights-page-main{
+    margin-right:0 !important;
+    width:100% !important;
+    padding:0 22px 35px !important;
+  }
+
+  .rights-section{
+    margin:0 0 38px !important;
+    padding:0 !important;
+  }
+
+  .section-title,
+  .rights-title,
+  .rights-section h2{
+    font-size:27px !important;
+    margin:26px 0 20px !important;
+    text-align:center !important;
+    color:#0F2F4A !important;
+    font-weight:900 !important;
+  }
+
+  .rights-grid,
+  .rights-cards{
+    display:flex !important;
+    flex-direction:column !important;
+    align-items:center !important;
+    gap:20px !important;
+    width:100% !important;
+    margin:0 !important;
+    padding:0 !important;
+  }
+
+  .right-card,
+  .rights-card{
+    width:88% !important;
+    max-width:88% !important;
+    min-height:92px !important;
+    margin:0 auto !important;
+    padding:22px 16px !important;
+    border-radius:22px !important;
+    border-top:7px solid #0F2F4A !important;
+    border-right:none !important;
+    background:#fff !important;
+    text-align:center !important;
+    font-size:18px !important;
+    line-height:1.8 !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    box-shadow:0 8px 18px rgba(0,0,0,.06) !important;
+  }
+
+  .right-card p,
+  .rights-card p{
+    margin:0 !important;
+    font-size:18px !important;
+    line-height:1.8 !important;
+    text-align:center !important;
+  }
+
+  .reports-box,
+  .previous-box{
+    width:100% !important;
+    max-width:100% !important;
+    margin:0 0 28px !important;
+    padding:18px !important;
+    border-radius:22px !important;
+  }
+
+  .empty-box{
+    width:100% !important;
+    padding:16px !important;
+    font-size:16px !important;
+    border-radius:16px !important;
+  }
+}
