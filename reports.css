@@ -713,3 +713,130 @@ body{
     justify-content:center;
   }
 }
+/* ===== تعديل الجوال النهائي ===== */
+@media (max-width: 768px){
+
+  body{
+    padding-top:78px !important;
+    overflow-x:hidden;
+  }
+
+  /* الهيدر */
+  .admin-header{
+    height:78px !important;
+    padding:10px 14px !important;
+  }
+
+  .admin-title h1{
+    font-size:18px !important;
+  }
+
+  .admin-logo{
+    width:45px !important;
+  }
+
+  .logout{
+    font-size:12px !important;
+    padding:8px 12px !important;
+  }
+
+  /* المحتوى */
+  .admin-main{
+    margin-right:0 !important;
+    width:100% !important;
+    padding:18px 14px 30px !important;
+  }
+
+  /* العناوين */
+  .section-title,
+  h2{
+    font-size:20px !important;
+    text-align:center;
+    margin-bottom:18px !important;
+  }
+
+  /* الكروت */
+  .report-card,
+  .right-card,
+  .reports-box,
+  .alerts-panel{
+    width:100% !important;
+    margin-bottom:20px !important;
+    border-radius:22px !important;
+  }
+
+  .report-card,
+  .right-card{
+    padding:26px 18px !important;
+    min-height:auto !important;
+  }
+
+  .report-card h3,
+  .right-card h3{
+    font-size:22px !important;
+    line-height:1.8 !important;
+    text-align:center;
+  }
+
+  .report-card p,
+  .right-card p{
+    font-size:18px !important;
+    line-height:2 !important;
+    text-align:center;
+  }
+
+  /* يمنع الفراغات */
+  .reports-layout,
+  .reports-section,
+  .scroll-box{
+    gap:12px !important;
+    margin:0 !important;
+    padding:0 !important;
+  }
+
+  /* الصور */
+  .event-img{
+    width:100% !important;
+    height:auto !important;
+    margin:0 0 12px 0 !important;
+    float:none !important;
+  }
+
+  /* السايد بار */
+  .sidebar{
+    position:fixed;
+    top:0;
+    right:-100%;
+    width:78%;
+    height:100vh;
+    z-index:9999;
+    transition:.3s;
+    padding-top:100px;
+  }
+
+  .sidebar.open{
+    right:0;
+  }
+
+  .sidebar-menu li a{
+    font-size:20px !important;
+    padding:16px !important;
+  }
+
+  /* زر المنيو */
+  .menu-btn{
+    display:flex !important;
+    align-items:center;
+    justify-content:center;
+    width:50px;
+    height:50px;
+    font-size:28px;
+    position:relative;
+    z-index:10000;
+  }
+
+  /* يمنع السحب اليمين */
+  html,body{
+    overflow-x:hidden !important;
+  }
+}
