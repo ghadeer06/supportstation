@@ -713,7 +713,7 @@ body{
     justify-content:center;
   }
 }
-/* ===== أقوى تعديل نهائي للجوال ===== */
+/* ===== MOBILE RIGHTS CARDS EXACT FIX ===== */
 @media (max-width:768px){
 
   body{
@@ -725,62 +725,58 @@ body{
   .rights-main,
   .rights-page-main{
     margin-right:0 !important;
-    padding:0 10px 25px !important;
     width:100% !important;
+    padding:0 24px 35px !important;
   }
 
-  .rights-section{
-    margin:0 0 22px !important;
-    padding:0 !important;
-  }
-
-  .section-title,
-  .rights-title{
+  .rights-title,
+  .section-title{
     font-size:28px !important;
-    margin:16px 0 14px !important;
+    margin:28px 0 20px !important;
     text-align:center !important;
+    color:#0F2F4A !important;
   }
 
   .rights-grid,
   .rights-cards{
     display:flex !important;
     flex-direction:column !important;
-    gap:14px !important;
+    align-items:center !important;
+    gap:20px !important;
     width:100% !important;
-    padding:0 !important;
-    margin:0 !important;
   }
 
-  .rights-section .right-card,
   .right-card{
-    width:100% !important;
-    max-width:100% !important;
-    min-width:100% !important;
-    margin:0 0 14px 0 !important;
-    padding:26px 16px !important;
+    width:88% !important;
+    max-width:560px !important;
+    margin:0 auto !important;
+    padding:24px 16px !important;
     border-radius:22px !important;
     border-top:7px solid #0F2F4A !important;
     border-right:none !important;
+    background:#fff !important;
     text-align:center !important;
-    font-size:19px !important;
+    font-size:18px !important;
     line-height:1.8 !important;
-    display:flex !important;
-    align-items:center !important;
-    justify-content:center !important;
+    box-shadow:0 8px 18px rgba(0,0,0,.06) !important;
   }
 
-  .reports-box,
-  .previous-box{
+  .previous-box,
+  .reports-box{
     width:100% !important;
-    max-width:100% !important;
-    margin:0 0 18px !important;
-    padding:14px !important;
+    margin:0 0 26px !important;
+    padding:18px !important;
+    border-radius:22px !important;
   }
 
   .empty-box{
     width:100% !important;
-    margin:0 !important;
-    padding:18px !important;
-    font-size:17px !important;
+    padding:16px !important;
+    font-size:16px !important;
+    border-radius:16px !important;
+  }
+
+  .rights-section{
+    margin-bottom:42px !important;
   }
 }
