@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>عرض الشكوى</title>
+  <link rel="stylesheet" href="reports.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+
+<body>
+
+<header class="admin-header">
+  <div class="admin-left">
+    <img src="img/logo.png" class="admin-logo">
+    <div class="admin-title">
+      <h1>تفاصيل الشكوى</h1>
+      <span>محطة الدعم</span>
+    </div>
+  </div>
+  <a href="index.html" class="logout">تسجيل الخروج</a>
+</header>
+
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <h2>محطة الدعم</h2>
+  </div>
+
+  <ul class="sidebar-menu">
+    <li><a href="trainee_home.html">الصفحة الرئيسية</a></li>
+    <li ><a href="trainee_reports.html">بلاغاتي</a></li>
+          <li class="active"><a href="trainee_rights.html">حقوقي</a></li>
+    <li><a href="trainee_events.html">الفعاليات</a></li>
+  </ul>
+</aside>
+
+<main class="admin-main">
+
+  <section class="reports-section" style="max-width:900px; margin:auto;">
+    <h2 class="section-title" style="text-align:center;">تفاصيل لشكوى</h2>
+
+    <div class="reports-box" id="rightDetails">
+      <p>جاري تحميل البيانات...</p>
+    </div>
+
+    <button class="btn-process" style="margin-top:20px;" onclick="window.location.href='trainee_rights.html'">
+      رجوع
+    </button>
+
+    <!-- زر حذف البلاغ -->
+    <button class="btn-process" style="margin-top:20px; background:#b30000;" onclick="deleteRight()">
+      حذف البلاغ
+    </button>
+
+  </section>
+
+</main>
+
+<script>
+function getClient() {
+  return window.supabase.createClient(
+    'https://mcxdjisoyqdnyieboqpy.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1jeGRqaXNveXFkbnlpZWJvcXB5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0MDI3NDAsImV4cCI6MjA5MDk3ODc0MH0.kIwJ1pc-GLX1lTvstLSDZ5Li1rd9vwutI4-Wz_HR6nE'
+  );
+}
+
+async function loadRights() {
+  const id = localStorage.getItem("selectedRightId");
+  const box = document.getElementById("rightDetails");
+
+  if (!id) {
+    box.innerHTML = "<p>لم يتم العثور على رقم الشكوى</p>";
+    return;
+  }
+
+  const supabase = getClient();
+
+  const { data, error } = await supabase
+    .from("rights")
+    .select("*")
+    .eq("id", id)
+    .single();
+
+  if (error || !data) {
+    box.innerHTML = "<p>خطأ في تحميل البيانات</p>";
+    return;
+  }
+
+  box.innerHTML = `
+    <div class="report-card">
+      <h3>بلاغ رقم #${data.id}</h3>
+
+      <p><b>نوع البلاغ:</b> ${data.type || "-"}</p>
+      <p><b>الوصف:</b> ${data.description || "-"}</p>
+      <p><b>الموقع:</b> ${data.location || "-"}</p>
+      <p><b>الحالة:</b> ${data.status || "-"}</p>
+      <p><b>التاريخ:</b> ${data.created_at ? data.created_at.split("T")[0] : "-"}</p>
+
+      <p><b>المرسل:</b> ${data.sender_name || "-"}</p>
+      <p><b>البريد:</b> ${data.sender_email || "-"}</p>
+
+      ${data.image_url ? `
+        <div class="report-image-box">
+          <img src="${data.image_url}" class="report-image">
+        </div>
+      ` : ""}
+    </div>
+  `;
+}
+
+async function deleteRight() {
+  const id = localStorage.getItem("selectedRightId");
+  if (!id) return;
+
+  const confirmDelete = confirm("هل أنتِ متأكدة من حذف الشكوى؟");
+  if (!confirmDelete) return;
+
+  const supabase = getClient();
+
+  const { error } = await supabase
+    .from("rights")
+    .delete()
+    .eq("id", id);
+
+  if (error) {
+    alert("حدث خطأ أثناء حذف الشكوى");
+    return;
+  }
+
+  alert("تم حذف الشكوى بنجاح");
+  window.location.href = "trainee_rights.html";
+}
+
+loadRights();
+</script>
+
+<footer class="main-footer">
+  <div class="footer-content">
+    <p>&copy; 2026 حقوق محفوظة | محطة الدعم</p>
+    <ul class="footer-links">
+      <li><a href="index.html">الرئيسية</a></li>
+      <li><a href="about.html">عن الموقع</a></li>
+      <li><a href="https://twitter.com/support0station" target="_blank">اتصل بنا</a></li>
+    </ul>
+  </div>
+</footer>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+<script>
+function getClient() {
+  return window.supabase.createClient(
+    'https://mcxdjisoyqdnyieboqpy.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1jeGRqaXNveXFkbnlpZWJvcXB5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0MDI3NDAsImV4cCI6MjA5MDk3ODc0MH0.kIwJ1pc-GLX1lTvstLSDZ5Li1rd9vwutI4-Wz_HR6nE'
+  );
+}
+
+const rightsContainer = document.getElementById("rightsCards");
+
+function getStatusText(status) {
+  if (status === "processing" || status === "قيد المراجعة") return "قيد المراجعة";
+  if (status === "running" || status === "تحت الدراسة") return "تحت الدراسة";
+  if (status === "done" || status === "تم الحل") return "تم الحل";
+  return status || "غير محدد";
+}
+
+async function loadRights() {
+    const email = localStorage.getItem("user_email");
+    const supabase = getClient();
+
+
+
+    let query = supabase.from("rights").select("*").order("id", { ascending: false });
+
+    if (email) {
+        query = query.eq("sender_email", email);
+    }
+
+    const { data, error } = await query;
+
+    if (error) {
+        rightsContainer.innerHTML = `<p>خطأ في تحميل الشكاوى</p>`;
+        return;
+    }
+
+    if (!data || data.length === 0) {
+        rightsContainer.innerHTML = `
+            <div class="report-card" style="text-align:center;">
+                لا توجد شكاوى حتى الآن
+            </div>`;
+        return;
+    }
+
+    rightsContainer.innerHTML = "";
+
+    data.forEach(r => {
+        const statusText = getStatusText(r.status);
+
+        rightsContainer.innerHTML += `
+            <div class="report-card">
+                <h3>#${r.id} - ${r.type || "-"}</h3>
+                <p><b>الجهة:</b> ${r.location || "-"}</p>
+                <p><b>الوصف:</b> ${r.description || "-"}</p>
+                <p><b>الحالة:</b> ${statusText}</p>
+                <button class="btn-process" onclick="openRight(${r.id})">عرض الشكوى</button>
+            </div>
+        `;
+    });
+}
+
+function openRight(id) {
+    localStorage.setItem("selectedRightId", id);
+    window.location.href = "trainee_right.html"; 
+}
+
+loadRights();
+</script>
