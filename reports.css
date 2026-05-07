@@ -713,130 +713,88 @@ body{
     justify-content:center;
   }
 }
-/* ===== تعديل الجوال النهائي ===== */
-@media (max-width: 768px){
+/* ===== إضافة نهائية للجوال فقط ===== */
+@media (max-width:768px){
 
   body{
-    padding-top:78px !important;
-    overflow-x:hidden;
+    padding-top:72px !important;
+    overflow-x:hidden !important;
   }
 
-  /* الهيدر */
-  .admin-header{
-    height:78px !important;
-    padding:10px 14px !important;
-  }
-
-  .admin-title h1{
-    font-size:18px !important;
-  }
-
-  .admin-logo{
-    width:45px !important;
-  }
-
-  .logout{
-    font-size:12px !important;
-    padding:8px 12px !important;
-  }
-
-  /* المحتوى */
   .admin-main{
     margin-right:0 !important;
     width:100% !important;
-    padding:18px 14px 30px !important;
+    padding:10px 12px 30px !important;
   }
 
-  /* العناوين */
   .section-title,
-  h2{
-    font-size:20px !important;
-    text-align:center;
-    margin-bottom:18px !important;
+  .rights-title{
+    font-size:28px !important;
+    margin:18px 0 18px !important;
+    text-align:center !important;
+    color:var(--dark) !important;
   }
 
-  /* الكروت */
-  .report-card,
-  .right-card,
+  .rights-grid,
+  .rights-cards{
+    display:grid !important;
+    grid-template-columns:1fr !important;
+    gap:18px !important;
+  }
+
+  .right-card{
+    width:92% !important;
+    max-width:92% !important;
+    margin:0 auto 18px !important;
+    padding:24px 16px !important;
+    border-radius:22px !important;
+    border-top:7px solid var(--dark) !important;
+    border-right:none !important;
+    text-align:center !important;
+    font-size:18px !important;
+    line-height:1.8 !important;
+  }
+
   .reports-box,
-  .alerts-panel{
+  .previous-box,
+  .add-right-box,
+  .add-complaint-card{
     width:100% !important;
-    margin-bottom:20px !important;
+    max-width:100% !important;
+    margin:0 0 22px !important;
+    padding:22px 16px !important;
     border-radius:22px !important;
   }
 
-  .report-card,
-  .right-card{
-    padding:26px 18px !important;
-    min-height:auto !important;
+  .rights-section{
+    margin-bottom:34px !important;
   }
 
-  .report-card h3,
-  .right-card h3{
-    font-size:22px !important;
-    line-height:1.8 !important;
-    text-align:center;
+  .menu-btn{
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    z-index:99999 !important;
   }
 
-  .report-card p,
-  .right-card p{
-    font-size:18px !important;
-    line-height:2 !important;
-    text-align:center;
-  }
-
-  /* يمنع الفراغات */
-  .reports-layout,
-  .reports-section,
-  .scroll-box{
-    gap:12px !important;
-    margin:0 !important;
-    padding:0 !important;
-  }
-
-  /* الصور */
-  .event-img{
-    width:100% !important;
-    height:auto !important;
-    margin:0 0 12px 0 !important;
-    float:none !important;
-  }
-
-  /* السايد بار */
   .sidebar{
-    position:fixed;
-    top:0;
-    right:-100%;
-    width:78%;
-    height:100vh;
-    z-index:9999;
-    transition:.3s;
-    padding-top:100px;
+    top:0 !important;
+    right:-270px !important;
+    width:250px !important;
+    height:100vh !important;
+    z-index:9999 !important;
   }
 
   .sidebar.open{
-    right:0;
+    right:0 !important;
   }
 
-  .sidebar-menu li a{
-    font-size:20px !important;
-    padding:16px !important;
+  .overlay{
+    z-index:9998 !important;
   }
 
-  /* زر المنيو */
-  .menu-btn{
-    display:flex !important;
-    align-items:center;
-    justify-content:center;
-    width:50px;
-    height:50px;
-    font-size:28px;
-    position:relative;
-    z-index:10000;
-  }
-
-  /* يمنع السحب اليمين */
-  html,body{
-    overflow-x:hidden !important;
+  .main-footer{
+    margin-right:0 !important;
+    width:100% !important;
   }
 }
