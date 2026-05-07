@@ -177,7 +177,7 @@ async function saveReport(){
     }
 
     const { error } = await supabase
-      .from("reports")
+      .from("rights")
       .insert([
         {
           type: type,
