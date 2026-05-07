@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <link rel="stylesheet" href="reports.css">
+	      <link rel="stylesheet" href="studentHome.css">
+
+
+<title>حقوق المتدرب</title>
+
+<style>
+}
+
+
+
+    h1 {
+        margin: 0;
+    }
+
+    .section {
+        margin: 30px;
+    }
+
+    h2 {
+        color: #0F2F4A;
+    }
+
+    .cards {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .card {
+        background: white;
+        padding: 15px;
+        margin: 10px;
+        width: 250px;
+        border-radius: 12px;
+        border-top: 4px solid #0F2F4A;
+        box-shadow: 0 6px 15px rgba(0,0,0,.08);
+    }
+
+    .alert {
+        background-color: #0F2F4A;
+        color: white;
+        padding: 15px;
+        margin: 20px;
+        border-radius: 10px;
+    }
+
+
+
+    button:hover {
+        opacity: 0.9;
+    }
+
+
+</style>
+</head>
+
+<body>
+
+    <header class="admin-header">
+    <button class="menu-btn" onclick="toggleMenu()">☰</button> 
+    <div class="admin-left">
+      <img src="img/logo.png" class="admin-logo" alt="Logo">
+      <div class="admin-title">
+        <h1>الصفحة الرئيسية</h1>
+        <span>محطة الدعم - المتدرب</span>
+      </div>
+    </div>
+    <a href="index.html" class="logout">تسجيل الخروج</a>
+  </header>
+
+  <!-- القائمة الجانبية -->
+  <aside id="side-menu" class="sidebar">
+    <div class="sidebar-brand">
+      <h2>محطة الدعم</h2>
+    </div>
+
+    <ul class="sidebar-menu">
+      <li ><a href="trainee_home.html">الصفحة الرئيسية</a></li>
+      <li><a href="trainee_reports.html">بلاغاتي</a></li>
+      <li class="active"><a href="trainee_rights.html">حقوقي</a></li>
+      <li><a href="trainee_events.html">الفعاليات</a></li>
+    </ul>
+  </aside>
+
+
+
+
+<main class="admin-main" style="flex:1; padding-top:50px;">
+<div class="alert" 
+            style=" padding:15px; 
+            border-radius:10px; border:1px solid #ffeeba; 
+            margin:auto; margin-bottom:20px; text-align:center; 
+            max-width:900px;">
+⚠️ يرجى الاطلاع على الحقوق قبل تقديم أي بلاغ
+</div>
+
+<div class="add-report-box" style="max-width:900px; margin:auto; margin-bottom:25px; text-align:center;">
+  <button class="stat-card" onclick="window.location.href='report_right_trainee.html'" 
+    style="width:100%; padding:18px; border-radius:14px; cursor:pointer;">
+      <h2 style="margin:0; font-size:20px; font-weight:900;">➕ إضافة شكوى جديدة</h2>
+  </button>
+
+<div class="section">
+    <h2>1. الحقوق الأساسية</h2>
+    <div class="cards">
+        <div class="card">احترام شخصية المتدرب والتعامل معه بشكل لائق</div>
+        <div class="card">الحفاظ على سرية بياناته ومعلوماته</div>
+        <div class="card">تعيين مشرف تدريبي لكل متدرب</div>
+    </div>
+</div>
+
+<div class="section">
+    <h2>2. البيئة والخدمات</h2>
+    <div class="cards">
+        <div class="card">توفير بيئة تدريب مناسبة</div>
+        <div class="card">وجود مدربين مؤهلين</div>
+        <div class="card">إتاحة الخدمات الإلكترونية</div>
+    </div>
+</div>
+
+<div class="section">
+    <h2>3. الحقوق المالية والإدارية</h2>
+    <div class="cards">
+        <div class="card">صرف المكافأة في موعدها</div>
+        <div class="card">معرفة مواعيد التدريب والإجازات</div>
+        <div class="card">الاطلاع على نتائج التقييم</div>
+    </div>
+</div>
+
+<div class="section">
+    <h2>4. الشهادات والوثائق</h2>
+    <div class="cards">
+        <div class="card">الحصول على شهادة تدريب معتمدة</div>
+        <div class="card">إمكانية استخراج بدل فاقد</div>
+        <div class="card">سجل بساعات التدريب</div>
+    </div>
+</div>
+
+<div class="section">
+    <h2>5. الواجبات الإدارية</h2>
+    <div class="cards">
+        <div class="card">تحديث بيانات التواصل</div>
+        <div class="card">تحديث رقم الآيبان</div>
+        <div class="card">الالتزام بالاتفاقية التدريبية</div>
+    </div>
+</div>
+
+<div class="section">
+    <h2>6. السلوك والانضباط</h2>
+    <div class="cards">
+        <div class="card">الالتزام بالحضور وعدم التأخر</div>
+        <div class="card">الالتزام بالزي الرسمي</div>
+        <div class="card">اتباع الأنظمة والتعليمات</div>
+    </div>
+</div>
+
+<div class="section">
+    <h2>7. حفظ الممتلكات</h2>
+    <div class="cards">
+        <div class="card">المحافظة على ممتلكات المنشأة</div>
+        <div class="card">الحفاظ على الشهادات والوثائق</div>
+        <div class="card">احترام حقوق الملكية الفكرية</div>
+    </div>
+</div>
+
+<div class="section">
+    <h2>8. السلامة</h2>
+    <div class="cards">
+        <div class="card">الالتزام بتعليمات السلامة</div>
+        <div class="card">عدم نشر معلومات بدون إذن</div>
+        <div class="card">اتباع أنظمة المعامل والورش</div>
+    </div>
+</div>
+
+<div class="section">
+    <h2>9. الشكاوى والتظلم</h2>
+    <div class="cards">
+        <div class="card">عن طريق وكيل شؤون المتدربين</div>
+        <div class="card">عن طريق خدمة العملاء</div>
+        <div class="card">عن طريق موقع المؤسسة</div>
+    </div>
+</div>
+
+</main>
+
+<footer class="main-footer">
+  <div class="footer-content">
+    <p>&copy; 2026 حقوق محفوظة | محطة الدعم</p>
+    <ul class="footer-links">
+      <li><a href="index.html">الرئيسية</a></li>
+      <li><a href="about.html">عن الموقع</a></li>
+      <li><a href="https://twitter.com/support0station" target="_blank">اتصل بنا</a></li>
+    </ul>
+  </div>
+</footer>
+
+
+
+</body>
+
+</html>

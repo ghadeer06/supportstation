@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <link rel="stylesheet" href="reports.css">
+	      <link rel="stylesheet" href="studentHome.css">
+
+
+<title>حقوق المدرب</title>
+
+<style>
+}
+
+
+
+    h1 {
+        margin: 0;
+    }
+
+    .section {
+        margin: 30px;
+    }
+
+    h2 {
+        color: #0F2F4A;
+    }
+
+    .cards {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .card {
+        background: white;
+        padding: 15px;
+        margin: 10px;
+        width: 250px;
+        border-radius: 12px;
+        border-top: 4px solid #0F2F4A;
+        box-shadow: 0 6px 15px rgba(0,0,0,.08);
+    }
+
+    .alert {
+        background-color: #0F2F4A;
+        color: white;
+        padding: 15px;
+        margin: 20px;
+        border-radius: 10px;
+    }
+
+
+
+    button:hover {
+        opacity: 0.9;
+    }
+
+
+</style>
+</head>
+
+<body>
+
+    <header class="admin-header">
+    <button class="menu-btn" onclick="toggleMenu()">☰</button> 
+    <div class="admin-left">
+      <img src="img/logo.png" class="admin-logo" alt="Logo">
+      <div class="admin-title">
+        <h1>الصفحة الرئيسية</h1>
+        <span>محطة الدعم - المدرب</span>
+      </div>
+    </div>
+    <a href="index.html" class="logout">تسجيل الخروج</a>
+  </header>
+
+  <!-- القائمة الجانبية -->
+  <aside id="side-menu" class="sidebar">
+    <div class="sidebar-brand">
+      <h2>محطة الدعم</h2>
+    </div>
+
+    <ul class="sidebar-menu">
+      <li ><a href="trainer_home.html">الصفحة الرئيسية</a></li>
+      <li><a href="trainer_reports.html">بلاغاتي</a></li>
+      <li class="active"><a href="trainer_rights.html">حقوقي</a></li>
+      <li><a href="trainer_events.html">الفعاليات</a></li>
+    </ul>
+  </aside>
+
+
+
+
+<main class="admin-main" style="flex:1; padding-top:50px;">
+<div class="alert" 
+            style=" padding:15px; 
+            border-radius:10px; border:1px solid #ffeeba; 
+            margin:auto; margin-bottom:20px; text-align:center; 
+            max-width:900px;">
+⚠️ يرجى الاطلاع على الحقوق قبل تقديم أي بلاغ
+</div>
+
+<div class="add-report-box" style="max-width:900px; margin:auto; margin-bottom:25px; text-align:center;">
+  <button class="stat-card" onclick="window.location.href='report_right_trainer.html'" 
+    style="width:100%; padding:18px; border-radius:14px; cursor:pointer;">
+      <h2 style="margin:0; font-size:20px; font-weight:900;">➕ إضافة شكوى جديدة</h2>
+  </button>
+
+<div class="section">
+    <h2>1. الحقوق الأساسية</h2>
+    <div class="cards">
+        <div class="card">احترام شخصية المتدرب والتعامل معه بشكل لائق</div>
+        <div class="card">الحفاظ على سرية بياناته ومعلوماته</div>
+        <div class="card">تعيين مشرف تدريبي لكل متدرب</div>
+    </div>
+</div>
+
+<div class="section">
+    <h2>2. البيئة والخدمات</h2>
+    <div class="cards">
+        <div class="card">توفير بيئة تدريب مناسبة</div>
+        <div class="card">وجود مدربين مؤهلين</div>
+        <div class="card">إتاحة الخدمات الإلكترونية</div>
+    </div>
+</div>
+
+<div class="section">
+    <h2>1. الرواتب والبدلات الأساسية</h2>
+    <div class="cards">
+        <div class="card"><strong>الراتب الأساسي:</strong> يستحق العضو عند تعيينه الحد الأدنى لراتب الفئة المعين عليها، وتصرف الرواتب نهاية كل شهر ميلادي.</div>
+        <div class="card"><strong>العلاوة السنوية:</strong> زيادة سنوية تمنح في بداية السنة المالية لمن وصل للدرجة الأخيرة من فئته.</div>
+        <div class="card"><strong>بدل التعيين:</strong> يصرف لمن يعين لأول مرة، ويعادل راتب شهر واحد بشرط عدم استلامه سابقاً.</div>
+    </div>
+</div>
+
+<div class="section">
+    <h2>2. البدلات والمكافآت</h2>
+    <div class="cards">
+        <div class="card"><strong>بدل النقل:</strong> يصرف شهرياً حسب الدرجة، ولا يشمل من يسكن في مقر العمل.</div>
+        <div class="card"><strong>بدل التخصص:</strong> يصل إلى 25% من الحد الأعلى لراتب الفئة حسب أهمية التخصص.</div>
+        <div class="card"><strong>بدل ارتباط بسوق العمل:</strong> بنسبة 20% مقابل ساعات العمل ومستوى الانضباط.</div>
+    </div>
+</div>
+
+<div class="section">
+    <h2>3. المكافآت والتعويضات</h2>
+    <div class="cards">
+        <div class="card"><strong>مكافأة التميز:</strong> لا تتجاوز 10% للحاصلين على تقدير جيد جداً فأعلى.</div>
+        <div class="card"><strong>بدل الخطر:</strong> لا يتجاوز 600 ريال لمن يزاول عمله في الورش والمختبرات المعرضة للمخاطر.</div>
+        <div class="card"><strong>مكافأة نهاية الخدمة:</strong> تصرف عند انتهاء الخدمة لأسباب غير تأديبية وفق الأنظمة.</div>
+    </div>
+</div>
+
+<div class="section">
+    <h2>4. الإجازات والترقيات</h2>
+    <div class="cards">
+        <div class="card"><strong>الإجازة السنوية:</strong> 36 يوماً عن كل سنة، ويجوز صرف راتبها مقدماً إذا زادت عن شهر.</div>
+        <div class="card"><strong>إجازات التقويم:</strong> تراعى إجازات التقويم التدريبي للمؤسسة، وما عداها يتبع نظام الخدمة المدنية.</div>
+        <div class="card"><strong>التكليف بالإشراف:</strong> مكافأة تتراوح بين 15% إلى 20% لعمداء الكليات ورؤساء الأقسام.</div>
+    </div>
+</div>
+
+<div class="section">
+    <h2>5. التدريب والابتعاث</h2>
+    <div class="cards">
+        <div class="card"><strong>الالتحاق بالبرامج:</strong> تمكين الموظف من الابتعاث الخارجي أو الإيفاد الداخلي لتنمية قدراته.</div>
+        <div class="card"><strong>المعاملة المالية للمبتعث:</strong> تشمل الرواتب والبدلات والرسوم الدراسية وفق اللوائح المطبقة.</div>
+    </div>
+</div>
+
+<div class="section">
+    <h2>6. المعاملة والحقوق المهنية</h2>
+    <div class="cards">
+        <div class="card"><strong>المعاملة اللائقة:</strong> الالتزام بالاحترام وصون الكرامة والاهتمام بمصالح المدربين.</div>
+		<div class="card"><strong>المساواة والعدل:</strong> العدل في المعاملة والمكافأة والتشجيع على المبادرات.</div>
+        <div class="card"><strong>صرف المستحقات:</strong> الالتزام الكامل بصرف الرواتب والمكافآت في مواعيدها المحددة.</div>
+    </div>
+</div>
+
+<div class="section">
+    <h2>7. التقييم والتظلم</h2>
+    <div class="cards">
+        <div class="card"><strong>تقويم الأداء:</strong> يتم دورياً وفق ضوابط المؤسسة، وللمدرب حق الاطلاع والتظلم خلال 15 يوماً.</div>
+        <div class="card"><strong>نظام التأديب:</strong> يطبق وفق اللوائح، وللمدرب حق التظلم أمام ديوان المظالم عند الحاجة.</div>
+    </div>
+</div>
+
+<div class="section">
+    <h2>8. الواجبات والمحظورات</h2>
+    <div class="cards">
+        <div class="card"><strong>تخصيص وقت العمل:</strong> أداء الواجبات الوظيفية بإخلاص تام طوال ساعات العمل.</div>
+        <div class="card"><strong>المحافظة على المواعيد:</strong> الالتزام بالحضور والانصراف والعناية بالتجهيزات.</div>
+        <div class="card"><strong>التقيد بالتعليمات:</strong> تنفيذ الأوامر الصادرة من الرؤساء بدقة وأمانة.</div>
+    </div>
+</div>
+
+<div class="section">
+    <h2>9. الانضباط الفني</h2>
+    <div class="cards">
+        <div class="card"><strong>تطوير المعارف:</strong> متابعة المستجدات في تخصص المدرب لنقلها للمتدربين.</div>
+        <div class="card"><strong>الوسائل التعليمية:</strong> استخدام أفضل الأساليب لإيصال المعارف والمهارات.</div>
+        <div class="card"><strong>حفظ النظام:</strong> الالتزام بالهدوء والانضباط داخل المعامل والورش التدريبية.</div>
+    </div>
+</div>
+
+</main>
+
+<footer class="main-footer">
+  <div class="footer-content">
+    <p>&copy; 2026 حقوق محفوظة | محطة الدعم</p>
+    <ul class="footer-links">
+      <li><a href="index.html">الرئيسية</a></li>
+      <li><a href="about.html">عن الموقع</a></li>
+      <li><a href="https://twitter.com/support0station" target="_blank">اتصل بنا</a></li>
+    </ul>
+  </div>
+</footer>
+
+
+
+</body>
+
+</html>
