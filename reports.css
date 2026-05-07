@@ -212,6 +212,28 @@ body{
 }
 
 /* ===== Report Card ===== */
+.right-card{
+  background:#fff;
+  border:1px solid #e7eef7;
+  border-right:6px solid var(--mid);
+  border-radius:16px;
+  padding:18px 16px;
+  margin-bottom:16px;
+  box-shadow:0 4px 14px rgba(0,0,0,0.05);
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  transition:.2s;
+  text-align: right;
+
+}
+
+.right-card:hover{
+  transform:translateY(-3px);
+  box-shadow:0 8px 18px rgba(0,0,0,0.08);
+}
+
+
 /* ===== Report Card (الشكل القديم الاحترافي) ===== */
 .report-card{
   background:#fff;
