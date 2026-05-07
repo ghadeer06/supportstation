@@ -138,6 +138,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     const { data, error } = await supabase
       .from("reports")
       .select("*")
+        .eq("sender_email", email)   // ← هنا الشرط
       .order("created_at", { ascending: false })
       .limit(3);
 
