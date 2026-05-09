@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="reports.css"/>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.sheetjs.com/xlsx-0.19.3/package/dist/xlsx.full.min.js"></script>
 </head>
 
 <body class="admin-body">
@@ -59,9 +60,14 @@
         <p id="countDone">0</p>
       </button>
     </div>
-<button onclick="exportExcel()" class="btn-process" style="margin-bottom:15px;">
-  تصدير البلاغات إلى Excel
-</button>
+<div style="margin: 20px 0; display: flex; gap: 15px; justify-content: center;">
+    <button onclick="exportData('trainee')" style="background-color: #2c3e50; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">
+       تصدير بلاغات المتدربين (Excel)
+    </button>
+    <button onclick="exportData('trainer')" style="background-color: #1a252f; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">
+         تصدير بلاغات المدربين (Excel)
+    </button>
+</div>
 
     <section class="reports-section">
       <h2 class="section-title">بلاغات المدربين</h2>
