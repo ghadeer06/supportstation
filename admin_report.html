@@ -175,6 +175,51 @@ async function deleteReport() {
 }
 
 loadReport();
+  const supabaseRealtime = getClient();
+
+supabaseRealtime
+    .channel('admin-notifications')
+    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'reports' }, (payload) => {
+        
+        if (typeof loadReport === "function") {
+            loadReport();
+        }
+
+        const notification = document.createElement('div');
+        notification.innerHTML = `
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <span style="font-size: 20px;"></span>
+                <div>
+                    <strong style="display: block;">بلاغ جديد</strong>
+                    <span style="font-size: 13px; opacity: 0.9;">من: ${payload.new.sender_name}</span>
+                </div>
+            </div>
+        `;
+
+        Object.assign(notification.style, {
+            position: 'fixed',
+            top: '20px',
+            right: '20px',
+            backgroundColor: '#b30000',
+            color: 'white',
+            padding: '15px 25px',
+            borderRadius: '8px',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+            zIndex: '9999',
+            direction: 'rtl',
+            fontFamily: 'Arial, sans-serif',
+            transition: 'opacity 0.5s ease'
+        });
+
+        document.body.appendChild(notification);
+        new Audio('https://tones.wolfram.com/generate/G-1_4_1_1_1').play().catch(() => {});
+
+        setTimeout(() => {
+            notification.style.opacity = '0';
+            setTimeout(() => notification.remove(), 500);
+        }, 5000);
+    })
+    .subscribe();
 </script>
 <footer class="main-footer">
   <div class="footer-content">
