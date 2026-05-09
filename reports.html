@@ -297,7 +297,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   ]);
 
   // كل البلاغات المعروضة
-  const cards = document.querySelectorAll(".report-card");
+  const cards = Array.from(document.querySelectorAll(".report-card")).filter(card => card.style.display !== 'none');
 
   if (cards.length === 0) {
     alert("لا توجد بلاغات للتصدير");
