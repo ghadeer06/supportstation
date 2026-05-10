@@ -14,7 +14,7 @@
   <div class="admin-left">
     <img src="img/logo.png" class="admin-logo">
     <div class="admin-title">
-      <h1>تفاصيل الشكوى</h1>
+      <h1>تفاصيل الشكوى </h1>
       <span>محطة الدعم</span>
     </div>
   </div>
@@ -31,13 +31,16 @@
     <li ><a href="trainer_reports.html">بلاغاتي</a></li>
           <li class="active"><a href="trainer_rights.html">حقوقي</a></li>
     <li><a href="trainer_events.html">الفعاليات</a></li>
+     <li>
+  <a href="trainer_profile.html">الملف الشخصي</a>
+</li>
   </ul>
 </aside>
 
 <main class="admin-main">
 
   <section class="reports-section" style="max-width:900px; margin:auto;">
-    <h2 class="section-title" style="text-align:center;">تفاصيل لشكوى</h2>
+    <h2 class="section-title" style="text-align:center;">تفاصيل الشكوى</h2>
 
     <div class="reports-box" id="rightDetails">
       <p>جاري تحميل البيانات...</p>
@@ -49,7 +52,7 @@
 
     <!-- زر حذف البلاغ -->
     <button class="btn-process" style="margin-top:20px; background:#b30000;" onclick="deleteRight()">
-      حذف البلاغ
+      حذف الشكوى
     </button>
 
   </section>
@@ -88,15 +91,45 @@ async function loadRights() {
 
   box.innerHTML = `
     <div class="report-card">
-      <h3>بلاغ رقم #${data.id}</h3>
+      <h3>شكوى رقم #${data.id}</h3>
 
-      <p><b>نوع البلاغ:</b> ${data.type || "-"}</p>
+      <p><b>نوع الشكوى:</b> ${data.type || "-"}</p>
       <p><b>الوصف:</b> ${data.description || "-"}</p>
       <p><b>الموقع:</b> ${data.location || "-"}</p>
       <p><b>الحالة:</b> ${data.status || "-"}</p>
+      <p>
+<b>الجهة الحالية:</b><br>
+
+${
+data.current_level === 1
+? "رئيس القسم"
+
+: data.current_level === 2
+? "وكيلة "
+
+: "العميدة"
+}
+
+
+    <p><b>مستوى التصعيد:</b> 
+      
+      ${
+data.current_level === 1
+? "الأول"
+
+: data.current_level === 2
+? " الثاني"
+
+: " الأخير"
+}
+      
+      </p>
+
+
       <p><b>التاريخ:</b> ${data.created_at ? data.created_at.split("T")[0] : "-"}</p>
 
       <p><b>المرسل:</b> ${data.sender_name || "-"}</p>
+      <p><b>القسم:</b> ${data.department || "-"}</p>
       <p><b>البريد:</b> ${data.sender_email || "-"}</p>
 
       ${data.image_url ? `
@@ -105,6 +138,17 @@ async function loadRights() {
         </div>
       ` : ""}
     </div>
+     ${data.current_level < 3 ? `
+
+<button class="btn-process"
+style="margin-top:20px;"
+onclick="transferComplaint()">
+
+تحويل للمسؤول التالي
+
+</button>
+
+` : ""}
   `;
 }
 
@@ -127,8 +171,76 @@ async function deleteRight() {
     return;
   }
 
-  alert("تم حذف الشكوى بنجاح");
+  alert("تم حذف الشكوى بنجاح.\n\nفي حال تم إرسال البريد الإلكتروني مسبقاً، يرجى التأكد من حذفه من البريد المرسل.");
   window.location.href = "trainer_rights.html";
+}
+
+async function transferComplaint() {
+
+  const id = localStorage.getItem("selectedRightId");
+
+  const supabase = getClient();
+
+  const { data } = await supabase
+    .from("rights")
+    .select("*")
+    .eq("id", id)
+    .single();
+
+const body = `
+نوع الشكوى: ${data.type}
+
+المرسل: ${data.sender_name}
+
+البريد الإلكتروني: ${data.sender_email}
+
+القسم: ${data.department}
+
+الجهة: ${data.location}
+
+الوصف:
+${data.description}
+`;
+
+if(data.current_level === 1){
+
+  await supabase
+    .from("rights")
+    .update({
+      current_level: 2,
+    })
+    .eq("id", id);
+
+  window.location.href =
+`mailto:tvtc90042@gmail.com?subject=تحويل شكوى&body=${encodeURIComponent(body)}`;
+
+}
+
+else if(data.current_level === 2){
+
+  await supabase
+    .from("rights")
+    .update({
+      current_level: 3,
+    })
+    .eq("id", id);
+
+  window.location.href =
+`mailto:tvtc90042@gmail.com?subject=تحويل شكوى&body=${encodeURIComponent(body)}`;
+
+}
+
+else if(data.current_level === 3){
+
+  window.location.href =
+`mailto:tvtc90042@gmail.com?subject=تحويل شكوى&body=${encodeURIComponent(body)}`;
+
+}
+
+alert("تم تحويل الشكوى");
+
+location.reload();
+
 }
 
 loadRights();
