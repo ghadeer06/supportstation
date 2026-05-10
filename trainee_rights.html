@@ -87,6 +87,9 @@
       <li><a href="trainee_reports.html">بلاغاتي</a></li>
       <li class="active"><a href="trainee_rights.html">حقوقي</a></li>
       <li><a href="trainee_events.html">الفعاليات</a></li>
+      <li>
+  <a href="profile.html">الملف الشخصي</a>
+</li>
     </ul>
   </aside>
 
@@ -97,13 +100,13 @@
             border-radius:10px; border:1px solid #ffeeba; 
             margin:auto; margin-bottom:20px; text-align:center; 
             max-width:900px;">
-⚠️ يرجى الاطلاع على الحقوق قبل تقديم أي بلاغ
+            يرجى الاطلاع على الحقوق قبل تقديم اي شكوى ⚠️
 </div>
 
 <div class="add-report-box" style="max-width:900px; margin:auto; margin-bottom:25px; text-align:center;">
   <button class="stat-card" onclick="window.location.href='report_right_trainee.html'" 
     style="width:100%; padding:18px; border-radius:14px; cursor:pointer;">
-      <h2 style="margin:0; font-size:20px; font-weight:900;">➕ إضافة شكوى جديدة</h2>
+      <h2 style="margin:0; font-size:20px; font-weight:900;">➕  ارفع حق من حقوقك </h2>
   </button>
 
 <section class="reports-section" style="max-width:900px; margin:auto; margin-top:40px;">
@@ -253,6 +256,8 @@ async function loadRights() {
                 <p><b>الجهة:</b> ${r.location || "-"}</p>
                 <p><b>الوصف:</b> ${r.description || "-"}</p>
                 <p><b>الحالة:</b> ${statusText}</p>
+                <p><b>الجهة الحالية:</b> </p>
+            <p><b>مستوى التصعيد:</b> ${r.current_level || "-"}</p>
                 <button class="btn-process" onclick="openRight(${r.id})">عرض الشكوى</button>
             </div>
         `;
