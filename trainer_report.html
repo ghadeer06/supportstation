@@ -33,6 +33,9 @@
               <li><a href="trainer_rights.html">حقوقي</a></li>
 
     <li><a href="trainer_events.html">الفعاليات</a></li>
+     <li>
+  <a href="trainer_profile.html">الملف الشخصي</a>
+</li>
   </ul>
 </aside>
 
@@ -100,6 +103,7 @@ async function loadReport() {
       <p><b>التاريخ:</b> ${data.created_at ? data.created_at.split("T")[0] : "-"}</p>
 
       <p><b>اسم المرسل:</b> ${data.sender_name || "-"}</p>
+      <p><b>القسم:</b> ${data.department || "-"}</p>
       <p><b>البريد الإلكتروني:</b> ${data.sender_email || "-"}</p>
 
       ${data.image_url ? `
