@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>الملف الشخصي</title>
+
+  <link rel="stylesheet" href="studentHome.css">
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+
+    .profile-container{
+      max-width:700px;
+      margin:auto;
+      background:#fff;
+      padding:30px;
+      border-radius:18px;
+      box-shadow:0 6px 20px rgba(0,0,0,.08);
+    }
+
+    .profile-title{
+      color:#0F2F4A;
+      margin-bottom:25px;
+      font-size:28px;
+      font-weight:900;
+      text-align:center;
+    }
+
+    .profile-group{
+      margin-bottom:20px;
+    }
+
+    .profile-group label{
+      display:block;
+      margin-bottom:8px;
+      font-weight:700;
+      color:#0F2F4A;
+    }
+
+    .profile-group input,
+    .profile-group select{
+      width:100%;
+      padding:14px;
+      border:1px solid #ccc;
+      border-radius:12px;
+      font-size:15px;
+    }
+
+    .save-btn{
+      width:100%;
+      padding:15px;
+      border:none;
+      border-radius:14px;
+      background:#0F2F4A;
+      color:white;
+      font-size:16px;
+      font-weight:700;
+      cursor:pointer;
+      margin-top:10px;
+    }
+
+    .save-btn:hover{
+      opacity:.9;
+    }
+
+  </style>
+</head>
+
+<body>
+
+<header class="admin-header">
+
+  <div class="admin-left">
+    <img src="img/logo.png" class="admin-logo">
+
+    <div class="admin-title">
+      <h1>الملف الشخصي</h1>
+      <span>محطة الدعم</span>
+    </div>
+  </div>
+
+  <a href="index.html" class="logout">تسجيل الخروج</a>
+
+</header>
+
+<aside class="sidebar">
+
+  <div class="sidebar-brand">
+    <h2>محطة الدعم</h2>
+  </div>
+
+  <ul class="sidebar-menu">
+
+    <li><a href="admin.html">الصفحة الرئيسية</a></li>
+
+<li><a href="reports.html">البلاغات</a></li>
+
+<li><a href="tasks.html">مهام السلامة</a></li>
+
+<li><a href="events.html">الفعاليات والأيام العالمية</a></li>
+
+<li class="active">
+  <a href="admin_profile.html">الملف الشخصي</a>
+</li>
+
+  </ul>
+
+</aside>
+
+<main class="admin-main" style="padding-top:40px;">
+
+  <div class="profile-container">
+
+    <h2 class="profile-title">
+      معلومات المستخدم
+    </h2>
+
+    <div class="profile-group">
+
+      <label>الاسم</label>
+
+      <input type="text" id="name" readonly>
+
+    </div>
+
+    <div class="profile-group">
+
+      <label>البريد الإلكتروني</label>
+
+      <input type="email" id="email" readonly>
+
+    </div>
+
+<div class="profile-group">
+
+  <label>الرقم الوظيفي / التدريبي</label>
+
+  <input
+    type="text"
+    id="jobNumber"
+    placeholder="أدخل الرقم الوظيفي أو التدريبي">
+
+</div>
+
+ <div class="profile-group">
+
+  <label>القسم</label>
+
+  <input
+    type="text"
+    id="department"
+    placeholder="أدخل قسمك">
+
+</div>
+
+   <div class="profile-group">
+
+  <label>المؤسسة العامة للتدريب التقني والمهني</label>
+
+  <input
+    type="text"
+    value="الكلية التقنية الرقمية للبنات بالرياض"
+    readonly>
+
+</div>
+
+    <button class="save-btn" onclick="saveProfile()">
+      حفظ البيانات
+    </button>
+
+  </div>
+
+</main>
+
+<script>
+
+function getClient() {
+
+  return window.supabase.createClient(
+    'https://mcxdjisoyqdnyieboqpy.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1jeGRqaXNveXFkbnlpZWJvcXB5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0MDI3NDAsImV4cCI6MjA5MDk3ODc0MH0.kIwJ1pc-GLX1lTvstLSDZ5Li1rd9vwutI4-Wz_HR6nE'
+  );
+
+}
+
+document.getElementById("name").value =
+localStorage.getItem("userName") || "";
+
+document.getElementById("email").value =
+localStorage.getItem("user_email") || "";
+document.getElementById("department").value =
+localStorage.getItem("department") || "";
+document.getElementById("jobNumber").value =
+localStorage.getItem("jobNumber") || "";
+async function saveProfile(){
+
+  const department =
+  document.getElementById("department").value;
+
+  const jobNumber =
+document.getElementById("jobNumber").value;
+
+  const email =
+  localStorage.getItem("user_email");
+
+  if(department === ""){
+
+    alert("الرجاء اختيار القسم");
+
+    return;
+  }
+
+  const supabase = getClient();
+
+  const { error } = await supabase
+    .from("users")
+    .update({
+
+      department: department,
+
+      job_number: jobNumber,
+
+    })
+    .eq("email", email);
+
+  if(error){
+
+    alert("حدث خطأ أثناء الحفظ");
+
+    return;
+  }
+
+  localStorage.setItem("department", department);
+  localStorage.setItem("jobNumber", jobNumber);
+  alert("تم حفظ البيانات بنجاح");
+
+}
+
+</script>
+
+<footer class="main-footer">
+
+  <div class="footer-content">
+
+    <p>&copy; 2026 حقوق محفوظة | محطة الدعم</p>
+
+    <ul class="footer-links">
+
+      <li><a href="index.html">الرئيسية</a></li>
+
+      <li><a href="about.html">عن الموقع</a></li>
+
+      <li><a href="https://twitter.com/support0station" target="_blank">
+        اتصل بنا
+      </a></li>
+
+    </ul>
+
+  </div>
+
+</footer>
+
+</body>
+</html>
