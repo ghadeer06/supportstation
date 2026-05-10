@@ -37,6 +37,9 @@
     	        <li><a href="trainer_rights.html">حقوقي</a></li>
 
     <li><a href="trainer_events.html">الفعاليات</a></li>
+    <li>
+  <a href="trainer_profile.html">الملف الشخصي</a>
+</li>
   </ul>
 </aside>
 
@@ -211,7 +214,8 @@ async function saveReport(){
   const senderName = localStorage.getItem("userName");
   const senderEmail = localStorage.getItem("user_email");
   const senderRole = localStorage.getItem("user_role");
-
+const department =
+localStorage.getItem("department");
   if (!senderEmail) {
     alert("يجب تسجيل الدخول أولاً");
     return;
@@ -264,6 +268,7 @@ async function saveReport(){
           sender_name: senderName || "-",
           sender_email: senderEmail,
           sender_role: senderRole || "trainer",
+          department: department,
           image_url: imageUrl,
           transfer_from: transferFrom,
           transfer_to: transferTo
