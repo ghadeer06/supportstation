@@ -74,6 +74,8 @@
 
 <header class="admin-header">
 
+  <button id="menuToggle" class="menu-btn">☰</button>
+
   <div class="admin-left">
     <img src="img/logo.png" class="admin-logo">
 
@@ -87,7 +89,10 @@
 
 </header>
 
-<aside class="sidebar">
+<div id="overlay" class="overlay"></div>
+
+<aside class="sidebar" id="sidebar">
+
 
   <div class="sidebar-brand">
     <h2>محطة الدعم</h2>
@@ -263,6 +268,6 @@ document.getElementById("jobNumber").value;
   </div>
 
 </footer>
-
+<script src="menu.js"></script>
 </body>
 </html>
