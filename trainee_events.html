@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>الفعاليات</title>
   <link rel="stylesheet" href="reports.css">
+  <link rel="stylesheet" href="studentHome.css">
 
   <!-- Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
@@ -14,6 +15,7 @@
 
 <!-- الهيدر -->
 <header class="admin-header">
+  <button class="menu-btn" onclick="toggleMenu()">☰</button>
   <div class="admin-left">
     <img src="img/logo.png" class="admin-logo" alt="Logo">
     <div class="admin-title">
@@ -26,7 +28,7 @@
 </header>
 
 <!-- القائمة الجانبية -->
-<aside class="sidebar">
+<aside id="side-menu" class="sidebar">
   <div class="sidebar-brand">
     <h2>محطة الدعم</h2>
   </div>
@@ -144,6 +146,17 @@ loadEvents();
   </div>
 </footer>
 
+  <script>
+function toggleMenu() {
+    const menu = document.getElementById("side-menu");
+
+    if (menu.style.right === "0px") {
+        menu.style.right = "-100%";
+    } else {
+        menu.style.right = "0px";
+    }
+}
+</script>
 
 </body>
 </html>
