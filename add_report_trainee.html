@@ -186,7 +186,8 @@ async function saveReport(){
   const senderName = localStorage.getItem("userName");
   const senderEmail = localStorage.getItem("user_email");
   const senderRole = localStorage.getItem("user_role");
-
+const department =
+localStorage.getItem("department");
   if (!senderEmail) {
     alert("لازم تسجل دخول أول");
     return;
@@ -225,6 +226,7 @@ async function saveReport(){
           sender_name: senderName || "-",
           sender_email: senderEmail,
           sender_role: senderRole || "trainee",
+			department: department,
           image_url: imageUrl
         }
       ]);
