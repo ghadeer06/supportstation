@@ -195,8 +195,8 @@ loadReport();
         notification.innerText = "وصل بلاغ جديد من: " + sender;
         
         // 3. إضافة العنصر للصفحة وتشغيل الصوت
-        document.body.appendChild(notification);
-        new Audio('https://tones.wolfram.com/generate/G-1_4_1_1_1').play().catch(() => {});
+      const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3');
+      audio.play().catch(e => console.log("الصوت يحتاج تفاعل"));
 
         // 2. تنسيق الإشعار (استخدام n الصغيرة هنا لأننا عرفنا المتغير فوق)
         Object.assign(notification.style, {
@@ -213,6 +213,7 @@ loadReport();
             fontFamily: 'Arial, sans-serif',
             transition: 'opacity 0.5s ease'
         });
+       document.body.appendChild(notification);
 
         // 4. إخفاء وحذف الإشعار تلقائياً بعد 5 ثواني
         setTimeout(() => {
