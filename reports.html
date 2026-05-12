@@ -90,7 +90,63 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+<script type="module">
+    import { supabase } from './supabase.js';
 
+    const supabaseRealtime = supabase;
+
+    const channel = supabaseRealtime
+        .channel('any-new-report')
+        .on(
+            'postgres_changes',
+            {
+                event: 'INSERT',
+                schema: 'public',
+                table: '*'
+            },
+            (payload) => {
+                console.log('New record:', payload);
+
+                // 1. إنشاء العنصر وتحديد النص
+                const notification = document.createElement("div");
+                const sender = payload.new.sender_name || "مستخدم";
+                notification.innerText = "وصل بلاغ جديد من: " + sender;
+
+                // 3. إضافة العنصر للصفحة وتشغيل الصوت
+                const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3');
+                audio.play().catch(e => console.log("الصوت يحتاج تفاعل")); 
+
+                // 2. تنسيق الإشعار
+                Object.assign(notification.style, {
+                    position: "fixed",
+                    top: "30px",
+                    right: "30px",
+                    backgroundColor: '#b30000',
+                    color: "white",
+                    padding: "20px 30px",
+                    borderRadius: "10px",
+                    zIndex: "10000",
+                    boxShadow: "0 5px 20px rgba(0,0,0,0.3)",
+                    fontWeight: "bold",
+                    fontSize: "18px"
+                });
+
+                document.body.appendChild(notification);
+
+                
+
+                // إخفاء الإشعار بعد 5 ثواني
+                setTimeout(() => {
+                    notification.remove();
+                }, 5000);
+
+                  // تحديث البيانات في الصفحة
+        if (typeof loadReports === 'function') loadReports();
+        if (typeof updateCounts === 'function') updateCounts();
+            }
+        )
+        .subscribe();
+</script>
 <script>
 document.addEventListener("DOMContentLoaded", async () => {
 
