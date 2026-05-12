@@ -177,25 +177,28 @@ async function deleteReport() {
 loadReport();
   const supabaseRealtime = getClient();
 
-supabaseRealtime
-    .channel('admin-notifications')
-    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'reports' }, (payload) => {
-        
-        if (typeof loadReport === "function") {
-            loadReport();
-        }
+   const channel = supabaseRealtime
+  .channel('any-new-report')
+  .on(
+    'postgres_changes',
+    { 
+      event: 'INSERT', 
+      schema: 'public', 
+      table: '*' 
+    },
+    (payload) => {
+        console.log('New record:', payload);
 
+        // 1. إنشاء العنصر وتحديد النص
         const notification = document.createElement('div');
-        notification.innerHTML = `
-            <div style="display: flex; align-items: center; gap: 10px;">
-                <span style="font-size: 20px;"></span>
-                <div>
-                    <strong style="display: block;">بلاغ جديد</strong>
-                    <span style="font-size: 13px; opacity: 0.9;">من: ${payload.new.sender_name}</span>
-                </div>
-            </div>
-        `;
+        const sender = payload.new.sender_name || "مستخدم جديد";
+        notification.innerText = "وصل بلاغ جديد من: " + sender;
+        
+        // 3. إضافة العنصر للصفحة وتشغيل الصوت
+        document.body.appendChild(notification);
+        new Audio('https://tones.wolfram.com/generate/G-1_4_1_1_1').play().catch(() => {});
 
+        // 2. تنسيق الإشعار (استخدام n الصغيرة هنا لأننا عرفنا المتغير فوق)
         Object.assign(notification.style, {
             position: 'fixed',
             top: '20px',
@@ -211,14 +214,18 @@ supabaseRealtime
             transition: 'opacity 0.5s ease'
         });
 
-        document.body.appendChild(notification);
-        new Audio('https://tones.wolfram.com/generate/G-1_4_1_1_1').play().catch(() => {});
-
+        // 4. إخفاء وحذف الإشعار تلقائياً بعد 5 ثواني
         setTimeout(() => {
             notification.style.opacity = '0';
             setTimeout(() => notification.remove(), 500);
         }, 5000);
-    })
+
+        // تحديث البيانات في الصفحة
+        if (typeof loadReports === 'function') loadReports();
+        if (typeof updateCounts === 'function') updateCounts();
+    }
+)
+ 
     .subscribe();
 </script>
 <footer class="main-footer">
